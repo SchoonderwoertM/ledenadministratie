@@ -3,11 +3,16 @@
 <table>
     <thead>
         <th>Families</th>
+        <th>Straat</th>
+        <th>Aantal leden</th>
+        <th>Contributie</th>
     </thead>
     <tbody>
         <?php foreach ($families as $family) { ?>
             <tr>
                 <td><?php echo $family['Name']; ?></td>
+                <td><?php echo $family['Street']; ?></td>
+                <td><?php echo $family['NumberOfFamilyMembers']; ?></td>
             </tr>
         <?php } ?>
     </tbody>

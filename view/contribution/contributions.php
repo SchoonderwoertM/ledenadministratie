@@ -8,8 +8,8 @@
     <tbody>
         <?php foreach ($contributions as $contribution) { ?>
             <tr>
-                <td><?php echo $contribution['year']; ?></td>
-                <td><?php echo $contribution['cost']; ?></td>
+                <td><?php echo $contribution['Year']; ?></td>
+                <td><?php echo $contribution['Cost']; ?></td>
             </tr>
         <?php } ?>
     </tbody>

@@ -21,9 +21,12 @@ class Controller
         {
             if (isset($_POST['manageFamilies'])) {
                 $families = $this->familyModel->getFamilies();
-                include('view/family/families.php');
+                include('view\family\families.php');
             } 
             else if (isset($_POST['addFamilies'])) {
+            }
+            else if (isset($_POST['updateFamilyView'])) {
+                include('view\family\updateFamily.php');
             }
             //CRUDD
             else if (isset($_POST['createFamilie'])) {
@@ -31,6 +34,13 @@ class Controller
             else if (isset($_POST['deleteFamilie'])) {
             } 
             else if (isset($_POST['updateFamilie'])) {
+            }
+        }
+
+        //FamilyMembers
+        else if (isset($_POST['FamilyMembers'])){
+            if (isset($_POST['manageFamilyMembers'])){
+                include('view/family/familyMembers.php');
             }
         }
 
