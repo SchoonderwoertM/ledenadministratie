@@ -3,6 +3,6 @@
     <input type="text" required>
     <label>Straat:</label>
     <input type="text" required>
-    <input type="hidden" name="updateFamilyView">
+    <input type="hidden" name="updateFamily">
     <input type="submit" value="Opslaan" name="Family">
 </form>

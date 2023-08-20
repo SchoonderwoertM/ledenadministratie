@@ -16,9 +16,19 @@ class ContributionModel
     }
 
     public function getContributions(){
-        $query = ("SELECT Contribution.ContributionID, Contribution.Cost, Contribution.Age, FinancialYear.Year 
+        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Cost, Membership.Description 
         FROM Contribution
-        LEFT JOIN FinancialYear on Contribution.ContributionID = FinancialYear.ContributionID");
+        LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID");
+        $result = $this->pdo->query($query);
+        return $result->fetchAll();
+    }
+
+    public function getContribution(){
+        $id = $_POST['ContributionID'];
+        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Cost, Membership.Description 
+        FROM Contribution
+        LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
+        WHERE Contribution.ContributionID = $id");
         $result = $this->pdo->query($query);
         return $result->fetchAll();
     }
@@ -36,21 +46,18 @@ class ContributionModel
             INNER JOIN Contribution ON FinancialYear.ContributionID) VALUES ()";
             $message = "Het boekjaar is toegevoegd.";
         }
+    }
+
+    public function deleteContribution(){
 
     }
 
-    public function saveContribution(){
-        // require_once 'include\databaseLogin.php';
-        // try {
-        //     $pdo = new PDO($attr, $user, $pass, $opts);
-        // } catch (PDOException $e) {
-        //     throw new PDOException($e->getMessage(), (int)$e->getCode());
-        // }
+    public function updateContribution(){
         // $financialYear = get_post($pdo , 'financielYear');
         // $cost = get_post($pdo, 'cost');
 
         // $query = "INSERT INTO ";
         // $result = $pdo->query($query);
-
     }
 }
+?>

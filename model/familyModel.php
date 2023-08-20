@@ -22,7 +22,7 @@ class FamilyModel
         LEFT JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
         LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
         LEFT JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
-        LEFT JOIN FinancialYear ON Contribution.ContributionID = FinancialYear.ContributionID
+        LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
         -- !!! maak jaar dynamisch !!!)
         WHERE FinancialYear.Year = 2023
         GROUP BY Family.FamilyID
@@ -31,8 +31,8 @@ class FamilyModel
         return $result->fetchAll();
     }
 
-    public function getFamilyMembers()
-    {
+    public function getFamily(){
+        
     }
 
     public function createFamily()
@@ -53,21 +53,7 @@ class FamilyModel
         // $result = $pdo->query($query);
     }
 
-    public function getFamilyMember()
-    {
-    }
 
-    public function createFamilyMember()
-    {
-    }
-
-    public function delteFamilyMember()
-    {
-    }
-
-    public function updateFamilyMember()
-    {
-    }
 
   
 }
