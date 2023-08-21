@@ -43,8 +43,9 @@ class FamilyModel
 
     public function deleteFamily()
     {
-        // $query = "DELETE * FROM family WHERE familyID = '$familyID'"
-        // $result = $pdo->query($query);
+        $familyID = $_POST['FamilyID'];
+        $query = ("DELETE * FROM Family 
+        WHERE Family.FamilyID = $familyID");
     }
 
     public function updateFamily()

@@ -16,21 +16,26 @@ class ContributionModel
     }
 
     public function getContributions(){
-        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Cost, Membership.Description 
-        FROM Contribution
-        LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID");
-        $result = $this->pdo->query($query);
-        return $result->fetchAll();
-    }
-
-    public function getContribution(){
-        $id = $_POST['ContributionID'];
+        if(!empty($_POST['financialYearID'])){
+        $financialYearID = $_POST['financialYearID'];
         $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Cost, Membership.Description 
         FROM Contribution
         LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
-        WHERE Contribution.ContributionID = $id");
+        LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+        WHERE FinancialYear.FinancialYearID = $financialYearID");
         $result = $this->pdo->query($query);
         return $result->fetchAll();
+        }
+    }
+
+    public function getContribution(){
+        $contributionID = $_POST['contributionID'];
+        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Cost, Membership.Description 
+        FROM Contribution
+        LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
+        WHERE Contribution.ContributionID = $contributionID");
+        $result = $this->pdo->query($query);
+        return $result->fetch();
     }
 
     public function createContribution(){
@@ -49,15 +54,20 @@ class ContributionModel
     }
 
     public function deleteContribution(){
-
+        $contributionID = $_POST['ContributionID'];
+        $query = ("DELETE * FROM Contribution 
+        WHERE Contribution.ContributionID = $contributionID");
+        $result = $this->pdo->query($query);
     }
 
     public function updateContribution(){
-        // $financialYear = get_post($pdo , 'financielYear');
-        // $cost = get_post($pdo, 'cost');
-
         // $query = "INSERT INTO ";
         // $result = $pdo->query($query);
     }
+
+    public function getFinancialYears(){
+        $query = ("SELECT * FROM FinancialYear");
+        $result = $this->pdo->query($query);
+        return $result->fetchAll();
+    }
 }
-?>

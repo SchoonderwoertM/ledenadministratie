@@ -18,6 +18,7 @@
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">
+                            <input type="hidden" name="familyID" value="<?php echo $family['FamilyID'] ?>">
                             <input type="hidden" name="manageFamilyMembers">
                             <input type="submit" value="Inzien" name="FamilyMembers">
                         </form>

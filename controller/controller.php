@@ -45,15 +45,15 @@ class Controller
         //FamilyMembers
         else if (isset($_POST['FamilyMembers'])){
             if (isset($_POST['manageFamilyMembers'])){
-                $familieMember = $this->familyMemberModel->getFamilyMembers();
-                include('view\family\families.php');
+                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                include('view\familyMember\familyMembers.php');
             }
             else if (isset($_POST['addFamilyMember'])) {
-                include('view\family\addFamilyMember.php');
+                include('view\familyMember\addFamilyMember.php');
             }
             else if (isset($_POST['editFamilyMember'])) {
                 $familyMember = $this->familyMemberModel->getFamilyMember();
-                include('view\family\editFamily.php');}
+                include('view\familyMember\editFamilyMember.php');}
             //CRUDD
             else if (isset($_POST['createFamilyMember'])) {
             } 
@@ -67,10 +67,11 @@ class Controller
         else if(isset($_POST['Contribution']))
         {
             if (isset($_POST['manageContributions'])) {
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 $_SESSION['contributions'] = $contributions;
                 include('view\contribution\contributions.php');
-            } 
+            }
             else if (isset($_POST['addContribution'])) {
                 include('view\contribution\addContribution.php');
             } 

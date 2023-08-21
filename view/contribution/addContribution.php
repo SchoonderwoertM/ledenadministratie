@@ -1,10 +1,16 @@
 <h1>Boekjaar toevoegen</h1>
 
-<form id="contribution-form" action="index.php" method="post">
-    <label>Boekjaar:</label>
-    <input type="number" min="2020" max="2100" step="1" placeholder="<?php echo date('Y') ?>" required>
-    <label>Contributie:</label>
-    <input type="number" min="0" max="1000" step="1" placeholder="€" required>
-    <input type="hidden" name="createContribution">
-    <input type="submit" value="Opslaan" name="Contribution">
-</form>
+<formaction="index.php" method="post">
+    <div>
+        <label for="financialYear">Boekjaar</label>
+        <input id="financialYear" type="number" min="2020" max="2100" step="1" placeholder="<?php echo date('Y') ?>" required>
+    </div>
+    <div>
+        <label for="contribution">Contributie</label>
+        <input id="contribution" type="number" min="0" max="1000" step="1" placeholder="€" required>
+    </div>
+    <div>
+        <input type="hidden" name="createContribution">
+        <input type="submit" value="Opslaan" name="Contribution">
+    </div>
+    </form>

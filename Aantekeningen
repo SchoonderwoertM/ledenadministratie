@@ -3,3 +3,8 @@
 - Authenticatie
 - Commentaar bij code voegen
 - Sanitize HTML
+- Types JOIN
+- Types fetch
+- Styling:
+    px in rem
+    margin-block-end
