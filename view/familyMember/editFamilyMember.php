@@ -3,11 +3,11 @@
 <form action="index.php" method="post">
     <div>
         <label for="name">Naam</label>
-        <input id="name" type="text" value="<?php echo $familyMember['Name'] ?>" autofocus="on" required>
+        <input id="name" type="text" name="name" value="<?php echo $familyMember['Name'] ?>" autofocus="on" required>
     </div>
     <div>
         <label for="dateOfBirth">Geboortedatum</label>
-        <input id="dateOfBirth" type="text" value="<?php echo $familyMember['DateOfBirth'] ?>" required>
+        <input id="dateOfBirth" type="date" name="dateOfBirth" value="<?php echo $familyMember['DateOfBirth'] ?>" required>
     </div>
     <div>
         <input type="hidden" name="familyMemberID" value="<?php echo $familyMember['FamilyMemberID'] ?>">

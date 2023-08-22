@@ -3,19 +3,19 @@
 <form action="index.php" method="post">
     <div>
         <label for="familyName">Familienaam</label>
-        <input id="familyName" type="text" value="<?php echo $family['Name'] ?>" autofocus="on" required>
+        <input id="familyName" type="text" name="name" value="<?php echo $family['Name'] ?>" autofocus="on" required>
     </div>
     <div>
         <label for="address">Straat en huisnummer</label>
-        <input id="address" type="text" value="<?php echo $family['Address'] ?>" required>
+        <input id="address" type="text" name="address" value="<?php echo $family['Address'] ?>" required>
     </div>
     <div>
         <label for="postalCode">Postcode</label>
-        <input id="postalCode" type="text" value="<?php echo $family['PostalCode'] ?>" required>
+        <input id="postalCode" type="text" name="postalCode" value="<?php echo $family['PostalCode'] ?>" required>
     </div>
     <div>
         <label for="city">Plaats</label>
-        <input id="city" type="text" value="<?php echo $family['City'] ?>" required>
+        <input id="city" type="text" name="city" value="<?php echo $family['City'] ?>" required>
     </div>
     <input type="hidden" name="familyID" value="<?php echo $family['FamilyID'] ?>">
     <input type="hidden" name="updateFamily">

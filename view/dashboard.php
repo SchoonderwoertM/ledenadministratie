@@ -1,10 +1,9 @@
 <h1>Dashboard</h1>
-<h2>Overzicht families huidig jaar</h2>
+<h2>Overzicht huidig jaar</h2>
 
 <table>
     <thead>
-        <th>Families</th>
-        <th>Adres</th>
+        <th>Familie</th>
         <th>Aantal leden</th>
         <th>Contributie</th>
     </thead>
@@ -12,7 +11,6 @@
         <?php foreach ($families as $family) { ?>
             <tr>
                 <td><?php echo $family['Name']; ?></td>
-                <td><?php echo $family['Address'] . " te " . $family['City']; ?></td>
                 <td><?php echo $family['NumberOfFamilyMembers']; ?></td>
                 <td><?php echo $family['TotalContribution']; ?></td>
             </tr>

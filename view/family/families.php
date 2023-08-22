@@ -1,7 +1,7 @@
 <h1>Familie overzicht</h1>
 <table>
     <thead>
-        <th>Families</th>
+        <th>Familie</th>
         <th>Adres</th>
         <th>Aantal leden</th>
         <th>Contributie</th>
@@ -27,6 +27,7 @@
                             <input type="submit" value="Bewerken" name="Family">
                         </form>
                         <form action="index.php" method="post">
+                            <input type="hidden" name="familyID" value="<?php echo $family['FamilyID'] ?>">
                             <input type="hidden" name="deleteFamily">
                             <input type="submit" value="Verwijderen" name="Family">
                         </form>
@@ -36,3 +37,8 @@
         <?php } ?>
     </tbody>
 </table>
+
+<form action="index.php" method="post">
+    <input type="hidden" name="addFamily">
+    <input type="submit" value="Familie toevoegen" name="Family">
+</form>

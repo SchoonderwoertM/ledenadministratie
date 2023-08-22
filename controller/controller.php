@@ -35,10 +35,13 @@ class Controller
             }
             //CRUDD
             else if (isset($_POST['createFamily'])) {
+                $this->familyModel->createFamily();
             } 
             else if (isset($_POST['deleteFamily'])) {
+                $this->familyModel->deleteFamily();
             } 
             else if (isset($_POST['updateFamily'])) {
+                $this->familyModel->updateFamily();
             }
         }
 
@@ -56,10 +59,13 @@ class Controller
                 include('view\familyMember\editFamilyMember.php');}
             //CRUDD
             else if (isset($_POST['createFamilyMember'])) {
+                $this->familyMemberModel->createFamilyMember();
             } 
             else if (isset($_POST['deleteFamilyMember'])) {
+                $this->familyMemberModel->deleteFamilyMember();
             } 
             else if (isset($_POST['updateFamilyMember'])) {
+                $this->familyMemberModel->updateFamilyMember();
             }
         }
 
@@ -81,6 +87,7 @@ class Controller
             }
             //CRUDD
             else if (isset($_POST['createContribution'])) {
+                $this->contributionModel->createContribution();
             }
             else if (isset($_POST['deleteContribution'])) {
                 $this->contributionModel->deleteContribution();
