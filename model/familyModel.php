@@ -1,6 +1,6 @@
 <?php
 
-class FamilyModel
+class FamilyModel extends BaseModel
 {
     private $pdo;
 
@@ -17,6 +17,7 @@ class FamilyModel
 
     public function getFamilies()
     {
+        //!!! Contributie per gezin berekenen !!!
         $currentYear = date('Y');
         $query = ("SELECT Family.FamilyID, Family.Name, Address.Address, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalContribution FROM Family
         LEFT JOIN Address ON Family.AddressID = Address.AddressID
@@ -32,7 +33,7 @@ class FamilyModel
 
     public function getFamily()
     {
-        $familyID = $_POST['familyID'];
+        $familyID = $this->sanitizeString($_POST['familyID']);
         $query = ("SELECT Family.FamilyID, Family.Name, Address.Address, Address.PostalCode, Address.City 
         FROM Family
         LEFT JOIN Address ON Family.AddressID = Address.AddressID
@@ -51,12 +52,12 @@ class FamilyModel
             isset($_POST['postalCode']) &&
             isset($_POST['city'])
         ) {
-            $firstName = $_POST['firstName'];
-            $lastName = $_POST['lastName'];
-            $dateOfBirth = $_POST['dateOfBirth'];
-            $address = $_POST['address'];
-            $postalCode = $_POST['postalCode'];
-            $city = $_POST['city'];
+            $firstName = $this->sanitizeString($_POST['firstName']);
+            $lastName = $this->sanitizeString($_POST['lastName']);
+            $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
+            $address = $this->sanitizeString($_POST['address']);
+            $postalCode = $this->sanitizeString($_POST['postalCode']);
+            $city = $this->sanitizeString($_POST['city']);
             $membershipId = $this->getMembership($dateOfBirth);
 
             //!!!checken of adres al bestaat!!!
@@ -74,27 +75,17 @@ class FamilyModel
             $query = ("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, '$firstName', '$dateOfBirth', $membershipId, $familyID);");
             $result = $this->pdo->query($query);
             $result->fetch();
+            include 'view\family\families.php';
         }
-
-        // $stmt1 = $this->pdo->prepare('INSERT INTO Address VALUES(?,?,?)');
-        // $stmt1->bindParam($address, $postalCode, $city);
-
-        // $stmt1->execute([$address, $postalCode, $city]);
-
-        // $addressID = $stmt1->lastInsertId();
-
-        // $stmt2 = $this->pdo->prepare('INSERT INTO Family VALUES(?,?)');
-        // $stmt2->bindParam($familyName, $addressID);
-        // $query = "INSERT INTO family VALUES(null, '$familyName', '$address'"
-        // $result = $pdo->query($query);
     }
 
     public function deleteFamily()
     {
-        $familyID = $_POST['familyID'];
-        $query = ("DELETE FROM Family WHERE Family.FamilyID = $familyID");
-        $result = $this->pdo->query($query);
-        $result->fetch();
+        $familyID = $this->sanitizeString($_POST['familyID']);
+        $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
+        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+        $stmt->execute([$familyID]);
+        include 'view\family\families.php';
     }
 
     public function updateFamily()
@@ -106,19 +97,20 @@ class FamilyModel
             isset($_POST['postalCode']) &&
             isset($_POST['city'])
         ) {
-            $id = $_POST['familyID'];
-            $name = $_POST['name'];
-            $address = $_POST['address'];
-            $postalCode = $_POST['postalCode'];
-            $city = $_POST['city'];
+            $familyID = $this->sanitizeString($_POST['familyID']);
+            $name = $this->sanitizeString($_POST['name']);
+            $address = $this->sanitizeString($_POST['address']);
+            $postalCode = $this->sanitizeString($_POST['postalCode']);
+            $city = $this->sanitizeString($_POST['city']);
 
-            $query = "UPDATE Family SET Name='$name' WHERE FamilyID=$id";
+            $query = "UPDATE Family SET Name='$name' WHERE FamilyID=$familyID";
             $result = $this->pdo->query($query);
             $result->fetch();
 
             $query = "UPDATE Address SET Address='$address', PostalCode='$postalCode', City='$city' WHERE AddressID=1";
             $result = $this->pdo->query($query);
             $result->fetch();
+            include 'view\family\families.php';
         }
     }
 

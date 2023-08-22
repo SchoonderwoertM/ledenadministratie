@@ -1,6 +1,6 @@
 <?php
 
-class ContributionModel
+class ContributionModel extends BaseModel
 {
     private $pdo;
 
@@ -12,7 +12,7 @@ class ContributionModel
     public function getContributions()
     {
         if (!empty($_POST['financialYearID'])) {
-            $financialYearID = $_POST['financialYearID'];
+            $financialYearID = $this->sanitizeString($_POST['financialYearID']);
             $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.Description 
         FROM Contribution
         LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
@@ -25,7 +25,7 @@ class ContributionModel
 
     public function getContribution()
     {
-        $contributionID = $_POST['contributionID'];
+        $contributionID = $this->sanitizeString($_POST['contributionID']);
         $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
         FROM Contribution
         LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
@@ -36,8 +36,8 @@ class ContributionModel
 
     public function createContribution()
     {
-        $year = $this->$_POST['year'];
-        $discount = $this->$_POST['discount'];
+        $year = $this->sanitizeString($_POST['year']);
+        $discount = $this->sanitizeString($_POST['discount']);
         $query = "SELECT financialYear.year FROM financialYear WHERE financialYear.year = $year";
         $result = $this->pdo->query($query);
         if ($result) {
@@ -47,14 +47,16 @@ class ContributionModel
             INNER JOIN Contribution ON FinancialYear.ContributionID) VALUES ()";
             $message = "Het boekjaar is toegevoegd.";
         }
+        include 'view\contribution\contributions.php';
     }
 
     public function deleteContribution()
     {
-        $contributionID = $_POST['ContributionID'];
-        $query = ("DELETE * FROM Contribution 
-        WHERE Contribution.ContributionID = $contributionID");
-        $result = $this->pdo->query($query);
+        $contributionID = $this->sanitizeString($_POST['contributionID']);
+        $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE Contribution.ContributionID = ?");
+        $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
+        $stmt->execute([$contributionID]);
+        include 'view\contribution\contributions.php';
     }
 
     public function updateContribution()
@@ -66,11 +68,11 @@ class ContributionModel
             isset($_POST['age']) &&
             isset($_POST['discount'])
         ) {
-            $descriptionID = $_POST['contributionID'];
-            $membershipID = $_POST['membershipID'];
-            $description = $_POST['description'];
-            $age = $_POST['age'];
-            $discount = $_POST['discount'];
+            $descriptionID = $this->sanitizeString($_POST['contributionID']);
+            $membershipID = $this->sanitizeString($_POST['membershipID']);
+            $description = $this->sanitizeString($_POST['description']);
+            $age = $this->sanitizeString($_POST['age']);
+            $discount = $this->sanitizeString($_POST['discount']);
 
             $query = "UPDATE Contribution SET Age='$age', Discount='$discount' WHERE ContributionID=$descriptionID";
             $result = $this->pdo->query($query);
@@ -79,6 +81,7 @@ class ContributionModel
             $query = "UPDATE Membership SET Description='$description' WHERE MembershipID = $membershipID";
             $result = $this->pdo->query($query);
             $result->fetch();
+            include 'view\contribution\contributions.php';
         }
     }
 
@@ -88,4 +91,6 @@ class ContributionModel
         $result = $this->pdo->query($query);
         return $result->fetchAll();
     }
+
+
 }

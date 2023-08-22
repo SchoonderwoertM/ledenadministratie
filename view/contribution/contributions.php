@@ -40,6 +40,7 @@
                                 <input type="submit" value="Bewerken" name="Contribution">
                             </form>
                             <form action="index.php" method="post">
+                                <input type="hidden" name="contributionID" value="<?php echo $contribution['ContributionID'] ?>">
                                 <input type="hidden" name="deleteContribution">
                                 <input type="submit" value="Verwijderen" name="Contribution">
                             </form>

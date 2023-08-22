@@ -1,4 +1,5 @@
 <?php
+require_once 'model\BaseModel.php';
 require_once 'model\familyModel.php';
 require_once 'model\familyMemberModel.php';
 require_once 'model\contributionModel.php';
