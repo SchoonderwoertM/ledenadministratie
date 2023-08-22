@@ -32,6 +32,12 @@ class FamilyMemberModel
 
     public function getFamilyMember()
     {
+        $familyMemberID = $_POST['familyMemberID'];
+        $query = ("SELECT FamilyMember.FamilyMemberID, FamilyMember.Name, FamilyMember.DateOfBirth
+        FROM FamilyMember
+        WHERE FamilyMember.FamilyMemberID = $familyMemberID");
+        $result = $this->pdo->query($query);
+        return $result->fetch();
     }
 
     public function createFamilyMember()

@@ -17,14 +17,14 @@ class FamilyModel
 
     public function getFamilies()
     {
-        $query = ("SELECT Family.FamilyID, Family.Name, Address.Street, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers FROM Family
+        $currentYear = date('Y');
+        $query = ("SELECT Family.FamilyID, Family.Name, Address.Street, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Cost) TotalContribution FROM Family
         LEFT JOIN Address ON Family.AddressID = Address.AddressID
         LEFT JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
         LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
         LEFT JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
         LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-        -- !!! maak jaar dynamisch !!!)
-        WHERE FinancialYear.Year = 2023
+        WHERE FinancialYear.Year = $currentYear
         GROUP BY Family.FamilyID
         ORDER BY Family.Name");
         $result = $this->pdo->query($query);
@@ -32,7 +32,13 @@ class FamilyModel
     }
 
     public function getFamily(){
-        
+        $familyID = $_POST['familyID'];
+        $query = ("SELECT Family.FamilyID, Family.Name, Address.Street, Address.PostalCode, Address.City 
+        FROM Family
+        LEFT JOIN Address ON Family.AddressID = Address.AddressID
+        WHERE Family.FamilyID = 1");
+        $result = $this->pdo->query($query);
+        return $result->fetch();
     }
 
     public function createFamily()
@@ -50,8 +56,26 @@ class FamilyModel
 
     public function updateFamily()
     {
-        // $query = "UPDATE family SET name='$name', address='$address' WHERE familyID='$familyID'"
-        // $result = $pdo->query($query);
+        if(isset($_POST['FamilyID']) &&
+        isset($_POST['Name']) &&
+        isset($_POST['Street']) &&
+        isset($_POST['PostalCode']) &&
+        isset($_POST['City'])){
+
+            $id = $_POST['FamilyID'];
+            $name = $_POST['Name'];
+            $street = $_POST['Street'];
+            $postalCode = $_POST['PostalCode'];
+            $city = $_POST['City'];
+    
+            $query = "UPDATE Family
+            SET Name=$name WHERE FamilyID=$id";
+            $result = $this->pdo->query($query);
+
+            $query = "UPDATE Address 
+            SET Street=$street, PostalCode=$postalCode, City=$city WHERE AddressID=1";
+            $result = $this->pdo->query($query);
+        }
     }
 
 

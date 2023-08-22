@@ -43,7 +43,7 @@ class Controller
         }
 
         //FamilyMembers
-        else if (isset($_POST['FamilyMembers'])){
+        else if (isset($_POST['FamilyMember'])){
             if (isset($_POST['manageFamilyMembers'])){
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
                 include('view\familyMember\familyMembers.php');

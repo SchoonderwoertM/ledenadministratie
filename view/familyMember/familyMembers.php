@@ -18,6 +18,7 @@
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">
+                            <input type="hidden" name="familyMemberID" value="<?php echo $familyMember['FamilyMemberID'] ?>">
                             <input type="hidden" name="editFamilyMember">
                             <input type="submit" value="Bewerken" name="FamilyMember">
                         </form>
@@ -34,5 +35,5 @@
 
 <form action="index.php" method="post">
     <input type="hidden" name="addFamilyMember">
-    <input type="submit" value="Familielid toevoegen" name="FamilyMembers">
+    <input type="submit" value="Familielid toevoegen" name="FamilyMember">
 </form>

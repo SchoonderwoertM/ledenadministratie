@@ -1,9 +1,8 @@
 <h1>Familie overzicht</h1>
-
 <table>
     <thead>
         <th>Families</th>
-        <th>Street</th>
+        <th>Adres</th>
         <th>Aantal leden</th>
         <th>Contributie</th>
         <th></th>
@@ -12,17 +11,18 @@
         <?php foreach ($families as $family) { ?>
             <tr>
                 <td><?php echo $family['Name']; ?></td>
-                <td><?php echo $family['Street']; ?></td>
+                <td><?php echo $family['Street'] . " te " . $family['City']; ?></td>
                 <td><?php echo $family['NumberOfFamilyMembers']; ?></td>
-                <td></td>
+                <td><?php echo $family['TotalContribution']; ?></td>
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">
                             <input type="hidden" name="familyID" value="<?php echo $family['FamilyID'] ?>">
                             <input type="hidden" name="manageFamilyMembers">
-                            <input type="submit" value="Inzien" name="FamilyMembers">
+                            <input type="submit" value="Inzien" name="FamilyMember">
                         </form>
                         <form action="index.php" method="post">
+                            <input type="hidden" name="familyID" value="<?php echo $family['FamilyID'] ?>">
                             <input type="hidden" name="editFamily">
                             <input type="submit" value="Bewerken" name="Family">
                         </form>
