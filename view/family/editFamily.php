@@ -3,11 +3,11 @@
 <form action="index.php" method="post">
     <div>
         <label for="familyName">Familienaam</label>
-        <input id="familyName" type="text" value="<?php echo $family['Name'] ?>" required>
+        <input id="familyName" type="text" value="<?php echo $family['Name'] ?>" autofocus="on" required>
     </div>
     <div>
-        <label for="street">Straat en huisnummer</label>
-        <input id="street" type="text" value="<?php echo $family['Street'] ?>" required>
+        <label for="address">Straat en huisnummer</label>
+        <input id="address" type="text" value="<?php echo $family['Address'] ?>" required>
     </div>
     <div>
         <label for="postalCode">Postcode</label>

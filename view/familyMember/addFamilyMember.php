@@ -3,15 +3,11 @@
 <form action="index.php" method="post">
     <div>
         <label for="name">Naam</label>
-        <input id="name" type="text" required>
+        <input id="name" type="text" autofocus="on" required>
     </div>
     <div>
         <label for="dateOfBirth">Geboortedatum</label>
-        <input id="dateOfBirth" type="number" required>
-    </div>
-    <div>
-        <label for="membership">Soort lid</label>
-        <input in="membership" type="number" required>
+        <input id="dateOfBirth" type="date" required>
     </div>
     <div>
         <input type="hidden" name="createFamilyMember">

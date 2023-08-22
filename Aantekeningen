@@ -1,6 +1,6 @@
 - Cookies
 - Sessies
-- Authenticatie
+- Authenticatie (zie global variable page 59)
 - Commentaar bij code voegen
 - Sanitize HTML
 - Types JOIN
@@ -8,3 +8,4 @@
 - Styling:
     px in rem
     margin-block-end
+- Placeholders gebruik tegen sql-injectie

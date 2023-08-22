@@ -6,13 +6,7 @@ class ContributionModel
 
     public function __construct()
     {
-        include 'include\databaseLogin.php';
-
-        try {
-            $this->pdo = new PDO($attr, $user, $pass, $opts);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
-        }
+        require 'include\databaseLogin.php';
     }
 
     public function getContributions(){

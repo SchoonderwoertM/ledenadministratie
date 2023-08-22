@@ -12,7 +12,7 @@
         <?php foreach ($families as $family) { ?>
             <tr>
                 <td><?php echo $family['Name']; ?></td>
-                <td><?php echo $family['Street'] . " te " . $family['City']; ?></td>
+                <td><?php echo $family['Address'] . " te " . $family['City']; ?></td>
                 <td><?php echo $family['NumberOfFamilyMembers']; ?></td>
                 <td><?php echo $family['TotalContribution']; ?></td>
             </tr>

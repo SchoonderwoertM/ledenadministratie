@@ -3,7 +3,7 @@
 <form action="index.php" method="post">
     <div>
         <label for="name">Naam</label>
-        <input id="name" type="text" value="<?php echo $familyMember['Name'] ?>" required>
+        <input id="name" type="text" value="<?php echo $familyMember['Name'] ?>" autofocus="on" required>
     </div>
     <div>
         <label for="dateOfBirth">Geboortedatum</label>

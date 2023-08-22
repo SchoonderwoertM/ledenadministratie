@@ -1,6 +1,6 @@
     <nav>
         <form method="post" action="index.php">
-            <input type="submit" value="Home" />
+            <input type="submit" value="Dashboard" />
         </form>
 
         <form method="post" action="index.php">

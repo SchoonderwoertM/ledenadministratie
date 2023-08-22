@@ -3,7 +3,7 @@
 <formaction="index.php" method="post">
     <div>
         <label for="financialYear">Boekjaar</label>
-        <input id="financialYear" type="number" min="2020" max="2100" step="1" placeholder="<?php echo date('Y') ?>" required>
+        <input id="financialYear" type="number" min="2020" max="2100" step="1" placeholder="<?php echo date('Y') ?>"  autofocus="on" required>
     </div>
     <div>
         <label for="contribution">Contributie</label>
