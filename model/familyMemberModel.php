@@ -19,7 +19,7 @@ class FamilyMemberModel
     {
         if(!empty($_POST['familyID'])){
             $familyID = $_POST['familyID'];
-            $query = ("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, Contribution.Cost FROM FamilyMember
+            $query = ("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, Contribution.Discount FROM FamilyMember
             LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
             LEFT JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
             LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID

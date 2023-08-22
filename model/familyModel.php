@@ -18,7 +18,7 @@ class FamilyModel
     public function getFamilies()
     {
         $currentYear = date('Y');
-        $query = ("SELECT Family.FamilyID, Family.Name, Address.Address, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Cost) TotalContribution FROM Family
+        $query = ("SELECT Family.FamilyID, Family.Name, Address.Address, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalContribution FROM Family
         LEFT JOIN Address ON Family.AddressID = Address.AddressID
         LEFT JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
         LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID

@@ -10,8 +10,8 @@
         <input id="age" type="text" min="0" max="150" name="age" value="<?php echo $contribution['Age'] ?>" required>
     </div>
     <div>
-        <label for="cost">Bedrag</label>
-        <input id="cost" type="text" min="0" max="999" name="cost" value="<?php echo $contribution['Cost'] ?>" required>
+        <label for="discount">Korting (%)</label>
+        <input id="discount" type="text" min="0" max="999" name="discount" value="<?php echo $contribution['Discount'] ?>" required>
     </div>
     <div>
         <input type="hidden" name="membershipID" value="<?php echo $contribution['MembershipID'] ?>">

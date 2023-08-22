@@ -21,7 +21,7 @@
         <thead>
             <th>Soort lid</th>
             <th>Leeftijd tot</th>
-            <th>Bedrag</th>
+            <th>Korting</th>
             <th></th>
         </thead>
         <tbody>
@@ -31,7 +31,7 @@
                 <tr>
                     <td><?php echo $contribution['Description']; ?></td>
                     <td><?php echo $contribution['Age']; ?></td>
-                    <td><?php echo $contribution['Cost']; ?></td>
+                    <td><?php echo $contribution['Discount']; ?></td>
                     <td>
                         <div class="button-container">
                             <form action="index.php" method="post">

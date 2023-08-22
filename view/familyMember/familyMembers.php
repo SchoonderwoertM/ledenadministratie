@@ -14,7 +14,7 @@
                 <td><?php echo $familyMember['Name']; ?></td>
                 <td><?php echo $familyMember['DateOfBirth']; ?></td>
                 <td><?php echo $familyMember['Description']; ?></td>
-                <td><?php echo $familyMember['Cost']; ?></td>
+                <td><?php echo $familyMember['Discount']; ?></td>
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">

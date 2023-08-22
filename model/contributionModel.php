@@ -13,7 +13,7 @@ class ContributionModel
     {
         if (!empty($_POST['financialYearID'])) {
             $financialYearID = $_POST['financialYearID'];
-            $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Cost, Membership.Description 
+            $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.Description 
         FROM Contribution
         LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
         LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
@@ -26,7 +26,7 @@ class ContributionModel
     public function getContribution()
     {
         $contributionID = $_POST['contributionID'];
-        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Cost, Membership.MembershipID, Membership.Description 
+        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
         FROM Contribution
         LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
         WHERE Contribution.ContributionID = $contributionID");
@@ -37,13 +37,13 @@ class ContributionModel
     public function createContribution()
     {
         $year = $this->$_POST['year'];
-        $cost = $this->$_POST['cost'];
+        $discount = $this->$_POST['discount'];
         $query = "SELECT financialYear.year FROM financialYear WHERE financialYear.year = $year";
         $result = $this->pdo->query($query);
         if ($result) {
             $message = "Het boekjaar $year bestaat al";
         } else {
-            $query = "INSERT INTO FinancialYear (FinancialYear.Year, Contribution.Cost
+            $query = "INSERT INTO FinancialYear (FinancialYear.Year, Contribution.Discount
             INNER JOIN Contribution ON FinancialYear.ContributionID) VALUES ()";
             $message = "Het boekjaar is toegevoegd.";
         }
@@ -64,15 +64,15 @@ class ContributionModel
             isset($_POST['membershipID']) &&
             isset($_POST['description']) &&
             isset($_POST['age']) &&
-            isset($_POST['cost'])
+            isset($_POST['discount'])
         ) {
             $descriptionID = $_POST['contributionID'];
             $membershipID = $_POST['membershipID'];
             $description = $_POST['description'];
             $age = $_POST['age'];
-            $cost = $_POST['cost'];
+            $discount = $_POST['discount'];
 
-            $query = "UPDATE Contribution SET Age='$age', Cost='$cost' WHERE ContributionID=$descriptionID";
+            $query = "UPDATE Contribution SET Age='$age', Discount='$discount' WHERE ContributionID=$descriptionID";
             $result = $this->pdo->query($query);
             $result->fetch();
 
