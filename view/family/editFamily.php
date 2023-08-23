@@ -20,4 +20,10 @@
     <input type="hidden" name="familyID" value="<?php echo $family['FamilyID'] ?>">
     <input type="hidden" name="updateFamily">
     <input type="submit" value="Opslaan" name="Family">
+    <input type="submit" value="Annuleren" form="goBack">
+
+</form>
+<form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="Family">
+    <input type="hidden" name="manageFamilies">
 </form>

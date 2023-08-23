@@ -13,5 +13,10 @@
         <input type="hidden" name="familyMemberID" value="<?php echo $familyMember['FamilyMemberID'] ?>">
         <input type="hidden" name="updateFamilyMember">
         <input type="submit" value="Opslaan" name="FamilyMember">
+        <input type="submit" value="Annuleren" form="goBack">
     </div>
+</form>
+<form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="FamilyMember">
+    <input type="hidden" name="manageFamilyMembers">
 </form>

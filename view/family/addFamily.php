@@ -28,9 +28,10 @@
     <div>
         <input type="hidden" name="createFamily" form="back">
         <input type="submit" value="Opslaan" name="Family">
+        <input type="submit" value="Annuleren" form="goBack">
     </div>
 </form>
-<!-- <form id="back" action="index.php" method="post">
+<form id="goBack" action="index.php" method="post">
     <input type="hidden" name="Family">
     <input type="hidden" name="manageFamilies">
-</form> -->
+</form>

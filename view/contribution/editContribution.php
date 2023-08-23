@@ -18,5 +18,10 @@
         <input type="hidden" name="contributionID" value="<?php echo $contribution['ContributionID'] ?>">
         <input type="hidden" name="updateContribution">
         <input type="submit" value="Opslaan" name="Contribution">
+        <input type="submit" value="Annuleren" form="goBack">
     </div>
+</form>
+<form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="Contribution">
+    <input type="hidden" name="manageContributions">
 </form>

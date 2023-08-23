@@ -12,5 +12,10 @@
     <div>
         <input type="hidden" name="createContribution">
         <input type="submit" value="Opslaan" name="Contribution">
+        <input type="submit" value="Annuleren" form="goBack">
     </div>
+</form>
+<form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="Contribution">
+    <input type="hidden" name="manageContributions">
 </form>

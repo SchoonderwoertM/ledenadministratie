@@ -13,5 +13,10 @@
         <input type="hidden" name="familyID" value="">
         <input type="hidden" name="createFamilyMember">
         <input type="submit" value="Opslaan" name="FamilyMember">
+        <input type="submit" value="Annuleren" form="goBack">
     </div>
+</form>
+<form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="FamilyMember">
+    <input type="hidden" name="manageFamilyMembers">
 </form>

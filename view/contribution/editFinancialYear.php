@@ -13,5 +13,10 @@
         <input type="hidden" name="FiancialYearID" value="<?php echo $financialYear['FiancialYearID'] ?>">
         <input type="hidden" name="updateFinancialYear">
         <input type="submit" value="Opslaan" name="Contribution">
+        <input type="submit" value="Annuleren" form="goBack">
     </div>
+</form>
+<form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="Contribution">
+    <input type="hidden" name="manageContributions">
 </form>
