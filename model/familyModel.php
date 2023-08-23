@@ -19,27 +19,31 @@ class FamilyModel extends BaseModel
     {
         //!!! Contributie per gezin berekenen !!!
         $currentYear = date('Y');
-        $query = ("SELECT Family.FamilyID, Family.Name, Address.Address, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalContribution FROM Family
+
+        $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Address, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalContribution FROM Family
         LEFT JOIN Address ON Family.AddressID = Address.AddressID
         LEFT JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
         LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
         LEFT JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
         LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-        WHERE FinancialYear.Year = $currentYear
+        WHERE FinancialYear.Year = ?
         GROUP BY Family.FamilyID");
-        $result = $this->pdo->query($query);
-        return $result->fetchAll();
+        $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
+        $stmt->execute([$currentYear]);
+        return $stmt->fetchAll();
     }
 
     public function getFamily()
     {
         $familyID = $this->sanitizeString($_POST['familyID']);
-        $query = ("SELECT Family.FamilyID, Family.Name, Address.Address, Address.PostalCode, Address.City 
+
+        $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Address, Address.PostalCode, Address.City 
         FROM Family
         LEFT JOIN Address ON Family.AddressID = Address.AddressID
-        WHERE Family.FamilyID = $familyID");
-        $result = $this->pdo->query($query);
-        return $result->fetch();
+        WHERE Family.FamilyID = ?");
+        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+        $stmt->execute([$familyID]);
+        return $stmt->fetch();
     }
 
     public function createFamily()
@@ -58,23 +62,29 @@ class FamilyModel extends BaseModel
             $address = $this->sanitizeString($_POST['address']);
             $postalCode = $this->sanitizeString($_POST['postalCode']);
             $city = $this->sanitizeString($_POST['city']);
-            $membershipId = $this->getMembership($dateOfBirth);
+            $membershipID = $this->getMembership($dateOfBirth);
 
             //!!!checken of adres al bestaat!!!
-            $query = ("INSERT INTO Address (AddressID, Address, PostalCode, City) VALUES (null, '$address', '$postalCode', '$city');");
-            $result = $this->pdo->query($query);
+            $stmt = $this->pdo->prepare("INSERT INTO Address (AddressID, Address, PostalCode, City) VALUES (null, ?, ?, ?)");
+            $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
+            $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
+            $stmt->bindParam(3, $city, PDO::PARAM_STR, 128);
+            $stmt->execute([$address, $postalCode, $city]);
             $addressID = $this->pdo->lastInsertId();
-            $addressID = (int)$addressID;
-            $result->fetch();
 
-            $query = ("INSERT INTO Family (FamilyID, Name, AddressID) VALUES (null, '$lastName', $addressID);");
-            $result = $this->pdo->query($query);
+            $stmt = $this->pdo->prepare("INSERT INTO Family (FamilyID, Name, AddressID) VALUES (null, ?, ?)");
+            $stmt->bindParam(1, $lastName, PDO::PARAM_STR, 128);
+            $stmt->bindParam(2, $addressID, PDO::PARAM_INT);
+            $stmt->execute([$lastName, $addressID]);
             $familyID = $this->pdo->lastInsertId();
-            $result->fetch();
 
-            $query = ("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, '$firstName', '$dateOfBirth', $membershipId, $familyID);");
-            $result = $this->pdo->query($query);
-            $result->fetch();
+            $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
+            $stmt->bindParam(1, $firstName, PDO::PARAM_STR, 128);
+            $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
+            $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
+            $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$firstName, $dateOfBirth, $membershipID, $familyID]);
+
             include 'view\family\families.php';
         }
     }
@@ -82,9 +92,11 @@ class FamilyModel extends BaseModel
     public function deleteFamily()
     {
         $familyID = $this->sanitizeString($_POST['familyID']);
+
         $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
+
         include 'view\family\families.php';
     }
 
@@ -103,13 +115,25 @@ class FamilyModel extends BaseModel
             $postalCode = $this->sanitizeString($_POST['postalCode']);
             $city = $this->sanitizeString($_POST['city']);
 
-            $query = "UPDATE Family SET Name='$name' WHERE FamilyID=$familyID";
-            $result = $this->pdo->query($query);
-            $result->fetch();
+            $stmt = $this->pdo->prepare("UPDATE Family SET Name = ? WHERE FamilyID = ?");
+            $stmt->bindParam(1, $name, PDO::PARAM_STR, 128);
+            $stmt->bindParam(2, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$name, $familyID]);
 
-            $query = "UPDATE Address SET Address='$address', PostalCode='$postalCode', City='$city' WHERE AddressID=1";
-            $result = $this->pdo->query($query);
-            $result->fetch();
+            $stmt = $this->pdo->prepare("SELECT AddressID FROM Family
+            WHERE FamilyID = ?");
+            $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$familyID]);
+            $addressID = $stmt->fetch();
+            $addressID = reset($addressID);
+
+            $stmt = $this->pdo->prepare("UPDATE Address SET Address = ?, PostalCode = ?, City = ? WHERE AddressID = ?");
+            $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
+            $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 6);
+            $stmt->bindParam(3, $city, PDO::PARAM_STR, 128);
+            $stmt->bindParam(4, $addressID, PDO::PARAM_INT);
+            $stmt->execute([$address, $postalCode, $city, $addressID]);
+
             include 'view\family\families.php';
         }
     }

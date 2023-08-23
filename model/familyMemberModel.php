@@ -18,29 +18,32 @@ class FamilyMemberModel extends BaseModel
     public function getFamilyMembers()
     {
         //!!! Jaar dynamisch maken !!!
-        if(!empty($_POST['familyID'])){
+        if (!empty($_POST['familyID'])) {
             $familyID = $this->sanitizeString($_POST['familyID']);
-            $query = ("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, 
-            SUM(FinancialYear.Cost) AS TotalCost, SUM(Contribution.Discount) AS TotalDiscount FROM FamilyMember
+
+            $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, 
+            FinancialYear.Cost, Contribution.Discount FROM FamilyMember
             LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
             LEFT JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
             LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-            WHERE FamilyMember.FamilyID = $familyID
-            AND FinancialYear.Year = 2023
-            GROUP BY FamilyMember.FamilyMemberID");
-            $result = $this->pdo->query($query);
-            return $result->fetchAll();
-            }
+            WHERE FamilyMember.FamilyID = ?
+            AND FinancialYear.Year = 2023");
+            $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$familyID]);
+            return $stmt->fetchAll();
+        }
     }
 
     public function getFamilyMember()
     {
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
-        $query = ("SELECT FamilyMember.FamilyMemberID, FamilyMember.Name, FamilyMember.DateOfBirth
+
+        $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.Name, FamilyMember.DateOfBirth
         FROM FamilyMember
-        WHERE FamilyMember.FamilyMemberID = $familyMemberID");
-        $result = $this->pdo->query($query);
-        return $result->fetch();
+        WHERE FamilyMember.FamilyMemberID = ?");
+        $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
+        $stmt->execute([$familyMemberID]);
+        return $stmt->fetch();
     }
 
     public function createFamilyMember()
@@ -55,11 +58,15 @@ class FamilyMemberModel extends BaseModel
             $name = $this->sanitizeString($_POST['name']);
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $familyID = $this->sanitizeString($_POST['familyID']);
-            $membershipId = $this->getMembership($dateOfBirth);
+            $membershipID = $this->getMembership($dateOfBirth);
 
-            $query = ("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, '$name', '$dateOfBirth', $membershipId, $familyID);");
-            $result = $this->pdo->query($query);
-            $result->fetch();
+            $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
+            $stmt->bindParam(1, $name, PDO::PARAM_STR, 128);
+            $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
+            $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
+            $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$name, $dateOfBirth, $membershipID, $familyID]);
+
             include 'view\familyMember\familyMembers.php';
         }
     }
@@ -67,6 +74,7 @@ class FamilyMemberModel extends BaseModel
     public function deleteFamilyMember()
     {
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
+        
         $stmt = $this->pdo->prepare("DELETE FROM FamilyMember WHERE FamilyMember.FamilyMemberID = ?");
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
@@ -79,14 +87,20 @@ class FamilyMemberModel extends BaseModel
             isset($_POST['name']) &&
             isset($_POST['dateOfBirth'])
         ) {
-            $id = $this->sanitizeString($_POST['familyMemberID']);
+            $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
             $name = $this->sanitizeString($_POST['name']);
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $membershipID = $this->getMembership($dateOfBirth);
 
-            $query = "UPDATE FamilyMember SET Name='$name', DateOfBirth='$dateOfBirth', MembershipID='$membershipID' WHERE FamilyMemberID=$id";
-            $result = $this->pdo->query($query);
-            $result->fetch();
+            //!!! Wat te doen als er geen passen membership is !!!
+
+            $stmt = $this->pdo->prepare("UPDATE FamilyMember SET Name = ?, DateOfBirth = ?, MembershipID = ? WHERE FamilyMemberID = ?");
+            $stmt->bindParam(1, $name, PDO::PARAM_INT);
+            $stmt->bindParam(1, $dateOfBirth, PDO::PARAM_STR, 10);
+            $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
+            $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
+            $stmt->execute([$name, $dateOfBirth, $membershipID, $familyMemberID]);
+
             include 'view\familyMember\familyMembers.php';
         }
     }

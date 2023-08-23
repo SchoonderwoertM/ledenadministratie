@@ -1,16 +1,20 @@
-<h1>Boekjaar toevoegen</h1>
+<h1>Soort lidmaatschap toevoegen</h1>
 
-<formaction="index.php" method="post">
+<form action="index.php" method="post">
     <div>
-        <label for="financialYear">Boekjaar</label>
-        <input id="financialYear" type="number" min="2020" max="2100" step="1" placeholder="<?php echo date('Y') ?>"  autofocus="on" required>
+        <label for="membership">Soort lid</label>
+        <input id="membership" type="text" autofocus="on" required>
     </div>
     <div>
-        <label for="contribution">Contributie</label>
-        <input id="contribution" type="number" min="0" max="1000" step="1" placeholder="€" required>
+        <label for="age">Leeftijd</label>
+        <input id="age" type="number" min="0" max="120" required>
+    </div>
+    <div>
+        <label for="discount">Korting (%)</label>
+        <input id="discount" type="number" min="0" max="100" required>
     </div>
     <div>
         <input type="hidden" name="createContribution">
         <input type="submit" value="Opslaan" name="Contribution">
     </div>
-    </form>
+</form>

@@ -14,8 +14,7 @@
                 <td><?php echo $familyMember['Name']; ?></td>
                 <td><?php echo $familyMember['DateOfBirth']; ?></td>
                 <td><?php echo $familyMember['Description']; ?></td>
-                <!-- !!! Onderstaande formule is onjuist. Discount omzetten naar decimaal met 2 cijfers achter te komma !!! -->
-                <td><?php echo $familyMember['TotalCost'] - $familyMember['TotalDiscount']; ?></td>
+                <td><?php echo $familyMember["Discount"] == 0 ? $familyMember['Cost'] : $familyMember['Cost'] * $familyMember["Discount"] / 100; ?></td>
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">

@@ -11,7 +11,7 @@
     </div>
     <div>
         <label for="dateOfBirth">Geboortedatum</label>
-        <input id="dateOfBirth" type="text" name="dateOfBirth" required>
+        <input id="dateOfBirth" type="date" name="dateOfBirth" required>
     </div>
     <div>
         <label for="address">Adres</label>
@@ -26,7 +26,11 @@
         <input id="city" type="text" name="city" required>
     </div>
     <div>
-        <input type="hidden" name="createFamily">
+        <input type="hidden" name="createFamily" form="back">
         <input type="submit" value="Opslaan" name="Family">
     </div>
 </form>
+<!-- <form id="back" action="index.php" method="post">
+    <input type="hidden" name="Family">
+    <input type="hidden" name="manageFamilies">
+</form> -->

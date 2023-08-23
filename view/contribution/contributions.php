@@ -1,5 +1,37 @@
 <h1>Contributie overzicht</h1>
 
+<table>
+    <thead>
+        <th>Boekjaar</th>
+        <th>Contributie</th>
+        <th></th>
+    </thead>
+    <tbody>
+        <?php
+
+        foreach ($financialYears as $financialYear) { ?>
+            <tr>
+                <td><?php echo $financialYear['Year']; ?></td>
+                <td><?php echo $financialYear['Cost']; ?></td>
+                <td>
+                    <div class="button-container">
+                        <form action="index.php" method="post">
+                            <input type="hidden" name="financialYearID" value="<?php echo $financialYear['FinancialYearID'] ?>">
+                            <input type="hidden" name="editFinancialYear">
+                            <input type="submit" value="Bewerken" name="Contribution">
+                        </form>
+                        <form action="index.php" method="post">
+                            <input type="hidden" name="financialYearID" value="<?php echo $financialYear['FinancialYearID'] ?>">
+                            <input type="hidden" name="deleteFinancialYear">
+                            <input type="submit" value="Verwijderen" name="Contribution">
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        <?php } ?>
+    </tbody>
+</table>
+
 <form method="post" action="index.php">
     <label for="financialYears">Selecteer een boekjaar</label>
     <select name="financialYears" id="financialYears">
@@ -51,3 +83,14 @@
         } ?>
         </tbody>
     </table>
+
+    <div class="button-container">
+        <form action="index.php" method="post">
+            <input type="hidden" name="addFinancialYear">
+            <input type="submit" value="Boekjaar toevoegen" name="Contribution">
+        </form>
+        <form action="index.php" method="post">
+            <input type="hidden" name="addContribution">
+            <input type="submit" value="Contriubtie toevoegen" name="Contribution">
+        </form>
+    </div>

@@ -13,40 +13,41 @@ class ContributionModel extends BaseModel
     {
         if (!empty($_POST['financialYearID'])) {
             $financialYearID = $this->sanitizeString($_POST['financialYearID']);
-            $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.Description 
-        FROM Contribution
-        LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
-        LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-        WHERE FinancialYear.FinancialYearID = $financialYearID");
-            $result = $this->pdo->query($query);
-            return $result->fetchAll();
+            $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.Description 
+            FROM Contribution
+            LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
+            LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+            WHERE FinancialYear.FinancialYearID = ?");
+            $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
+            $stmt->execute([$financialYearID]);
+            return $stmt->fetchAll();
         }
     }
 
     public function getContribution()
     {
         $contributionID = $this->sanitizeString($_POST['contributionID']);
-        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
+        $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
         FROM Contribution
         LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
-        WHERE Contribution.ContributionID = $contributionID");
-        $result = $this->pdo->query($query);
-        return $result->fetch();
+        WHERE Contribution.ContributionID = ?");
+        $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
+        $stmt->execute([$contributionID]);
+        return $stmt->fetch();
     }
 
+    // !!! Query nog ombouwen !!!
     public function createContribution()
     {
-        $year = $this->sanitizeString($_POST['year']);
-        $discount = $this->sanitizeString($_POST['discount']);
-        $query = "SELECT financialYear.year FROM financialYear WHERE financialYear.year = $year";
-        $result = $this->pdo->query($query);
-        if ($result) {
-            $message = "Het boekjaar $year bestaat al";
-        } else {
-            $query = "INSERT INTO FinancialYear (FinancialYear.Year, Contribution.Discount
-            INNER JOIN Contribution ON FinancialYear.ContributionID) VALUES ()";
-            $message = "Het boekjaar is toegevoegd.";
-        }
+        // $year = $this->sanitizeString($_POST['year']);
+        // $discount = $this->sanitizeString($_POST['discount']);
+
+        // $stmt = $this->pdo->prepare("INSERT INTO Membership (Membership.Description, Contribution.Age, Contribution.Discount
+        // INNER JOIN Contribution ON Membership.MembershipID, Contribution.Membership
+        // ) VALUES (?, ?, ?)");
+        // $stmt->bindParam(1, $year, PDO::PARAM_INT);
+        // $stmt->execute([$contributionID]);
+
         include 'view\contribution\contributions.php';
     }
 
@@ -68,19 +69,22 @@ class ContributionModel extends BaseModel
             isset($_POST['age']) &&
             isset($_POST['discount'])
         ) {
-            $descriptionID = $this->sanitizeString($_POST['contributionID']);
-            $membershipID = $this->sanitizeString($_POST['membershipID']);
-            $description = $this->sanitizeString($_POST['description']);
+            $contributionID = $this->sanitizeString($_POST['contributionID']);
             $age = $this->sanitizeString($_POST['age']);
             $discount = $this->sanitizeString($_POST['discount']);
+            $membershipID = $this->sanitizeString($_POST['membershipID']);
+            $description = $this->sanitizeString($_POST['description']);
 
-            $query = "UPDATE Contribution SET Age='$age', Discount='$discount' WHERE ContributionID=$descriptionID";
-            $result = $this->pdo->query($query);
-            $result->fetch();
+            $stmt = $this->pdo->prepare("UPDATE Contribution SET Age = ?, Discount = ? WHERE ContributionID = ?");
+            $stmt->bindParam(1, $age, PDO::PARAM_INT);
+            $stmt->bindParam(2, $discount, PDO::PARAM_INT);
+            $stmt->bindParam(3, $contributionID, PDO::PARAM_INT);
+            $stmt->execute([$age, $discount, $contributionID]);
 
-            $query = "UPDATE Membership SET Description='$description' WHERE MembershipID = $membershipID";
-            $result = $this->pdo->query($query);
-            $result->fetch();
+            $stmt = $this->pdo->prepare("UPDATE Membership SET Description = ? WHERE MembershipID = ?");
+            $stmt->bindParam(1, $description, PDO::PARAM_STR, 128);
+            $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
+            $stmt->execute([$description, $membershipID]);
             include 'view\contribution\contributions.php';
         }
     }
@@ -92,5 +96,25 @@ class ContributionModel extends BaseModel
         return $result->fetchAll();
     }
 
+    public function getFinancialYear()
+    {
+        $financialYearID = $this->sanitizeString($_POST['financialYearID']);
+        $stmt = $this->pdo->prepare("SELECT * FROM FinancialYear
+        WHERE FinancialYear.FinancialYearID = ?");
+        $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
+        $stmt->execute([$financialYearID]);
+        return $stmt->fetch();
+    }
 
+    public function createFiancialYear(){
+
+    }
+
+    public function deleteFiancialYear(){
+        
+    }
+
+    public function updateFiancialYear(){
+        
+    }
 }

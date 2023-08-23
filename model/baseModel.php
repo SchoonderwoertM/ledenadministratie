@@ -1,12 +1,11 @@
 <?php
 class BaseModel
 {
-    public function sanitizeString($string)
+    public function sanitizeString($var)
     {
-        $string = htmlentities($string);
-        $string = stripslashes($string);
-        $string = strip_tags($string);
-        $string = trim($string);
-        return $string;
+        $var = stripslashes($var);
+        $var = strip_tags($var);
+        $var = htmlentities($var);
+        return $var;
     }
 }
