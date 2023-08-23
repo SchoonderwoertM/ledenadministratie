@@ -33,11 +33,17 @@ class Controller
             }
             //CRUDD
             else if (isset($_POST['createFamily'])) {
-                $this->familyModel->createFamily();
+                echo $this->familyModel->createFamily();
+                $families = $this->familyModel->getFamilies();
+                include 'view\family\families.php';
             } else if (isset($_POST['deleteFamily'])) {
-                $this->familyModel->deleteFamily();
+                echo $this->familyModel->deleteFamily();
+                $families = $this->familyModel->getFamilies();
+                include 'view\family\families.php';
             } else if (isset($_POST['updateFamily'])) {
-                $this->familyModel->updateFamily();
+                echo $this->familyModel->updateFamily();
+                $families = $this->familyModel->getFamilies();
+                include 'view\family\families.php';
             }
         }
 
@@ -54,11 +60,17 @@ class Controller
             }
             //CRUDD
             else if (isset($_POST['createFamilyMember'])) {
-                $this->familyMemberModel->createFamilyMember();
+                echo $this->familyMemberModel->createFamilyMember();
+                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                include('view\familyMember\familyMembers.php');
             } else if (isset($_POST['deleteFamilyMember'])) {
-                $this->familyMemberModel->deleteFamilyMember();
+                echo $this->familyMemberModel->deleteFamilyMember();
+                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                include('view\familyMember\familyMembers.php');
             } else if (isset($_POST['updateFamilyMember'])) {
-                $this->familyMemberModel->updateFamilyMember();
+                echo $this->familyMemberModel->updateFamilyMember();
+                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                include('view\familyMember\familyMembers.php');
             }
         }
 
@@ -77,11 +89,17 @@ class Controller
             }
             //CRUDD
             else if (isset($_POST['createContribution'])) {
-                $this->contributionModel->createContribution();
+                echo $this->contributionModel->createContribution();
+                $contributions = $this->contributionModel->getContributions();
+                include('view\contribution\contributions.php');
             } else if (isset($_POST['deleteContribution'])) {
-                $this->contributionModel->deleteContribution();
+                echo $this->contributionModel->deleteContribution();
+                $contributions = $this->contributionModel->getContributions();
+                include('view\contribution\contributions.php');
             } else if (isset($_POST['updateContribution'])) {
-                $this->contributionModel->updateContribution();
+                echo $this->contributionModel->updateContribution();
+                $contributions = $this->contributionModel->getContributions();
+                include('view\contribution\contributions.php');
             }
 
             //FinancialYear
@@ -93,11 +111,17 @@ class Controller
             }
             //CRUD
             else if (isset($_POST['createFinancialYear'])) {
-                $this->contributionModel->createFiancialYear();
+                echo $this->contributionModel->createFiancialYear();
+                $contributions = $this->contributionModel->getContributions();
+                include('view\contribution\contributions.php');
             } else if (isset($_POST['deleteFinancialYear'])) {
-                $this->contributionModel->deleteFiancialYear();
+                echo $this->contributionModel->deleteFiancialYear();
+                $contributions = $this->contributionModel->getContributions();
+                include('view\contribution\contributions.php');
             } else if (isset($_POST['updateFinancialYear'])) {
-                $this->contributionModel->updateFiancialYear();
+                echo $this->contributionModel->updateFiancialYear();
+                $contributions = $this->contributionModel->getContributions();
+                include('view\contribution\contributions.php');
             }
         }
 
