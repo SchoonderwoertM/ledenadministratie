@@ -85,7 +85,7 @@ class FamilyModel extends BaseModel
             $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
             $stmt->execute([$firstName, $dateOfBirth, $membershipID, $familyID]);
 
-            include 'view\family\families.php';
+            return "Familie aangemaakt";
         }
     }
 
@@ -97,7 +97,7 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
 
-        include 'view\family\families.php';
+        return "Familie verwijderd.";
     }
 
     public function updateFamily()
@@ -134,7 +134,7 @@ class FamilyModel extends BaseModel
             $stmt->bindParam(4, $addressID, PDO::PARAM_INT);
             $stmt->execute([$address, $postalCode, $city, $addressID]);
 
-            include 'view\family\families.php';
+            return "familie succesvol aangepast.";
         }
     }
 

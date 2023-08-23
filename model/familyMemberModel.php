@@ -67,7 +67,7 @@ class FamilyMemberModel extends BaseModel
             $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
             $stmt->execute([$name, $dateOfBirth, $membershipID, $familyID]);
 
-            include 'view\familyMember\familyMembers.php';
+            return "Familielid toegevoegd.";
         }
     }
 
@@ -78,6 +78,8 @@ class FamilyMemberModel extends BaseModel
         $stmt = $this->pdo->prepare("DELETE FROM FamilyMember WHERE FamilyMember.FamilyMemberID = ?");
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
+
+        return "Familielid verwijderd.";
     }
 
     public function updateFamilyMember()
@@ -101,7 +103,7 @@ class FamilyMemberModel extends BaseModel
             $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
             $stmt->execute([$name, $dateOfBirth, $membershipID, $familyMemberID]);
 
-            include 'view\familyMember\familyMembers.php';
+            return "Familielid aangepast.";
         }
     }
 

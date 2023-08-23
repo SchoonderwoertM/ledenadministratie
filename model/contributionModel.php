@@ -47,8 +47,7 @@ class ContributionModel extends BaseModel
         // ) VALUES (?, ?, ?)");
         // $stmt->bindParam(1, $year, PDO::PARAM_INT);
         // $stmt->execute([$contributionID]);
-
-        include 'view\contribution\contributions.php';
+        return "Lidmaatschap succesvol aangemaakt.";
     }
 
     public function deleteContribution()
@@ -57,7 +56,8 @@ class ContributionModel extends BaseModel
         $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE Contribution.ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
-        include 'view\contribution\contributions.php';
+
+        return "Lidmaatschap succesvol verwijderd.";
     }
 
     public function updateContribution()
@@ -85,7 +85,8 @@ class ContributionModel extends BaseModel
             $stmt->bindParam(1, $description, PDO::PARAM_STR, 128);
             $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
             $stmt->execute([$description, $membershipID]);
-            include 'view\contribution\contributions.php';
+
+            return "Lidmaatschap succesvol aangepast.";
         }
     }
 
@@ -107,14 +108,14 @@ class ContributionModel extends BaseModel
     }
 
     public function createFiancialYear(){
-
+        return "Boejaar succesvol aangemaakt.";
     }
 
     public function deleteFiancialYear(){
-        
+        return "Boekjaar succesvol verwijderd.";
     }
 
     public function updateFiancialYear(){
-        
+        return "Boekjaar succesvol aangepast.";
     }
 }
