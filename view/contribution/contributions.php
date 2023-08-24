@@ -23,6 +23,7 @@
                         </form>
                         <form action="index.php" method="post">
                             <input type="hidden" name="financialYearID" value="<?php echo $financialYear['FinancialYearID'] ?>">
+                            <input type="hidden" name="contributionID" value="<?php echo $financialYear['ContributionID'] ?>">
                             <input type="hidden" name="deleteFinancialYear">
                             <input type="submit" value="Verwijderen" name="Contribution">
                         </form>
@@ -76,6 +77,7 @@
                                 </form>
                                 <form action="index.php" method="post">
                                     <input type="hidden" name="contributionID" value="<?php echo $contribution['ContributionID'] ?>">
+                                    <input type="hidden" name="membershipID" value="<?php echo $contribution['MembershipID'] ?>">
                                     <input type="hidden" name="deleteContribution">
                                     <input type="submit" value="Verwijderen" name="Contribution">
                                 </form>

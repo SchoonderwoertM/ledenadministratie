@@ -79,9 +79,20 @@ class ContributionModel extends BaseModel
     public function deleteContribution()
     {
         $contributionID = $this->sanitizeString($_POST['contributionID']);
-        $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE Contribution.ContributionID = ?");
+        $membershipID = $this->sanitizeString($_POST['membershipID']);
+        
+        $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
+
+        $stmt = $this->pdo->prepare("DELETE FROM Membership WHERE MembershipID = ?");
+        $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
+        $stmt->execute([$membershipID]);
+
+        //Koppel het verwijderde membership los van de familieleden.
+        $stmt = $this->pdo->prepare("DELETE FROM FamilyMember SET MembershipID = null WHERE MembershipID = ?");
+        $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
+        $stmt->execute([$membershipID]);
 
         return "Lidmaatschap succesvol verwijderd.";
     }
@@ -164,11 +175,17 @@ class ContributionModel extends BaseModel
     public function deleteFinancialYear()
     {
         $financialYearID = $this->sanitizeString($_POST['financialYearID']);
-        $stmt = $this->pdo->prepare("DELETE FROM FinancialYear WHERE FinancialYear.FinancialYearID = ?");
+        $contributionID = $this->sanitizeString($_POST['contributionID']);
+        $stmt = $this->pdo->prepare("DELETE FROM FinancialYear WHERE FinancialYearID = ?");
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
         $stmt->execute([$financialYearID]);
 
-        return "Boekjaar succesvol verwijderd.";
+        //Verwijder ook alle contributies van het betreffende boekjaar.
+        $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE ContributionID = ?");
+        $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
+        $stmt->execute([$contributionID]);
+
+        return "Boekjaar en contributies van het betreffende jaar succesvol verwijderd.";
     }
 
     public function updateFinancialYear()
