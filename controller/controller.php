@@ -53,6 +53,7 @@ class Controller
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
                 include('view\familyMember\familyMembers.php');
             } else if (isset($_POST['addFamilyMember'])) {
+                $familyID = $_POST['familyID'];
                 include('view\familyMember\addFamilyMember.php');
             } else if (isset($_POST['editFamilyMember'])) {
                 $familyMember = $this->familyMemberModel->getFamilyMember();
@@ -79,7 +80,6 @@ class Controller
             if (isset($_POST['manageContributions'])) {
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
-                $_SESSION['contributions'] = $contributions;
                 include('view\contribution\contributions.php');
             } else if (isset($_POST['addContribution'])) {
                 include('view\contribution\addContribution.php');
@@ -111,15 +111,15 @@ class Controller
             }
             //CRUD
             else if (isset($_POST['createFinancialYear'])) {
-                echo $this->contributionModel->createFiancialYear();
+                echo $this->contributionModel->createFinancialYear();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\contributions.php');
             } else if (isset($_POST['deleteFinancialYear'])) {
-                echo $this->contributionModel->deleteFiancialYear();
+                echo $this->contributionModel->deleteFinancialYear();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\contributions.php');
             } else if (isset($_POST['updateFinancialYear'])) {
-                echo $this->contributionModel->updateFiancialYear();
+                echo $this->contributionModel->updateFinancialYear();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\contributions.php');
             }

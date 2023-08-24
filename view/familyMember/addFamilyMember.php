@@ -17,6 +17,7 @@
     </div>
 </form>
 <form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="familyID" value="<?php echo $familyID ?>">
     <input type="hidden" name="FamilyMember">
     <input type="hidden" name="manageFamilyMembers">
 </form>

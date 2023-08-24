@@ -32,13 +32,14 @@ class FamilyMemberModel extends BaseModel
             $stmt->execute([$familyID]);
             return $stmt->fetchAll();
         }
+        return "Er is een fout opgetreden.";
     }
 
     public function getFamilyMember()
     {
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
 
-        $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.Name, FamilyMember.DateOfBirth
+        $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.Name, FamilyMember.DateOfBirth, FamilyMember.FamilyID
         FROM FamilyMember
         WHERE FamilyMember.FamilyMemberID = ?");
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
@@ -69,6 +70,7 @@ class FamilyMemberModel extends BaseModel
 
             return "Familielid toegevoegd.";
         }
+        return "Er is een fout opgetreden.";
     }
 
     public function deleteFamilyMember()
@@ -79,13 +81,13 @@ class FamilyMemberModel extends BaseModel
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
 
+        //!!! Verwijder ook de familie als er geen familieleden meer zijn. !!!
         return "Familielid verwijderd.";
     }
 
     public function updateFamilyMember()
     {
         if (
-            isset($_POST['familyMemberID']) &&
             isset($_POST['name']) &&
             isset($_POST['dateOfBirth'])
         ) {
@@ -103,8 +105,9 @@ class FamilyMemberModel extends BaseModel
             $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
             $stmt->execute([$name, $dateOfBirth, $membershipID, $familyMemberID]);
 
-            return "Familielid aangepast.";
+            return "Wijziging succesvol opgeslagen.";
         }
+        return "Er is een fout opgetreden.";
     }
 
     //!!! Verplaatsen naar ContributionModel !!!

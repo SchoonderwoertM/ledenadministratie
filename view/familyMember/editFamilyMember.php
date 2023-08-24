@@ -10,6 +10,7 @@
         <input id="dateOfBirth" type="date" name="dateOfBirth" value="<?php echo $familyMember['DateOfBirth'] ?>" required>
     </div>
     <div>
+        <input type="hidden" name="familyID" value="<?php echo $familyMember['FamilyID'] ?>">
         <input type="hidden" name="familyMemberID" value="<?php echo $familyMember['FamilyMemberID'] ?>">
         <input type="hidden" name="updateFamilyMember">
         <input type="submit" value="Opslaan" name="FamilyMember">
@@ -17,6 +18,7 @@
     </div>
 </form>
 <form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="familyID" value="<?php echo $familyMember['FamilyID'] ?>">
     <input type="hidden" name="FamilyMember">
     <input type="hidden" name="manageFamilyMembers">
 </form>

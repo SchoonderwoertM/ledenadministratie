@@ -85,8 +85,9 @@ class FamilyModel extends BaseModel
             $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
             $stmt->execute([$firstName, $dateOfBirth, $membershipID, $familyID]);
 
-            return "Familie aangemaakt";
+            return "Familie aangemaakt.";
         }
+        return "Er is een fout opgetreden.";
     }
 
     public function deleteFamily()
@@ -103,7 +104,6 @@ class FamilyModel extends BaseModel
     public function updateFamily()
     {
         if (
-            isset($_POST['familyID']) &&
             isset($_POST['name']) &&
             isset($_POST['address']) &&
             isset($_POST['postalCode']) &&
@@ -134,8 +134,9 @@ class FamilyModel extends BaseModel
             $stmt->bindParam(4, $addressID, PDO::PARAM_INT);
             $stmt->execute([$address, $postalCode, $city, $addressID]);
 
-            return "familie succesvol aangepast.";
+            return "Wijziging succesvol opgeslagen.";
         }
+        return "Er is een fout opgetreden.";
     }
 
     //!!! Verplaatsen naar ContributionModel !!!

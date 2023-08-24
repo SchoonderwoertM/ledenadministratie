@@ -3,14 +3,14 @@
 <form action="index.php" method="post">
     <div>
         <label for="financialYear">Boekjaar</label>
-        <input id="financialYear" type="number" min="2020" max="2100" step="1" placeholder="<?php echo date('Y') ?>" autofocus="on" required>
+        <input id="financialYear" type="number" name="year" min="2020" max="2100" step="1" autofocus="on" required>
     </div>
     <div>
-        <label for="contribution">Contributie</label>
-        <input id="contribution" type="number" min="0" max="1000" step="1" placeholder="€" required>
+        <label for="contribution">Contributie (€)</label>
+        <input id="contribution" type="number" name="cost" min="0" max="1000" step="1" required>
     </div>
     <div>
-        <input type="hidden" name="createContribution">
+        <input type="hidden" name="createFinancialYear">
         <input type="submit" value="Opslaan" name="Contribution">
         <input type="submit" value="Annuleren" form="goBack">
     </div>

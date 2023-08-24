@@ -25,6 +25,6 @@
     </form>
     <form action="index.php" method="post">
         <input type="hidden" name="manageContributions">
-        <input type="submit" value="Contributie beheren" name="Contribution">
+        <input type="submit" value="Contributies beheren" name="Contribution">
     </form>
 </div>

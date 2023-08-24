@@ -26,7 +26,7 @@
         <input id="city" type="text" name="city" required>
     </div>
     <div>
-        <input type="hidden" name="createFamily" form="back">
+        <input type="hidden" name="createFamily">
         <input type="submit" value="Opslaan" name="Family">
         <input type="submit" value="Annuleren" form="goBack">
     </div>
