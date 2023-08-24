@@ -11,21 +11,18 @@ class ContributionModel extends BaseModel
 
     public function getContributions()
     {
-        if (empty($_POST['year'])) {
-            $financialYear = intval(date('Y'));
-        } else {
-            $financialYear = intval($this->sanitizeString($_POST['year']));
-        }
-        $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.Description 
+        if (isset($_POST['financialYear'])) {
+            $financialYear = $this->sanitizeString($_POST['financialYear']);
+            $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.Description 
             FROM Contribution
             LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
             LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
             WHERE FinancialYear.Year = ?");
-        $stmt->bindParam(1, $financialYear, PDO::PARAM_INT);
-        $stmt->execute([$financialYear]);
-        return $stmt->fetchAll();
+            $stmt->bindParam(1, $financialYear, PDO::PARAM_INT);
+            $stmt->execute([$financialYear]);
 
-        var_dump($financialYear);
+            return $stmt->fetchAll();
+        }
     }
 
     public function getContribution()
@@ -37,6 +34,7 @@ class ContributionModel extends BaseModel
         WHERE Contribution.ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
+
         return $stmt->fetch();
     }
 
@@ -75,7 +73,7 @@ class ContributionModel extends BaseModel
 
             return "Lidmaatschap succesvol aangemaakt.";
         }
-        return "Er is iets fout gegaan.";
+        return "Er is iets fout gegaan. Probeer het nog eens.";
     }
 
     public function deleteContribution()
@@ -112,9 +110,9 @@ class ContributionModel extends BaseModel
             $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
             $stmt->execute([$description, $membershipID]);
 
-            return "Lidmaatschap succesvol aangepast.";
+            return "Wijziging succesvol opgeslagen.";
         }
-        return "Er is een fout opgetreden";
+        return "Er is een fout opgetreden. Probeer het nog eens.";
     }
 
     public function getFinancialYears()
@@ -143,14 +141,24 @@ class ContributionModel extends BaseModel
             $year = $this->sanitizeString($_POST['year']);
             $cost = $this->sanitizeString($_POST['cost']);
 
-            $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
-            VALUES (null, ?, ?)");
+            //Check of boekjaar al bestaat.
+            $stmt = $this->pdo->prepare("SELECT FinancialYearID FROM FinancialYear WHERE Year = ?");
             $stmt->bindParam(1, $year, PDO::PARAM_INT);
-            $stmt->bindParam(1, $cost, PDO::PARAM_INT);
-            $stmt->execute([$year, $cost]);
-            return "Boekjaar succesvol aangepast.";
+            $stmt->execute([$year]);
+            $checkForFinancialYear = $stmt->fetch();
+
+            if ($checkForFinancialYear) {
+                return "Dit boekjaar bestaat al.";
+            } else {
+                $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
+            VALUES (null, ?, ?)");
+                $stmt->bindParam(1, $year, PDO::PARAM_INT);
+                $stmt->bindParam(1, $cost, PDO::PARAM_INT);
+                $stmt->execute([$year, $cost]);
+                return "Boekjaar succesvol toegevoegd.";
+            }
         }
-        return "Er is een fout opgetreden";
+        return "Er is een fout opgetreden. Probeer het nog eens.";
     }
 
     public function deleteFinancialYear()
@@ -166,21 +174,18 @@ class ContributionModel extends BaseModel
     public function updateFinancialYear()
     {
         if (
-            isset($_POST['year']) &&
             isset($_POST['cost'])
         ) {
             $financialYearID = $this->sanitizeString($_POST['financialYearID']);
-            $year = $this->sanitizeString($_POST['year']);
             $cost = $this->sanitizeString($_POST['cost']);
 
-            $stmt = $this->pdo->prepare("UPDATE FinancialYear SET Year = ?, Cost = ? 
+            $stmt = $this->pdo->prepare("UPDATE FinancialYear SET Cost = ? 
             WHERE FinancialYearID = ?");
-            $stmt->bindParam(1, $year, PDO::PARAM_INT);
             $stmt->bindParam(1, $cost, PDO::PARAM_INT);
-            $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
-            $stmt->execute([$year, $cost, $financialYearID]);
+            $stmt->bindParam(2, $financialYearID, PDO::PARAM_INT);
+            $stmt->execute([$cost, $financialYearID]);
             return "Boekjaar succesvol aangepast.";
         }
-        return "Er is een fout opgetreden";
+        return "Er is een fout opgetreden. Probeer het nog eens.";
     }
 }

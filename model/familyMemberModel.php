@@ -32,7 +32,7 @@ class FamilyMemberModel extends BaseModel
             $stmt->execute([$familyID]);
             return $stmt->fetchAll();
         }
-        return "Er is een fout opgetreden.";
+        return "Kan de familie niet vinden.";
     }
 
     public function getFamilyMember()
@@ -49,8 +49,6 @@ class FamilyMemberModel extends BaseModel
 
     public function createFamilyMember()
     {
-        //!!! familyID dynamisch maken !!!
-        $_POST['familyID'] = 1;
         if (
             isset($_POST['name']) &&
             isset($_POST['dateOfBirth']) &&
@@ -70,18 +68,29 @@ class FamilyMemberModel extends BaseModel
 
             return "Familielid toegevoegd.";
         }
-        return "Er is een fout opgetreden.";
+        return "Er is een fout opgetreden. Probeer het nog eens.";
     }
 
     public function deleteFamilyMember()
     {
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
-        
+        $familyID = $this->sanitizeString($_POST['familyID']);
+
         $stmt = $this->pdo->prepare("DELETE FROM FamilyMember WHERE FamilyMember.FamilyMemberID = ?");
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
 
-        //!!! Verwijder ook de familie als er geen familieleden meer zijn. !!!
+        //Verwijder de familie als het laatste familielid wordt verwijderd.
+        $stmt = $this->pdo->prepare("SELECT FamilyMemberID FROM FamilyMember WHERE FamilyMember.FamilyID = ?");
+        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+        $stmt->execute([$familyID]);
+        $checkForFamilyMembers = $stmt->fetch();
+
+        if (!$checkForFamilyMembers) {
+            $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
+            $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$familyID]);
+        }
         return "Familielid verwijderd.";
     }
 
@@ -96,8 +105,6 @@ class FamilyMemberModel extends BaseModel
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $membershipID = $this->getMembership($dateOfBirth);
 
-            //!!! Wat te doen als er geen passen membership is !!!
-
             $stmt = $this->pdo->prepare("UPDATE FamilyMember SET Name = ?, DateOfBirth = ?, MembershipID = ? WHERE FamilyMemberID = ?");
             $stmt->bindParam(1, $name, PDO::PARAM_INT);
             $stmt->bindParam(1, $dateOfBirth, PDO::PARAM_STR, 10);
@@ -107,7 +114,7 @@ class FamilyMemberModel extends BaseModel
 
             return "Wijziging succesvol opgeslagen.";
         }
-        return "Er is een fout opgetreden.";
+        return "Er is een fout opgetreden. Probeer het nog eens.";
     }
 
     //!!! Verplaatsen naar ContributionModel !!!
@@ -131,6 +138,10 @@ class FamilyMemberModel extends BaseModel
                 break;
             }
         }
-        return $membershipID;
+        if (!$membership) {
+            return "Er is geen lidmaatschap bekend voor de leeftijd van $age jaar.";
+        } else {
+            return $membershipID;
+        }
     }
 }

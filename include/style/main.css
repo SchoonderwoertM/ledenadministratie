@@ -119,3 +119,7 @@ select{
 .marginTop{
   margin-block-start: 6rem;
 }
+
+.inline{
+  display: inline;
+}

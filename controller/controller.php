@@ -113,14 +113,17 @@ class Controller
             else if (isset($_POST['createFinancialYear'])) {
                 echo $this->contributionModel->createFinancialYear();
                 $contributions = $this->contributionModel->getContributions();
+                $financialYears = $this->contributionModel->getFinancialYears();
                 include('view\contribution\contributions.php');
             } else if (isset($_POST['deleteFinancialYear'])) {
                 echo $this->contributionModel->deleteFinancialYear();
                 $contributions = $this->contributionModel->getContributions();
+                $financialYears = $this->contributionModel->getFinancialYears();
                 include('view\contribution\contributions.php');
             } else if (isset($_POST['updateFinancialYear'])) {
                 echo $this->contributionModel->updateFinancialYear();
                 $contributions = $this->contributionModel->getContributions();
+                $financialYears = $this->contributionModel->getFinancialYears();
                 include('view\contribution\contributions.php');
             }
         }
