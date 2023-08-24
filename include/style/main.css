@@ -28,7 +28,7 @@ footer {
 nav {
   grid-column-start: 1;
   grid-column-end: 2;
-  margin-top: 50px;
+  padding-top: 50px;
 }
 
 main {
@@ -83,9 +83,19 @@ input:focus {
 }
 
 nav form input[type="submit"] {
-  margin: 4px;
-  width: 85%;
+  margin: 0px;
+  width: 100%;
   text-transform: uppercase;
+  border-radius: 0;
+  border: none;
+  text-align: left;
+  box-shadow: none;
+  background-color: #7a2048;
+  border: 1px solid black;
+}
+
+nav form input[type="submit"]:hover{
+  background-color: #3b1024;
 }
 
 input[type="submit"] {
