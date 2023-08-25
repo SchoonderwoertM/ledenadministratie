@@ -13,7 +13,7 @@ class ContributionModel extends BaseModel
     {
         if (isset($_POST['financialYear'])) {
             $financialYear = $this->sanitizeString($_POST['financialYear']);
-            $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.Description 
+            $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
             FROM Contribution
             LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
             LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
@@ -43,35 +43,41 @@ class ContributionModel extends BaseModel
         if (
             isset($_POST['description']) &&
             isset($_POST['age']) &&
-            isset($_POST['discount'])
+            isset($_POST['discount']) &&
+            isset($_POST['financialYear'])
         ) {
             $membership = $this->sanitizeString($_POST['description']);
             $age = $this->sanitizeString($_POST['age']);
             $discount = $this->sanitizeString($_POST['discount']);
+            $financialYear = $this->sanitizeString($_POST['financialYear']);
 
-            //!!! Dynamisch maken !!!
+            //Checken of boekjaar wel bestaat
             $stmt = $this->pdo->prepare("SELECT FinancialYearID FROM FinancialYear
-            WHERE FinancialYear.Year = 2023");
-            $stmt->execute();
-            $financialYearID = $stmt->fetch();
-            $financialYearID = reset($financialYearID);
-
-            $stmt = $this->pdo->prepare("INSERT INTO Membership (MembershipID, Description) 
+            WHERE FinancialYear.Year = ?");
+            $stmt->execute([$financialYear]);
+            if ($stmt->rowCount() > 0) {
+                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                    $financialYearID = $row['FinancialYearID'];
+                }
+                $stmt = $this->pdo->prepare("INSERT INTO Membership (MembershipID, Description) 
             VALUES (null, ?)");
-            $stmt->bindParam(1, $membership, PDO::PARAM_STR, 128);
-            $stmt->execute([$membership]);
-            $membershipID = $stmt->fetch();
-            $membershipID = $this->pdo->lastInsertId();
+                $stmt->bindParam(1, $membership, PDO::PARAM_STR, 128);
+                $stmt->execute([$membership]);
+                $membershipID = $stmt->fetch();
+                $membershipID = $this->pdo->lastInsertId();
 
-            $stmt = $this->pdo->prepare("INSERT INTO Contribution (ContributionID, Age, Discount, MembershipID, FinancialYearID) 
+                $stmt = $this->pdo->prepare("INSERT INTO Contribution (ContributionID, Age, Discount, MembershipID, FinancialYearID) 
             VALUES (null, ?, ?, ?, ?)");
-            $stmt->bindParam(1, $age, PDO::PARAM_INT);
-            $stmt->bindParam(2, $discount, PDO::PARAM_INT);
-            $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
-            $stmt->bindParam(4, $financialYearID, PDO::PARAM_INT);
-            $stmt->execute([$age, $discount, $membershipID, $financialYearID]);
+                $stmt->bindParam(1, $age, PDO::PARAM_INT);
+                $stmt->bindParam(2, $discount, PDO::PARAM_INT);
+                $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
+                $stmt->bindParam(4, $financialYearID, PDO::PARAM_INT);
+                $stmt->execute([$age, $discount, $membershipID, $financialYearID]);
 
-            return "Lidmaatschap succesvol aangemaakt.";
+                return "Lidmaatschap succesvol aangemaakt.";
+            } else {
+                return "U dient eerst het boekjaar aan te maken.";
+            }
         }
         return "Er is iets fout gegaan. Probeer het nog eens.";
     }
@@ -80,7 +86,7 @@ class ContributionModel extends BaseModel
     {
         $contributionID = $this->sanitizeString($_POST['contributionID']);
         $membershipID = $this->sanitizeString($_POST['membershipID']);
-        
+
         $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
@@ -90,7 +96,7 @@ class ContributionModel extends BaseModel
         $stmt->execute([$membershipID]);
 
         //Koppel het verwijderde membership los van de familieleden.
-        $stmt = $this->pdo->prepare("DELETE FROM FamilyMember SET MembershipID = null WHERE MembershipID = ?");
+        $stmt = $this->pdo->prepare("UPDATE FamilyMember SET MembershipID = null WHERE MembershipID = ?");
         $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
         $stmt->execute([$membershipID]);
 
@@ -128,7 +134,8 @@ class ContributionModel extends BaseModel
 
     public function getFinancialYears()
     {
-        $query = ("SELECT * FROM FinancialYear");
+        $query = ("SELECT FinancialYear.FinancialYearID, FinancialYear.Year, FinancialYear.Cost, Contribution.ContributionID FROM FinancialYear
+        LEFT JOIN Contribution ON FinancialYear.FinancialYearID = Contribution.FinancialYearID");
         $result = $this->pdo->query($query);
         return $result->fetchAll();
     }
@@ -156,10 +163,8 @@ class ContributionModel extends BaseModel
             $stmt = $this->pdo->prepare("SELECT FinancialYearID FROM FinancialYear WHERE Year = ?");
             $stmt->bindParam(1, $year, PDO::PARAM_INT);
             $stmt->execute([$year]);
-            $checkForFinancialYear = $stmt->fetch();
-
-            if ($checkForFinancialYear) {
-                return "Dit boekjaar bestaat al.";
+            if ($stmt->rowCount() > 0) {
+                return "Het boekjaar nog niet worden aangemakt. Het boekjaar bestaat al.";
             } else {
                 $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
             VALUES (null, ?, ?)");
@@ -176,14 +181,15 @@ class ContributionModel extends BaseModel
     {
         $financialYearID = $this->sanitizeString($_POST['financialYearID']);
         $contributionID = $this->sanitizeString($_POST['contributionID']);
-        $stmt = $this->pdo->prepare("DELETE FROM FinancialYear WHERE FinancialYearID = ?");
-        $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
-        $stmt->execute([$financialYearID]);
 
         //Verwijder ook alle contributies van het betreffende boekjaar.
         $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
+
+        $stmt = $this->pdo->prepare("DELETE FROM FinancialYear WHERE FinancialYearID = ?");
+        $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
+        $stmt->execute([$financialYearID]);
 
         return "Boekjaar en contributies van het betreffende jaar succesvol verwijderd.";
     }

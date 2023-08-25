@@ -1,8 +1,9 @@
 <?php
-require_once 'model\BaseModel.php';
-require_once 'model\familyModel.php';
-require_once 'model\familyMemberModel.php';
-require_once 'model\contributionModel.php';
+require_once 'include\authenticate.php';
+include_once 'model\BaseModel.php';
+include_once 'model\familyModel.php';
+include_once 'model\familyMemberModel.php';
+include_once 'model\contributionModel.php';
 session_start();
 
 class Controller
@@ -90,14 +91,17 @@ class Controller
             //CRUDD
             else if (isset($_POST['createContribution'])) {
                 echo $this->contributionModel->createContribution();
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\contributions.php');
             } else if (isset($_POST['deleteContribution'])) {
                 echo $this->contributionModel->deleteContribution();
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\contributions.php');
             } else if (isset($_POST['updateContribution'])) {
                 echo $this->contributionModel->updateContribution();
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\contributions.php');
             }

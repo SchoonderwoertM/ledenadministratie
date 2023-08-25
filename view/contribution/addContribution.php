@@ -2,6 +2,10 @@
 
 <form action="index.php" method="post">
     <div>
+        <label for="year">Boekjaar</label>
+        <input id="year" type="number" name="financialYear" required>
+    </div>
+    <div>
         <label for="membership">Soort lid</label>
         <input id="membership" type="text" name="description" autofocus="on" required>
     </div>

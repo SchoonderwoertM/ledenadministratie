@@ -135,9 +135,7 @@ class FamilyModel extends BaseModel
             $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
             $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
             $stmt->execute([$address, $postalCode]);
-            $checkForAddress = $stmt->fetch();
-
-            if ($checkForAddress) {
+            if ($stmt->rowCount() > 0) {
                 return "Er is al een familie bekend op dit adres.";
             } else {
                 $stmt = $this->pdo->prepare("UPDATE Family SET Name = ? WHERE FamilyID = ?");

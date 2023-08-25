@@ -84,13 +84,10 @@ class FamilyMemberModel extends BaseModel
         $stmt = $this->pdo->prepare("SELECT FamilyMemberID FROM FamilyMember WHERE FamilyMember.FamilyID = ?");
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
-        $checkForFamilyMembers = $stmt->fetch();
-
-        if (!$checkForFamilyMembers) {
+        if($stmt->rowCount() == 0)
             $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
-        }
         return "Familielid verwijderd.";
     }
 
