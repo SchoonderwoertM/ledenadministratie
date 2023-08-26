@@ -1,3 +1,4 @@
+<?php require_once 'include\authenticate.php' ?>
 <h1>Boekjaar <?php echo $financialYear['Year'] ?> aanpassen</h1>
 
 <form action="index.php" method="post">

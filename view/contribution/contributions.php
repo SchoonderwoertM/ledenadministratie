@@ -1,3 +1,4 @@
+<?php require_once 'include\authenticate.php' ?>
 <h1>Contributie overzicht</h1>
 
 <h2>Boekjaren</h2>

@@ -1,19 +1,20 @@
 <?php
-require_once 'include\authenticate.php';
-include_once 'model\BaseModel.php';
+// require_once 'include\authenticate.php';
+include_once 'model\baseModel.php';
 include_once 'model\familyModel.php';
 include_once 'model\familyMemberModel.php';
 include_once 'model\contributionModel.php';
-session_start();
 
 class Controller
 {
+    private $baseModel;
     private $familyModel;
     private $familyMemberModel;
     private $contributionModel;
 
     public function __construct()
     {
+        $this->baseModel = new BaseModel();
         $this->familyModel = new FamilyModel();
         $this->familyMemberModel = new FamilyMemberModel();
         $this->contributionModel = new ContributionModel();
@@ -21,6 +22,10 @@ class Controller
 
     public function handleRequest()
     {
+        if (isset($_POST['logout'])) {
+            $this->baseModel->logout();
+        }
+
         //Families
         if (isset($_POST['Family'])) {
             if (isset($_POST['manageFamilies'])) {
@@ -130,10 +135,7 @@ class Controller
                 $financialYears = $this->contributionModel->getFinancialYears();
                 include('view\contribution\contributions.php');
             }
-        }
-
-        //Dashboard
-        else {
+        } else {
             $families = $this->familyModel->getFamilies();
             include 'view\dashboard.php';
         }

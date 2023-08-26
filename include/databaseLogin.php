@@ -12,10 +12,3 @@ $opts =
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false,
     ];
-
-
-try {
-    $this->pdo = new PDO($attr, $user, $pass, $opts);
-} catch (PDOException $e) {
-    throw new PDOException($e->getMessage(), (int)$e->getCode());
-}

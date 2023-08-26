@@ -7,6 +7,12 @@ class ContributionModel extends BaseModel
     public function __construct()
     {
         require 'include\databaseLogin.php';
+        try {
+            $this->pdo = new PDO($attr, $user, $pass, $opts);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+            die();
+        }
     }
 
     public function getContributions()

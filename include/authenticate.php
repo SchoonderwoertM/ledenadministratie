@@ -1,39 +1,59 @@
 <?php
 require_once 'include\databaseLogin.php';
+try {
+    $pdo = new PDO($attr, $user, $pass, $opts);
+} catch (PDOException $e) {
+    throw new PDOException($e->getMessage(), (int)$e->getCode());
+    die();
+}
+session_start();
 
-if (
-    isset($_SERVER['PHP_AUTH_USER']) &&
-    isset($_SERVER['PHP_AUTH_PW'])
-) {
-    $un_temp = sanitize($pdo, $_SERVER['PHP_AUTH_USER']);
-    $pw_temp = sanitize($pdo, $_SERVER['PHP_AUTH_PW']);
-    $query = "SELECT * FROM User WHERE Username = $un_temp";
-    $result = $pdo->query($query);
+if (!isset($_SESSION['loggedin'])) {
+    if (isset($_POST['authenticateUser'])) {
+        if (
+            isset($_POST['username']) &&
+            isset($_POST['password'])
+        ) {
+            $username = sanitizeString($_POST['username']);
+            $password = sanitizeString($_POST['password']);
 
-    if (!$result->rowCount()) {
-        die("Gebruikersnaam en/of wachtwoord onjuist.");
-    }
+            $stmt = $pdo->prepare("SELECT * FROM User WHERE Username = ?");
+            $stmt->bindParam(1, $username, PDO::PARAM_STR, 128);
+            $stmt->execute([$username]);
 
-    $row = $result->fetch();
-    $un = $row['username'];
-    $pw = $row['password'];
-    $role = $row['role'];
+            if ($stmt->rowCount() > 0) {
+                $row = $stmt->fetch();
+                $pw = $row['Password'];
+            } else {
+                include_once 'view/login.php';
+                echo "Gebruikersnaam en/of wachtwoord onjuist.";
+                die();
+            }
 
-    if (password_verify(str_replace("'", "", $pw_temp), $pw)) {
-        session_start();
-        $_SESSION['username'] = $un;
-        $_SESSION['role'] = $role;
+            if (password_verify(str_replace("'", "", $password), $pw)) {
+                $_SESSION['loggedin'] = true;
+                return true;
+            } else {
+                include_once 'view/login.php';
+                echo "Gebruikersnaam en/of wachtwoord onjuist.";
+                die();
+            }
+        } else {
+            include_once 'view/login.php';
+            echo "U dient een gebruikersnaam en wachtwoord in te vullen.";
+            die();
+        }
     } else {
-        die("Gebruikersnaam en/of wachtwoord onjuist.");
+        include_once 'view\login.php';
+        die();
     }
-} else {
-    header('WWW-Authenticate: Basic realm="Resticted Area"');
-    header('HTTP/1.1 401 Unauthorized');
-    die("Voer uw gebruikers naam en wachtwoord in.");
 }
 
-function sanitize($pdo, $str)
+
+function sanitizeString($str)
 {
+    $str = stripslashes($str);
+    $str = strip_tags($str);
     $str = htmlentities($str);
-    return $pdo->qoute($str);
+    return $str;
 }

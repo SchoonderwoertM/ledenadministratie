@@ -1,3 +1,4 @@
+<?php require_once 'include\authenticate.php' ?>
 <h1>Dashboard</h1>
 <h2>Overzicht huidig jaar</h2>
 

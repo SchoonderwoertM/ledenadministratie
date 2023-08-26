@@ -1,11 +1,19 @@
 <?php
+
 class BaseModel
 {
-    public function sanitizeString($var)
+    public function sanitizeString($str)
     {
-        $var = stripslashes($var);
-        $var = strip_tags($var);
-        $var = htmlentities($var);
-        return $var;
+        $str = stripslashes($str);
+        $str = strip_tags($str);
+        $str = htmlentities($str);
+        return $str;
+    }
+
+    public function logout(){
+        $_SESSION = array();
+        setcookie(session_name(), '', time() - 2592000, '/');
+        session_destroy();
+        header('Location:index.php');
     }
 }

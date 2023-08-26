@@ -1,3 +1,4 @@
+<?php require_once 'include\authenticate.php' ?>
 <h1>Familie overzicht</h1>
 <table>
     <thead>

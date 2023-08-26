@@ -7,11 +7,11 @@ class FamilyMemberModel extends BaseModel
     public function __construct()
     {
         include 'include\databaseLogin.php';
-
         try {
             $this->pdo = new PDO($attr, $user, $pass, $opts);
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
+            die();
         }
     }
 
