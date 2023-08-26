@@ -80,12 +80,12 @@ class ContributionModel extends BaseModel
                 $stmt->bindParam(4, $financialYearID, PDO::PARAM_INT);
                 $stmt->execute([$age, $discount, $membershipID, $financialYearID]);
 
-                return "Lidmaatschap succesvol aangemaakt.";
+                return "<p class='goodMessage'>Lidmaatschap succesvol aangemaakt.</p>";
             } else {
-                return "U dient eerst het boekjaar aan te maken.";
+                return "<p class='badMessage'>U dient eerst het boekjaar aan te maken.</p>";
             }
         }
-        return "Er is iets fout gegaan. Probeer het nog eens.";
+        return "<p class='badMessage'>Er is iets fout gegaan. Probeer het nog eens.</p>";
     }
 
     public function deleteContribution()
@@ -106,7 +106,7 @@ class ContributionModel extends BaseModel
         $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
         $stmt->execute([$membershipID]);
 
-        return "Lidmaatschap succesvol verwijderd.";
+        return "<p class='goodMessage'>Lidmaatschap succesvol verwijderd.</p>";
     }
 
     public function updateContribution()
@@ -133,9 +133,9 @@ class ContributionModel extends BaseModel
             $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
             $stmt->execute([$description, $membershipID]);
 
-            return "Wijziging succesvol opgeslagen.";
+            return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
         }
-        return "Er is een fout opgetreden. Probeer het nog eens.";
+        return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
     public function getFinancialYears()
@@ -170,17 +170,17 @@ class ContributionModel extends BaseModel
             $stmt->bindParam(1, $year, PDO::PARAM_INT);
             $stmt->execute([$year]);
             if ($stmt->rowCount() > 0) {
-                return "Het boekjaar nog niet worden aangemakt. Het boekjaar bestaat al.";
+                return "<p class='badMessage'>Het boekjaar kon niet worden aangemaakt. Het boekjaar bestaat al.</p>";
             } else {
                 $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
             VALUES (null, ?, ?)");
                 $stmt->bindParam(1, $year, PDO::PARAM_INT);
                 $stmt->bindParam(1, $cost, PDO::PARAM_INT);
                 $stmt->execute([$year, $cost]);
-                return "Boekjaar succesvol toegevoegd.";
+                return "<p class='goodMessage'>Boekjaar succesvol toegevoegd.</p>";
             }
         }
-        return "Er is een fout opgetreden. Probeer het nog eens.";
+        return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
     public function deleteFinancialYear()
@@ -197,7 +197,7 @@ class ContributionModel extends BaseModel
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
         $stmt->execute([$financialYearID]);
 
-        return "Boekjaar en contributies van het betreffende jaar succesvol verwijderd.";
+        return "<p class='goodMessage'>Boekjaar en contributies van het betreffende jaar succesvol verwijderd.</p>";
     }
 
     public function updateFinancialYear()
@@ -213,8 +213,8 @@ class ContributionModel extends BaseModel
             $stmt->bindParam(1, $cost, PDO::PARAM_INT);
             $stmt->bindParam(2, $financialYearID, PDO::PARAM_INT);
             $stmt->execute([$cost, $financialYearID]);
-            return "Boekjaar succesvol aangepast.";
+            return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
         }
-        return "Er is een fout opgetreden. Probeer het nog eens.";
+        return "<p class='bad'>Er is een fout opgetreden. Probeer het nog eens.<p>";
     }
 }

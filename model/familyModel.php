@@ -69,10 +69,8 @@ class FamilyModel extends BaseModel
             $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
             $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
             $stmt->execute([$address, $postalCode]);
-            $checkForAddress = $stmt->fetch();
-
-            if ($checkForAddress) {
-                return "Er is al een familie bekend op dit adres.";
+            if ($stmt->rowCount() > 0) {
+                return "<p class='badMessage'>Er is al een familie bekend op dit adres.<p>";
             } else {
                 $stmt = $this->pdo->prepare("INSERT INTO Address (AddressID, Address, PostalCode, City) VALUES (null, ?, ?, ?)");
                 $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
@@ -94,10 +92,10 @@ class FamilyModel extends BaseModel
                 $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
                 $stmt->execute([$firstName, $dateOfBirth, $membershipID, $familyID]);
 
-                return "Familie aangemaakt.";
+                return "<p class='goodMessage'>Familie aangemaakt.<p>";
             }
         }
-        return "Er is een fout opgetreden. Probeer het nog eens.";
+        return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
     public function deleteFamily()
@@ -113,7 +111,7 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
 
-        return "Familie en bijbehorende familieleden verwijderd.";
+        return "<p class='badMessage'>Familie en bijbehorende familieleden verwijderd.</p>";
     }
 
     public function updateFamily()
@@ -136,7 +134,7 @@ class FamilyModel extends BaseModel
             $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
             $stmt->execute([$address, $postalCode]);
             if ($stmt->rowCount() > 0) {
-                return "Er is al een familie bekend op dit adres.";
+                return "<p class='badMessage'>Er is al een familie bekend op dit adres.</p>";
             } else {
                 $stmt = $this->pdo->prepare("UPDATE Family SET Name = ? WHERE FamilyID = ?");
                 $stmt->bindParam(1, $name, PDO::PARAM_STR, 128);
@@ -157,10 +155,10 @@ class FamilyModel extends BaseModel
                 $stmt->bindParam(4, $addressID, PDO::PARAM_INT);
                 $stmt->execute([$address, $postalCode, $city, $addressID]);
 
-                return "Wijziging succesvol opgeslagen.";
+                return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
             }
         }
-        return "Er is een fout opgetreden. Probeer het nog eens.";
+        return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
     //!!! Verplaatsen naar ContributionModel !!!

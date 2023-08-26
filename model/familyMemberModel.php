@@ -32,7 +32,7 @@ class FamilyMemberModel extends BaseModel
             $stmt->execute([$familyID]);
             return $stmt->fetchAll();
         }
-        return "Kan de familie niet vinden.";
+        return "<p class='badMessage'>Kan de familie niet vinden.</p>";
     }
 
     public function getFamilyMember()
@@ -66,9 +66,9 @@ class FamilyMemberModel extends BaseModel
             $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
             $stmt->execute([$name, $dateOfBirth, $membershipID, $familyID]);
 
-            return "Familielid toegevoegd.";
+            return "<p class='goodMessage'>Familielid toegevoegd.</p>";
         }
-        return "Er is een fout opgetreden. Probeer het nog eens.";
+        return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
     public function deleteFamilyMember()
@@ -88,7 +88,7 @@ class FamilyMemberModel extends BaseModel
             $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
-        return "Familielid verwijderd.";
+        return "<p class='badMessage'>Familielid verwijderd.</p>";
     }
 
     public function updateFamilyMember()
@@ -109,9 +109,9 @@ class FamilyMemberModel extends BaseModel
             $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
             $stmt->execute([$name, $dateOfBirth, $membershipID, $familyMemberID]);
 
-            return "Wijziging succesvol opgeslagen.";
+            return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
         }
-        return "Er is een fout opgetreden. Probeer het nog eens.";
+        return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
     //!!! Verplaatsen naar ContributionModel !!!
@@ -136,7 +136,7 @@ class FamilyMemberModel extends BaseModel
             }
         }
         if (!$membership) {
-            return "Er is geen lidmaatschap bekend voor de leeftijd van $age jaar.";
+            return "<p class='badMessage'>Er is geen lidmaatschap bekend voor de leeftijd van $age jaar.</p>";
         } else {
             return $membershipID;
         }

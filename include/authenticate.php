@@ -26,7 +26,7 @@ if (!isset($_SESSION['loggedin'])) {
                 $pw = $row['Password'];
             } else {
                 include_once 'view/login.php';
-                echo "Gebruikersnaam en/of wachtwoord onjuist.";
+                echo "<p class='badMessage'>Gebruikersnaam en/of wachtwoord onjuist.</p>";
                 die();
             }
 
@@ -35,12 +35,12 @@ if (!isset($_SESSION['loggedin'])) {
                 return true;
             } else {
                 include_once 'view/login.php';
-                echo "Gebruikersnaam en/of wachtwoord onjuist.";
+                echo "<p class='badMessage'>Gebruikersnaam en/of wachtwoord onjuist.</p>";
                 die();
             }
         } else {
             include_once 'view/login.php';
-            echo "U dient een gebruikersnaam en wachtwoord in te vullen.";
+            echo "<p class='badMessage'>U dient een gebruikersnaam en wachtwoord in te vullen.</p>";
             die();
         }
     } else {
