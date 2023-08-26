@@ -46,6 +46,7 @@ th,
 td {
   border: 1px solid #ddd;
   padding-inline-start: 0.8rem;
+  padding-inline-end: 0.8rem;
 }
 
 tr:nth-child(even) {
@@ -53,7 +54,7 @@ tr:nth-child(even) {
 }
 
 th {
-  padding-block-start: 0.8rem;
+  padding: 0.8rem;
   text-align: left;
   background-color: #408ec6;
   color: white;
@@ -74,7 +75,6 @@ input {
   border-radius: 0.25em;
   padding: 0.8rem;
   margin: 0.4rem 0 0.9rem 0;
-  min-width: 10rem;
   box-sizing: border-box;
   border: 1px solid #555;
   cursor: pointer;
@@ -82,6 +82,10 @@ input {
 
 input:focus {
   border: 2px solid #555;
+}
+
+input[type="text"], input[type="number"], input[type="date"]{
+  inline-size: 15rem;
 }
 
 nav form input[type="submit"] {
@@ -122,6 +126,11 @@ select{
   margin: 0 2rem 0 0.5rem;
   cursor: pointer;
   line-height: 1.1;
+}
+
+.dashboardTable td{
+  padding-block-start: 2rem;
+  padding-block-end: 2rem;
 }
 
 .button-container {

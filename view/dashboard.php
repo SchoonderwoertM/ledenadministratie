@@ -2,7 +2,7 @@
 <h1>Dashboard</h1>
 <h2>Overzicht huidig jaar</h2>
 
-<table>
+<table class="dashboardTable">
     <thead>
         <th>Familie</th>
         <th>Aantal leden</th>
