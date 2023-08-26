@@ -10,17 +10,20 @@ session_start();
 
 if (!isset($_SESSION['loggedin'])) {
     if (isset($_POST['authenticateUser'])) {
+        //Controleer of de invoervelden een waarde hebben.
         if (
             isset($_POST['username']) &&
             isset($_POST['password'])
         ) {
+            //Ontdoe de ingevoerde waarden van ongeweste slashes en html.
             $username = sanitizeString($_POST['username']);
             $password = sanitizeString($_POST['password']);
 
+            //Check of de gebruikersnaam bekend is in de database.
             $stmt = $pdo->prepare("SELECT * FROM User WHERE Username = ?");
             $stmt->bindParam(1, $username, PDO::PARAM_STR, 128);
             $stmt->execute([$username]);
-
+            //Als de gebruiker bekend is, zet dan het wachtwoord in een variabele.
             if ($stmt->rowCount() > 0) {
                 $row = $stmt->fetch();
                 $pw = $row['Password'];
@@ -30,6 +33,7 @@ if (!isset($_SESSION['loggedin'])) {
                 die();
             }
 
+            //Check of het gehashte wachtwoord overeen komt met het ingevoerde wachtwoord.
             if (password_verify(str_replace("'", "", $password), $pw)) {
                 $_SESSION['loggedin'] = true;
                 return true;
@@ -49,7 +53,7 @@ if (!isset($_SESSION['loggedin'])) {
     }
 }
 
-
+//Ontdoe een string van ongewenste slashes en html.
 function sanitizeString($str)
 {
     $str = stripslashes($str);

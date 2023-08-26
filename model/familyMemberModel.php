@@ -6,6 +6,7 @@ class FamilyMemberModel extends BaseModel
 
     public function __construct()
     {
+        //Maak connectie met de database.
         include 'include\databaseLogin.php';
         try {
             $this->pdo = new PDO($attr, $user, $pass, $opts);
@@ -18,6 +19,7 @@ class FamilyMemberModel extends BaseModel
     public function getFamilyMembers()
     {
         //!!! Jaar dynamisch maken !!!
+        //Haal de familieleden op van de geselecteerde familie.
         if (!empty($_POST['familyID'])) {
             $familyID = $this->sanitizeString($_POST['familyID']);
 
@@ -37,6 +39,7 @@ class FamilyMemberModel extends BaseModel
 
     public function getFamilyMember()
     {
+        //Haal het familielid op aan de hand van het FamilyMemberID.
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
 
         $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.Name, FamilyMember.DateOfBirth, FamilyMember.FamilyID
@@ -49,16 +52,19 @@ class FamilyMemberModel extends BaseModel
 
     public function createFamilyMember()
     {
+        //Controleer of de invoervelden een waarde hebben.
         if (
             isset($_POST['name']) &&
             isset($_POST['dateOfBirth']) &&
             isset($_POST['familyID'])
         ) {
+            //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
             $name = $this->sanitizeString($_POST['name']);
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $familyID = $this->sanitizeString($_POST['familyID']);
             $membershipID = $this->getMembership($dateOfBirth);
 
+            //Sla het familid op in de database.
             $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
             $stmt->bindParam(1, $name, PDO::PARAM_STR, 128);
             $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
@@ -76,18 +82,21 @@ class FamilyMemberModel extends BaseModel
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
         $familyID = $this->sanitizeString($_POST['familyID']);
 
+        //Verwijder het het familielid.
         $stmt = $this->pdo->prepare("DELETE FROM FamilyMember WHERE FamilyMember.FamilyMemberID = ?");
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
 
-        //Verwijder de familie als het laatste familielid wordt verwijderd.
+        //Check of er nog familieleden zijn gekoppeld aan de betreffende familie.
         $stmt = $this->pdo->prepare("SELECT FamilyMemberID FROM FamilyMember WHERE FamilyMember.FamilyID = ?");
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
-        if($stmt->rowCount() == 0)
+        //Als er geen familiedelen meer zijn, verwijder dan de familie uit de database.
+        if ($stmt->rowCount() == 0)
             $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
-            $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
-            $stmt->execute([$familyID]);
+        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+        $stmt->execute([$familyID]);
+
         return "<p class='badMessage'>Familielid verwijderd.</p>";
     }
 
@@ -102,6 +111,7 @@ class FamilyMemberModel extends BaseModel
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $membershipID = $this->getMembership($dateOfBirth);
 
+            //Sla de ingevoerde waarden op in de database.
             $stmt = $this->pdo->prepare("UPDATE FamilyMember SET Name = ?, DateOfBirth = ?, MembershipID = ? WHERE FamilyMemberID = ?");
             $stmt->bindParam(1, $name, PDO::PARAM_INT);
             $stmt->bindParam(1, $dateOfBirth, PDO::PARAM_STR, 10);
@@ -118,17 +128,20 @@ class FamilyMemberModel extends BaseModel
     //Staat nu dubbel in FamilyModel
     public function getMembership($date)
     {
+        //Bereken de leeftijd van het familielid door het verschil op te halen tussen de datum van vandaag en de geboortedatum
         $dateOfBirth = new DateTime($date);
         $currectDate = new DateTime(date('y.m.d'));
         $age = $currectDate->diff($dateOfBirth);
         $age = $age->y;
 
+        //Haal de contributies op per leeftijd
         $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
         LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
         $result = $this->pdo->query($query);
         $membershipsByAge = $result->fetchAll();
         $membershipID = null;
 
+        //Check welke soort lid bij de leeftijd hoort.
         foreach ($membershipsByAge as $membership) {
             if ($age < $membership['Age']) {
                 $membershipID = $membership['MembershipID'];

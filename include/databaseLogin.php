@@ -1,5 +1,5 @@
 <?php
-//Create database connection
+//Zet alle waarden voor het opzetten van de database connectie.
 $host = 'localhost';
 $data = 'membershipAdministration';
 $user = 'root';

@@ -84,7 +84,7 @@ input:focus {
   border: 2px solid #555;
 }
 
-input[type="text"], input[type="number"], input[type="date"]{
+input[type="text"], input[type="number"], input[type="date"], input[type="password"]{
   inline-size: 15rem;
 }
 

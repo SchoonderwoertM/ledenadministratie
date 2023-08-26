@@ -26,7 +26,7 @@ class Controller
             $this->baseModel->logout();
         }
 
-        //Families
+        //Check of actie valt onder de categorie Family.
         if (isset($_POST['Family'])) {
             if (isset($_POST['manageFamilies'])) {
                 $families = $this->familyModel->getFamilies();
@@ -37,7 +37,7 @@ class Controller
                 $family = $this->familyModel->getFamily();
                 include('view\family\editFamily.php');
             }
-            //CRUDD
+            //CRUD operaties
             else if (isset($_POST['createFamily'])) {
                 echo $this->familyModel->createFamily();
                 $families = $this->familyModel->getFamilies();
@@ -53,7 +53,7 @@ class Controller
             }
         }
 
-        //FamilyMembers
+        //Check of actie valt onder de categorieFamilyMembers
         else if (isset($_POST['FamilyMember'])) {
             if (isset($_POST['manageFamilyMembers'])) {
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
@@ -65,7 +65,7 @@ class Controller
                 $familyMember = $this->familyMemberModel->getFamilyMember();
                 include('view\familyMember\editFamilyMember.php');
             }
-            //CRUDD
+            //CRUDD operaties
             else if (isset($_POST['createFamilyMember'])) {
                 echo $this->familyMemberModel->createFamilyMember();
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
@@ -81,7 +81,7 @@ class Controller
             }
         }
 
-        //Contributions
+        //Check of actie valt onder de categorieContributions
         else if (isset($_POST['Contribution'])) {
             if (isset($_POST['manageContributions'])) {
                 $financialYears = $this->contributionModel->getFinancialYears();
@@ -93,7 +93,7 @@ class Controller
                 $contribution = $this->contributionModel->getContribution();
                 include('view\contribution\editContribution.php');
             }
-            //CRUDD
+            //CRUD opraties
             else if (isset($_POST['createContribution'])) {
                 echo $this->contributionModel->createContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();
@@ -110,15 +110,13 @@ class Controller
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\contributions.php');
             }
-
-            //FinancialYear
             else if (isset($_POST['addFinancialYear'])) {
                 include('view\contribution\addFinancialYear.php');
             } else if (isset($_POST['editFinancialYear'])) {
                 $financialYear = $this->contributionModel->getFinancialYear();
                 include('view\contribution\editFinancialYear.php');
             }
-            //CRUD
+            //CRUD operaties
             else if (isset($_POST['createFinancialYear'])) {
                 echo $this->contributionModel->createFinancialYear();
                 $contributions = $this->contributionModel->getContributions();
