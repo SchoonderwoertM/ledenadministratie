@@ -29,11 +29,7 @@ class Controller
         //Check of actie valt onder de categorie Family.
         if (isset($_POST['Family'])) {
             if (isset($_POST['manageFamilies'])) {
-                if (empty($_SESSION['families'])) {
-                    $families = $this->familyModel->getFamilies();
-                } else {
-                    $families = $_SESSION['families'];
-                }
+                $families = $this->familyModel->getFamilies();
                 include('view\family\manageFamilies.php');
             } else if (isset($_POST['addFamily'])) {
                 include('view\family\addFamily.php');
@@ -60,11 +56,7 @@ class Controller
         //Check of actie valt onder de categorieFamilyMembers
         else if (isset($_POST['FamilyMember'])) {
             if (isset($_POST['manageFamilyMembers'])) {
-                if (empty($_SESSION['familyMembers'])) {
-                    $familyMembers = $this->familyMemberModel->getFamilyMembers();
-                } else {
-                    $familyMembers = $_SESSION['familyMembers'];
-                }
+                $familyMembers = $this->familyMemberModel->getFamilyMembers();
                 include('view\familyMember\manageFamilyMembers.php');
             } else if (isset($_POST['addFamilyMember'])) {
                 $familyID = $_POST['familyID'];

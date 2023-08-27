@@ -11,7 +11,7 @@
     <tbody>
         <?php foreach ($families as $family) { ?>
             <tr>
-                <td><?php echo $family->name; ?></td>
+            <td><?php echo $family->name; ?></td>
                 <td><?php echo $family->address . " te " . $family->city; ?></td>
                 <td><?php echo $family->numberOfFamilyMembers; ?></td>
                 <td><?php echo $family->totalContribution; ?></td>
@@ -28,7 +28,7 @@
                             <input type="submit" value="Bewerken" name="Family">
                         </form>
                         <form action="index.php" method="post">
-                            <input type="hidden" name="familyID" value="<?php echo $family->FamilyID; ?>">
+                            <input type="hidden" name="familyID" value="<?php echo $family->familyID; ?>">
                             <input type="hidden" name="deleteFamily">
                             <input type="submit" value="Verwijderen" name="Family">
                         </form>

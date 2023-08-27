@@ -11,15 +11,15 @@
         <input id="dateOfBirth" type="date" name="dateOfBirth" value="<?php echo $familyMember->dateOfBirth ?>" required>
     </div>
     <div>
-        <input type="hidden" name="familyID" value="<?php echo $familyMember->FamilyID ?>">
-        <input type="hidden" name="familyMemberID" value="<?php echo $familyMember->FamilyMemberID ?>">
+        <input type="hidden" name="familyID" value="<?php echo $familyMember->familyID ?>">
+        <input type="hidden" name="familyMemberID" value="<?php echo $familyMember->familyMemberID ?>">
         <input type="hidden" name="updateFamilyMember">
         <input type="submit" value="Opslaan" name="FamilyMember">
         <input type="submit" value="Annuleren" form="goBack">
     </div>
 </form>
 <form id="goBack" action="index.php" method="post">
-    <input type="hidden" name="familyID" value="<?php echo $familyMember->FamilyID ?>">
+    <input type="hidden" name="familyID" value="<?php echo $familyMember->familyID ?>">
     <input type="hidden" name="FamilyMember">
     <input type="hidden" name="manageFamilyMembers">
 </form>

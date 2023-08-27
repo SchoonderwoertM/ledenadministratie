@@ -23,7 +23,7 @@ class FamilyModel extends BaseModel
         //Haal het huidige jaar op.
         $currentYear = date('Y');
 
-        $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Address, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalContribution FROM Family
+        $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Address, Address.PostalCode, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalContribution FROM Family
         INNER JOIN Address ON Family.AddressID = Address.AddressID
         INNER JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
         LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
@@ -34,15 +34,11 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        var_dump($rows);
-
         $families = [];
         foreach ($rows as $row) {
-            $family = new Family($row['FamilyID'], $row['Name'], $row['Address'], $row['City'], $row['NumberOfFamilyMembers'], $row['TotalContribution']);
+            $family = new Family($row['FamilyID'], $row['Name'], $row['Address'], $row['PostalCode'], $row['City'], $row['NumberOfFamilyMembers'], $row['TotalContribution']);
             $families[] = $family;
         }
-        //Sla op in sessie variabele
-        $_SESSION['families'] = $families;
         return $families;
     }
 
@@ -56,7 +52,8 @@ class FamilyModel extends BaseModel
         WHERE Family.FamilyID = ?");
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
-        return $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return new Family($row['FamilyID'], $row['Name'], $row['Address'], $row['PostalCode'], $row['City'], null, null);
     }
 
     public function createFamily()
@@ -79,39 +76,43 @@ class FamilyModel extends BaseModel
             $city = $this->sanitizeString($_POST['city']);
             $membershipID = $this->getMembership($dateOfBirth);
 
-            //Ga na of er al een familie op het adres bekend is.
-            $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Address = ? AND PostalCode = ? ");
-            $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
-            $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
-            $stmt->execute([$address, $postalCode]);
-            //Als er al een familie bekend is, toon een foutmelding.
-            if ($stmt->rowCount() > 0) {
-                return "<p class='badMessage'>Er is al een familie bekend op dit adres.<p>";
+            if (empty($membershipID)) {
+                return "<p class='badMessage'>Er dient eerst een passend lidmaatschap te worden aangemaakt.<p>";
             } else {
-                //Is er geen familie bekend sla dan het ingevoegde adres op in de database.
-                $stmt = $this->pdo->prepare("INSERT INTO Address (AddressID, Address, PostalCode, City) VALUES (null, ?, ?, ?)");
+                //Ga na of er al een familie op het adres bekend is.
+                $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Address = ? AND PostalCode = ? ");
                 $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
                 $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
-                $stmt->bindParam(3, $city, PDO::PARAM_STR, 128);
-                $stmt->execute([$address, $postalCode, $city]);
-                $addressID = $this->pdo->lastInsertId();
+                $stmt->execute([$address, $postalCode]);
+                //Als er al een familie bekend is, toon een foutmelding.
+                if ($stmt->rowCount() > 0) {
+                    return "<p class='badMessage'>Er is al een familie bekend op dit adres.<p>";
+                } else {
+                    //Is er geen familie bekend sla dan het ingevoegde adres op in de database.
+                    $stmt = $this->pdo->prepare("INSERT INTO Address (AddressID, Address, PostalCode, City) VALUES (null, ?, ?, ?)");
+                    $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
+                    $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
+                    $stmt->bindParam(3, $city, PDO::PARAM_STR, 128);
+                    $stmt->execute([$address, $postalCode, $city]);
+                    $addressID = $this->pdo->lastInsertId();
 
-                //Sla de familie gegevens op in de database.
-                $stmt = $this->pdo->prepare("INSERT INTO Family (FamilyID, Name, AddressID) VALUES (null, ?, ?)");
-                $stmt->bindParam(1, $lastName, PDO::PARAM_STR, 128);
-                $stmt->bindParam(2, $addressID, PDO::PARAM_INT);
-                $stmt->execute([$lastName, $addressID]);
-                $familyID = $this->pdo->lastInsertId();
+                    //Sla de familie gegevens op in de database.
+                    $stmt = $this->pdo->prepare("INSERT INTO Family (FamilyID, Name, AddressID) VALUES (null, ?, ?)");
+                    $stmt->bindParam(1, $lastName, PDO::PARAM_STR, 128);
+                    $stmt->bindParam(2, $addressID, PDO::PARAM_INT);
+                    $stmt->execute([$lastName, $addressID]);
+                    $familyID = $this->pdo->lastInsertId();
 
-                //Sla het familielid op in de database.
-                $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
-                $stmt->bindParam(1, $firstName, PDO::PARAM_STR, 128);
-                $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
-                $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
-                $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
-                $stmt->execute([$firstName, $dateOfBirth, $membershipID, $familyID]);
+                    //Sla het familielid op in de database.
+                    $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
+                    $stmt->bindParam(1, $firstName, PDO::PARAM_STR, 128);
+                    $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
+                    $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
+                    $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
+                    $stmt->execute([$firstName, $dateOfBirth, $membershipID, $familyID]);
 
-                return "<p class='goodMessage'>Familie aangemaakt.<p>";
+                    return "<p class='goodMessage'>Familie aangemaakt.<p>";
+                }
             }
         }
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
@@ -149,7 +150,7 @@ class FamilyModel extends BaseModel
             $city = $this->sanitizeString($_POST['city']);
 
             //Nagaan of er al een familie op het adres bekend is.
-            $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Address = ? AND PostalCode = ? ");
+            $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Address = ? AND PostalCode = ?");
             $stmt->bindParam(1, $address, PDO::PARAM_STR, 128);
             $stmt->bindParam(2, $postalCode, PDO::PARAM_STR, 10);
             $stmt->execute([$address, $postalCode]);
@@ -208,8 +209,8 @@ class FamilyModel extends BaseModel
                 break;
             }
         }
-        if (!$membership) {
-            return "<p class='badMessage'>Er is geen lidmaatschap bekend voor de leeftijd van $age jaar.</p>";
+        if (empty($membership)) {
+            return null;
         } else {
             return $membershipID;
         }

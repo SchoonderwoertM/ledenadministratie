@@ -14,7 +14,7 @@
             <tr>
                 <td><?php echo $familyMember->name; ?></td>
                 <td><?php echo $familyMember->dateOfBirth; ?></td>
-                <td><?php echo $familyMember->description; ?></td>
+                <td><?php echo $familyMember->membership; ?></td>
                 <td><?php echo $familyMember->discount == 0 ? $familyMember->cost : $familyMember->cost * $familyMember->discount / 100; ?></td>
                 <td>
                     <div class="button-container">
@@ -25,7 +25,7 @@
                         </form>
                         <form action="index.php" method="post">
                             <input type="hidden" name="familyID" value="<?php echo $familyMember->familyID; ?>">
-                            <input type="hidden" name="familyMemberID" value="<?php echo $familyMember->familyMemberID ?>">
+                            <input type="hidden" name="familyMemberID" value="<?php echo $familyMember->familyMemberID; ?>">
                             <input type="hidden" name="deleteFamilyMember">
                             <input type="submit" value="Verwijderen" name="FamilyMember">
                         </form>
@@ -37,7 +37,7 @@
 </table>
 
 <form action="index.php" method="post">
-    <input type="hidden" name="familyID" value="<?php echo $familyMember['FamilyID'] ?>">
+    <input type="hidden" name="familyID" value="<?php echo $familyMember->familyID; ?>">
     <input type="hidden" name="addFamilyMember">
     <input type="submit" value="Familielid toevoegen" name="FamilyMember">
 </form>

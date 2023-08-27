@@ -1,10 +1,12 @@
 <?php require_once 'include\authenticate.php' ?>
+
 <h1>Dashboard</h1>
 <h2>Overzicht huidig jaar</h2>
 
 <table class="dashboardTable">
     <thead>
         <th>Familie</th>
+        <th>Adres</th>
         <th>Aantal leden</th>
         <th>Contributie</th>
     </thead>
@@ -12,6 +14,7 @@
         <?php foreach ($families as $family) { ?>
             <tr>
                 <td><?php echo $family->name; ?></td>
+                <td><?php echo $family->address . " te " . $family->city; ?></td>
                 <td><?php echo $family->numberOfFamilyMembers; ?></td>
                 <td><?php echo $family->totalContribution; ?></td>
             </tr>

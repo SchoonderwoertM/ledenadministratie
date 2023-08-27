@@ -36,11 +36,10 @@ class FamilyMemberModel extends BaseModel
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $familyMembers = [];
             foreach ($rows as $row) {
-                $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID']);
+                $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], $row['Description'], $row['Cost'], $row['Discount']);
                 $familyMembers[] = $familyMember;
             }
-            //Sla op in sessie variabele
-            $_SESSION['familyMembers'] = $familyMembers;
+            
             return $familyMembers;
         }
         return "<p class='badMessage'>Kan de familie niet vinden.</p>";
@@ -56,7 +55,7 @@ class FamilyMemberModel extends BaseModel
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID']);
+        return new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], null, null, null);
     }
 
     public function createFamilyMember()
@@ -123,9 +122,9 @@ class FamilyMemberModel extends BaseModel
             //Sla de ingevoerde waarden op in de database.
             $stmt = $this->pdo->prepare("UPDATE FamilyMember SET Name = ?, DateOfBirth = ?, MembershipID = ? WHERE FamilyMemberID = ?");
             $stmt->bindParam(1, $name, PDO::PARAM_INT);
-            $stmt->bindParam(1, $dateOfBirth, PDO::PARAM_STR, 10);
-            $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
-            $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
+            $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
+            $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
+            $stmt->bindParam(4, $familyMemberID, PDO::PARAM_INT);
             $stmt->execute([$name, $dateOfBirth, $membershipID, $familyMemberID]);
 
             return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
