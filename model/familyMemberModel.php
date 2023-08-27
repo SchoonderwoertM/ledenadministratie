@@ -32,7 +32,10 @@ class FamilyMemberModel extends BaseModel
             AND FinancialYear.Year = 2023");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
-            return $stmt->fetchAll();
+            $result = $stmt->fetchAll();
+            //Sla op in sessie variabele
+            $_SESSION['familyMembers'] = $result;
+            return $result;
         }
         return "<p class='badMessage'>Kan de familie niet vinden.</p>";
     }

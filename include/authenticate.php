@@ -32,7 +32,6 @@ if (!isset($_SESSION['loggedin'])) {
             } else {
                 include_once 'view/login.php';
                 echo "<p class='badMessage'>Gebruikersnaam en/of wachtwoord onjuist.</p>";
-                die();
             }
 
             //Check of het gehashte wachtwoord overeen komt met het ingevoerde wachtwoord.
@@ -42,16 +41,13 @@ if (!isset($_SESSION['loggedin'])) {
             } else {
                 include_once 'view/login.php';
                 echo "<p class='badMessage'>Gebruikersnaam en/of wachtwoord onjuist.</p>";
-                die();
             }
         } else {
             include_once 'view/login.php';
             echo "<p class='badMessage'>U dient een gebruikersnaam en wachtwoord in te vullen.</p>";
-            die();
         }
     } else {
         include_once 'view\login.php';
-        die();
     }
 }
 

@@ -32,7 +32,10 @@ class FamilyModel extends BaseModel
         GROUP BY Family.FamilyID");
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
-        return $stmt->fetchAll();
+        $result = $stmt->fetchAll();
+        //Sla op in sessie variabele
+        $_SESSION['families'] = $result;
+        return $result;
     }
 
     public function getFamily()
