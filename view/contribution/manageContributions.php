@@ -13,18 +13,17 @@
 
         foreach ($financialYears as $financialYear) { ?>
             <tr>
-                <td><?php echo $financialYear['Year']; ?></td>
-                <td><?php echo $financialYear['Cost']; ?></td>
+                <td><?php echo $financialYear->year; ?></td>
+                <td><?php echo $financialYear->cost; ?></td>
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">
-                            <input type="hidden" name="financialYearID" value="<?php echo $financialYear['FinancialYearID'] ?>">
+                            <input type="hidden" name="financialYearID" value="<?php echo $financialYear->financialYearID ?>">
                             <input type="hidden" name="editFinancialYear">
                             <input type="submit" value="Bewerken" name="Contribution">
                         </form>
                         <form action="index.php" method="post">
-                            <input type="hidden" name="financialYearID" value="<?php echo $financialYear['FinancialYearID'] ?>">
-                            <input type="hidden" name="contributionID" value="<?php echo $financialYear['ContributionID'] ?>">
+                            <input type="hidden" name="financialYearID" value="<?php echo $financialYear->financialYearID ?>">
                             <input type="hidden" name="deleteFinancialYear">
                             <input type="submit" value="Verwijderen" name="Contribution">
                         </form>
@@ -46,10 +45,10 @@
         <select id="financialYears" name="financialYear">
             <?php
             foreach ($financialYears as $financialYear) {
-                echo '<option value="' . $financialYear['Year'] . '">' . ucfirst($financialYear['Year']) . '</option>';
+                echo '<option value="' . $financialYear->year . '">' . ucfirst($financialYear->year) . '</option>';
             }
             ?>
-            <input type="hidden" name="year" value="<?php echo $financialYear['Year'] ?>">
+            <input type="hidden" name="year" value="<?php echo $financialYear->year ?>">
             <input type="hidden" name="manageContributions">
             <input type="submit" name="Contribution" value="Bevestigen">
         </select>
@@ -66,19 +65,19 @@
             <tbody>
                 <?php foreach ($contributions as $contribution) { ?>
                     <tr>
-                        <td><?php echo $contribution['Description']; ?></td>
-                        <td><?php echo $contribution['Age']; ?></td>
-                        <td><?php echo $contribution['Discount']; ?></td>
+                        <td><?php echo $contribution->description; ?></td>
+                        <td><?php echo $contribution->age; ?></td>
+                        <td><?php echo $contribution->discount; ?></td>
                         <td>
                             <div class="button-container">
                                 <form action="index.php" method="post">
-                                    <input type="hidden" name="contributionID" value="<?php echo $contribution['ContributionID'] ?>">
+                                    <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
                                     <input type="hidden" name="editContribution">
                                     <input type="submit" value="Bewerken" name="Contribution">
                                 </form>
                                 <form action="index.php" method="post">
-                                    <input type="hidden" name="contributionID" value="<?php echo $contribution['ContributionID'] ?>">
-                                    <input type="hidden" name="membershipID" value="<?php echo $contribution['MembershipID'] ?>">
+                                    <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
+                                    <input type="hidden" name="membershipID" value="<?php echo $contribution->membershipID ?>">
                                     <input type="hidden" name="deleteContribution">
                                     <input type="submit" value="Verwijderen" name="Contribution">
                                 </form>

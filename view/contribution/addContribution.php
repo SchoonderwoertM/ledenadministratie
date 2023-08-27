@@ -4,11 +4,11 @@
 <form action="index.php" method="post">
     <div>
         <label for="year">Boekjaar</label>
-        <input id="year" type="number" name="financialYear" required>
+        <input id="year" type="number" name="financialYear" autofocus="on" required>
     </div>
     <div>
         <label for="membership">Soort lid</label>
-        <input id="membership" type="text" name="description" autofocus="on" required>
+        <input id="membership" type="text" name="description" required>
     </div>
     <div>
         <label for="age">Leeftijd tot</label>

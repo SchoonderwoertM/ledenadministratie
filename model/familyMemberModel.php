@@ -1,4 +1,5 @@
 <?php
+include_once 'classes\familyMember.class.php';
 
 class FamilyMemberModel extends BaseModel
 {
@@ -32,10 +33,15 @@ class FamilyMemberModel extends BaseModel
             AND FinancialYear.Year = 2023");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
-            $result = $stmt->fetchAll();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $familyMembers = [];
+            foreach ($rows as $row) {
+                $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID']);
+                $familyMembers[] = $familyMember;
+            }
             //Sla op in sessie variabele
-            $_SESSION['familyMembers'] = $result;
-            return $result;
+            $_SESSION['familyMembers'] = $familyMembers;
+            return $familyMembers;
         }
         return "<p class='badMessage'>Kan de familie niet vinden.</p>";
     }
@@ -45,12 +51,12 @@ class FamilyMemberModel extends BaseModel
         //Haal het familielid op aan de hand van het FamilyMemberID.
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
 
-        $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.Name, FamilyMember.DateOfBirth, FamilyMember.FamilyID
-        FROM FamilyMember
+        $stmt = $this->pdo->prepare("SELECT * FROM FamilyMember
         WHERE FamilyMember.FamilyMemberID = ?");
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
-        return $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID']);
     }
 
     public function createFamilyMember()

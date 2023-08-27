@@ -1,4 +1,6 @@
 <?php
+include_once 'classes\contribution.class.php';
+include_once 'classes\financialYear.class.php';
 
 class ContributionModel extends BaseModel
 {
@@ -28,8 +30,15 @@ class ContributionModel extends BaseModel
             WHERE FinancialYear.Year = ?");
             $stmt->bindParam(1, $financialYear, PDO::PARAM_INT);
             $stmt->execute([$financialYear]);
-
-            return $stmt->fetchAll();
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $contributions = [];
+            foreach ($rows as $row) {
+                $contribution = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
+                $contributions[] = $contribution;
+            }
+            //Sla op in sessie variabele
+            $_SESSION['contributions'] = $contributions;
+            return $contributions;
         }
     }
 
@@ -43,8 +52,8 @@ class ContributionModel extends BaseModel
         WHERE Contribution.ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
-
-        return $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
     }
 
     public function createContribution()
@@ -155,10 +164,16 @@ class ContributionModel extends BaseModel
     public function getFinancialYears()
     {
         //Haal alle boekjaren op.
-        $query = ("SELECT FinancialYear.FinancialYearID, FinancialYear.Year, FinancialYear.Cost, Contribution.ContributionID FROM FinancialYear
-        LEFT JOIN Contribution ON FinancialYear.FinancialYearID = Contribution.FinancialYearID");
+        $query = ("SELECT * FROM FinancialYear ORDER BY Year DESC");
         $result = $this->pdo->query($query);
-        return $result->fetchAll();
+        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+        $financialYears = [];
+
+        foreach ($rows as $row) {
+            $financialYear = new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Cost']);
+            $financialYears[] = $financialYear;
+        }
+        return $financialYears;
     }
 
     public function getFinancialYear()
@@ -169,7 +184,8 @@ class ContributionModel extends BaseModel
         WHERE FinancialYear.FinancialYearID = ?");
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
         $stmt->execute([$financialYearID]);
-        return $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Cost']);
     }
 
     public function createFinancialYear()
@@ -188,7 +204,7 @@ class ContributionModel extends BaseModel
             //Als het boekjaar bestaat komt er een regel uit de query en is de rowCount() groter dan 0.
             if ($stmt->rowCount() > 0) {
                 return "<p class='badMessage'>Het boekjaar kon niet worden aangemaakt. Het boekjaar bestaat al.</p>";
-            } 
+            }
             //Als het boekjaar nog niet bestaat, voeg deze dan toe.
             else {
                 $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
@@ -205,12 +221,11 @@ class ContributionModel extends BaseModel
     public function deleteFinancialYear()
     {
         $financialYearID = $this->sanitizeString($_POST['financialYearID']);
-        $contributionID = $this->sanitizeString($_POST['contributionID']);
 
         //Verwijder alle contributies van het betreffende boekjaar.
-        $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE ContributionID = ?");
-        $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
-        $stmt->execute([$contributionID]);
+        $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE FinancialYearID = ?");
+        $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
+        $stmt->execute([$financialYearID]);
 
         //Verwijder het boejaar zelf.
         $stmt = $this->pdo->prepare("DELETE FROM FinancialYear WHERE FinancialYearID = ?");

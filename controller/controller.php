@@ -97,11 +97,7 @@ class Controller
                 } else {
                     $financialYears = $_SESSION['financialYears'];
                 }
-                if (empty($_SESSION['contributions'])) {
-                    $contributions = $this->contributionModel->getContributions();
-                } else {
-                    $contributions = $_SESSION['contributions'];
-                }
+                $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['addContribution'])) {
                 include('view\contribution\addContribution.php');

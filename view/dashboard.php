@@ -11,9 +11,9 @@
     <tbody>
         <?php foreach ($families as $family) { ?>
             <tr>
-                <td><?php echo $family['Name']; ?></td>
-                <td><?php echo $family['NumberOfFamilyMembers']; ?></td>
-                <td><?php echo $family['TotalContribution']; ?></td>
+                <td><?php echo $family->name; ?></td>
+                <td><?php echo $family->numberOfFamilyMembers; ?></td>
+                <td><?php echo $family->totalContribution; ?></td>
             </tr>
         <?php } ?>
     </tbody>

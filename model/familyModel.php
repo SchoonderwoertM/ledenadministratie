@@ -1,4 +1,5 @@
 <?php
+include_once 'classes\family.class.php';
 
 class FamilyModel extends BaseModel
 {
@@ -32,10 +33,17 @@ class FamilyModel extends BaseModel
         GROUP BY Family.FamilyID");
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
-        $result = $stmt->fetchAll();
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        var_dump($rows);
+
+        $families = [];
+        foreach ($rows as $row) {
+            $family = new Family($row['FamilyID'], $row['Name'], $row['Address'], $row['City'], $row['NumberOfFamilyMembers'], $row['TotalContribution']);
+            $families[] = $family;
+        }
         //Sla op in sessie variabele
-        $_SESSION['families'] = $result;
-        return $result;
+        $_SESSION['families'] = $families;
+        return $families;
     }
 
     public function getFamily()
