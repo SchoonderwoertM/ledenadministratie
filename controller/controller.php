@@ -34,7 +34,7 @@ class Controller
                 } else {
                     $families = $_SESSION['families'];
                 }
-                include('view\family\families.php');
+                include('view\family\manageFamilies.php');
             } else if (isset($_POST['addFamily'])) {
                 include('view\family\addFamily.php');
             } else if (isset($_POST['editFamily'])) {
@@ -45,15 +45,15 @@ class Controller
             else if (isset($_POST['createFamily'])) {
                 echo $this->familyModel->createFamily();
                 $families = $this->familyModel->getFamilies();
-                include 'view\family\families.php';
+                include 'view\family\manageFamilies.php';
             } else if (isset($_POST['deleteFamily'])) {
                 echo $this->familyModel->deleteFamily();
                 $families = $this->familyModel->getFamilies();
-                include 'view\family\families.php';
+                include 'view\family\manageFamilies.php';
             } else if (isset($_POST['updateFamily'])) {
                 echo $this->familyModel->updateFamily();
                 $families = $this->familyModel->getFamilies();
-                include 'view\family\families.php';
+                include 'view\family\manageFamilies.php';
             }
         }
 
@@ -65,7 +65,7 @@ class Controller
                 } else {
                     $familyMembers = $_SESSION['familyMembers'];
                 }
-                include('view\familyMember\familyMembers.php');
+                include('view\familyMember\manageFamilyMembers.php');
             } else if (isset($_POST['addFamilyMember'])) {
                 $familyID = $_POST['familyID'];
                 include('view\familyMember\addFamilyMember.php');
@@ -77,15 +77,15 @@ class Controller
             else if (isset($_POST['createFamilyMember'])) {
                 echo $this->familyMemberModel->createFamilyMember();
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
-                include('view\familyMember\familyMembers.php');
+                include('view\familyMember\manageFamilyMembers.php');
             } else if (isset($_POST['deleteFamilyMember'])) {
                 echo $this->familyMemberModel->deleteFamilyMember();
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
-                include('view\familyMember\familyMembers.php');
+                include('view\familyMember\manageFamilyMembers.php');
             } else if (isset($_POST['updateFamilyMember'])) {
                 echo $this->familyMemberModel->updateFamilyMember();
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
-                include('view\familyMember\familyMembers.php');
+                include('view\familyMember\manageFamilyMembers.php');
             }
         }
 
@@ -102,7 +102,7 @@ class Controller
                 } else {
                     $contributions = $_SESSION['contributions'];
                 }
-                include('view\contribution\contributions.php');
+                include('view\contribution\manageContributions.php');
             } else if (isset($_POST['addContribution'])) {
                 include('view\contribution\addContribution.php');
             } else if (isset($_POST['editContribution'])) {
@@ -118,7 +118,7 @@ class Controller
                     $financialYears = $_SESSION['financialYears'];
                 }
                 $contributions = $this->contributionModel->getContributions();
-                include('view\contribution\contributions.php');
+                include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteContribution'])) {
                 echo $this->contributionModel->deleteContribution();
                 if (empty($_SESSION['financialYears'])) {
@@ -127,7 +127,7 @@ class Controller
                     $financialYears = $_SESSION['financialYears'];
                 }
                 $contributions = $this->contributionModel->getContributions();
-                include('view\contribution\contributions.php');
+                include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateContribution'])) {
                 echo $this->contributionModel->updateContribution();
                 if (empty($_SESSION['financialYears'])) {
@@ -136,7 +136,7 @@ class Controller
                     $financialYears = $_SESSION['financialYears'];
                 }
                 $contributions = $this->contributionModel->getContributions();
-                include('view\contribution\contributions.php');
+                include('view\contribution\manageContributions.php');
             }
 
             //Boekjaren
@@ -155,7 +155,7 @@ class Controller
                     $contributions = $_SESSION['contributions'];
                 }
                 $financialYears = $this->contributionModel->getFinancialYears();
-                include('view\contribution\contributions.php');
+                include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteFinancialYear'])) {
                 echo $this->contributionModel->deleteFinancialYear();
                 if (empty($_SESSION['contributions'])) {
@@ -164,7 +164,7 @@ class Controller
                     $contributions = $_SESSION['contributions'];
                 }
                 $financialYears = $this->contributionModel->getFinancialYears();
-                include('view\contribution\contributions.php');
+                include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateFinancialYear'])) {
                 echo $this->contributionModel->updateFinancialYear();
                 if (empty($_SESSION['contributions'])) {
@@ -173,7 +173,7 @@ class Controller
                     $contributions = $_SESSION['contributions'];
                 }
                 $financialYears = $this->contributionModel->getFinancialYears();
-                include('view\contribution\contributions.php');
+                include('view\contribution\manageContributions.php');
             }
         } else {
             $families = $this->familyModel->getFamilies();
