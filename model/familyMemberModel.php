@@ -4,7 +4,7 @@ class FamilyMemberModel extends BaseModel
 {
     private $pdo;
 
-    public function __construct()
+    private function __construct()
     {
         //Maak connectie met de database.
         include 'include\databaseLogin.php';
@@ -26,8 +26,8 @@ class FamilyMemberModel extends BaseModel
             $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, 
             FinancialYear.Cost, Contribution.Discount FROM FamilyMember
             LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
-            LEFT JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
-            LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+            INNER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
+            INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
             WHERE FamilyMember.FamilyID = ?
             AND FinancialYear.Year = 2023");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
@@ -126,7 +126,7 @@ class FamilyMemberModel extends BaseModel
 
     //!!! Verplaatsen naar ContributionModel !!!
     //Staat nu dubbel in FamilyModel
-    public function getMembership($date)
+    private function getMembership($date)
     {
         //Bereken de leeftijd van het familielid door het verschil op te halen tussen de datum van vandaag en de geboortedatum
         $dateOfBirth = new DateTime($date);
@@ -136,7 +136,7 @@ class FamilyMemberModel extends BaseModel
 
         //Haal de contributies op per leeftijd
         $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
-        LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
+        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
         $result = $this->pdo->query($query);
         $membershipsByAge = $result->fetchAll();
         $membershipID = null;

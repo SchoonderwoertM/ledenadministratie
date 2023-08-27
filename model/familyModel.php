@@ -2,9 +2,9 @@
 
 class FamilyModel extends BaseModel
 {
-    public $pdo;
+    private $pdo;
 
-    public function __construct()
+    private function __construct()
     {
         //Maak connectie met de database.
         include 'include\databaseLogin.php';
@@ -23,11 +23,11 @@ class FamilyModel extends BaseModel
         $currentYear = date('Y');
 
         $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Address, Address.City, COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalContribution FROM Family
-        LEFT JOIN Address ON Family.AddressID = Address.AddressID
-        LEFT JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
+        INNER JOIN Address ON Family.AddressID = Address.AddressID
+        INNER JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
         LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
-        LEFT JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
-        LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+        INNER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
+        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
         WHERE FinancialYear.Year = ?
         GROUP BY Family.FamilyID");
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
@@ -41,7 +41,7 @@ class FamilyModel extends BaseModel
         $familyID = $this->sanitizeString($_POST['familyID']);
         $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Address, Address.PostalCode, Address.City 
         FROM Family
-        LEFT JOIN Address ON Family.AddressID = Address.AddressID
+        INNER JOIN Address ON Family.AddressID = Address.AddressID
         WHERE Family.FamilyID = ?");
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
@@ -175,7 +175,7 @@ class FamilyModel extends BaseModel
 
     //!!! Verplaatsen naar ContributionModel !!!
     //Staat nu dubbel in FammilyMemberModel
-    public function getMembership($date)
+    private function getMembership($date)
     {
         //Bereken de leeftijd van het familielid door het verschil op te halen tussen de datum van vandaag en de geboortedatum
         $dateOfBirth = new DateTime($date);
@@ -185,7 +185,7 @@ class FamilyModel extends BaseModel
 
         //Haal de contributies op per leeftijd
         $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
-        LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
+        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
         $result = $this->pdo->query($query);
         $membershipsByAge = $result->fetchAll();
         $membershipID = null;

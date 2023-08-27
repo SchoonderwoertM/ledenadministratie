@@ -4,7 +4,7 @@ class ContributionModel extends BaseModel
 {
     private $pdo;
 
-    public function __construct()
+    private function __construct()
     {
         //Maak connectie met de database.
         require 'include\databaseLogin.php';
@@ -23,8 +23,8 @@ class ContributionModel extends BaseModel
             $financialYear = $this->sanitizeString($_POST['financialYear']);
             $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
             FROM Contribution
-            LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
-            LEFT JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+            INNER JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
+            INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
             WHERE FinancialYear.Year = ?");
             $stmt->bindParam(1, $financialYear, PDO::PARAM_INT);
             $stmt->execute([$financialYear]);
@@ -39,7 +39,7 @@ class ContributionModel extends BaseModel
         $contributionID = $this->sanitizeString($_POST['contributionID']);
         $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
         FROM Contribution
-        LEFT JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
+        INNER JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
         WHERE Contribution.ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);

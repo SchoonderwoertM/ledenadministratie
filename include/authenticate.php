@@ -1,11 +1,13 @@
 <?php
 require_once 'include\databaseLogin.php';
+
 try {
     $pdo = new PDO($attr, $user, $pass, $opts);
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
     die();
 }
+
 session_start();
 
 if (!isset($_SESSION['loggedin'])) {
