@@ -4,7 +4,7 @@ class FamilyModel extends BaseModel
 {
     private $pdo;
 
-    private function __construct()
+    public function __construct()
     {
         //Maak connectie met de database.
         include 'include\databaseLogin.php';

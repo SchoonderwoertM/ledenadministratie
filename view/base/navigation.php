@@ -14,10 +14,5 @@
             <input type="hidden" name="manageContributions">
             <input type="submit" value="Contributie" name="Contribution" />
         </form>
-
-        <form method="post" action="index.php">
-            <input type="hidden" name="logout">
-            <input type="submit" value="Uitloggen" />
-        </form>
     </nav>
     <main>

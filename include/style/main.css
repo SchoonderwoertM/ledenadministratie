@@ -9,6 +9,21 @@ body {
   color: #555;
 }
 
+header{
+  display: flex;
+  align-items: center;
+}
+
+#headerTitle{
+  flex-grow: 2;
+  margin-inline-start: 5rem;
+}
+
+#logoutButton{
+  margin: 0 0.5rem 0 0;
+  width: 5rem;
+}
+
 header,
 footer {
   grid-column-start: 1;

@@ -9,5 +9,9 @@
 </head>
 <body>
     <header>
-        <h1>Ledenadministratie</h1>
+        <h1 id="headerTitle">Ledenadministratie</h1>
+        <form method="post" action="index.php">
+            <input type="hidden" name="logout">
+            <input id="logoutButton" type="submit" value="Uitloggen" />
+        </form>
     </header>
