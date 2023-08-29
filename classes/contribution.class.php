@@ -1,16 +1,16 @@
 <?php
 class Contribution {
     public $contributionID; 
+    public $membershipID;
+    public $membershipType;
     public $age;
     public $discount;
-    public $membershipID;
-    public $description;
     
     public function __construct($contributionID, $age, $discount, $membershipID, $description) {
         $this->contributionID = $contributionID;
+        $this->membershipID = $membershipID;
         $this->age = $age;
         $this->discount = $discount;
-        $this->membershipID = $membershipID;
-        $this->description = $description;
+        $this->membershipType = $description;
     }
 }

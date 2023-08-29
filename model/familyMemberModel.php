@@ -26,7 +26,7 @@ class FamilyMemberModel extends BaseModel
 
             $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, 
             FinancialYear.Cost, Contribution.Discount FROM FamilyMember
-            LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
+            INNER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
             INNER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
             INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
             WHERE FamilyMember.FamilyID = ?
@@ -39,7 +39,6 @@ class FamilyMemberModel extends BaseModel
                 $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], $row['Description'], $row['Cost'], $row['Discount']);
                 $familyMembers[] = $familyMember;
             }
-            
             return $familyMembers;
         }
         return "<p class='badMessage'>Kan de familie niet vinden.</p>";
@@ -72,6 +71,11 @@ class FamilyMemberModel extends BaseModel
             $familyID = $this->sanitizeString($_POST['familyID']);
             $membershipID = $this->getMembership($dateOfBirth);
 
+            if(!$membershipID)
+            {
+                return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd.</p>";
+            }
+
             //Sla het familid op in de database.
             $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
             $stmt->bindParam(1, $name, PDO::PARAM_STR, 128);
@@ -90,6 +94,13 @@ class FamilyMemberModel extends BaseModel
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
         $familyID = $this->sanitizeString($_POST['familyID']);
 
+        //Haal het AddressID van de familie op.
+        $stmt = $this->pdo->prepare("SELECT AddressID FROM Family WHERE FamilyID = ?");
+        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+        $stmt->execute([$familyID]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $addressID = $row['AddressID'];
+
         //Verwijder het het familielid.
         $stmt = $this->pdo->prepare("DELETE FROM FamilyMember WHERE FamilyMember.FamilyMemberID = ?");
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
@@ -100,10 +111,16 @@ class FamilyMemberModel extends BaseModel
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
         //Als er geen familiedelen meer zijn, verwijder dan de familie uit de database.
-        if ($stmt->rowCount() == 0)
+        if ($stmt->rowCount() == 0) {
             $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
-        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
-        $stmt->execute([$familyID]);
+            $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$familyID]);
+
+            //Verwijder het woonadres.
+            $stmt = $this->pdo->prepare("DELETE FROM Address WHERE AddressID = ?");
+            $stmt->bindParam(1, $addressID, PDO::PARAM_INT);
+            $stmt->execute([$addressID]);
+        }
 
         return "<p class='badMessage'>Familielid verwijderd.</p>";
     }
@@ -118,6 +135,10 @@ class FamilyMemberModel extends BaseModel
             $name = $this->sanitizeString($_POST['name']);
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $membershipID = $this->getMembership($dateOfBirth);
+
+            If(!$membershipID){
+                return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd.</p>";
+            }
 
             //Sla de ingevoerde waarden op in de database.
             $stmt = $this->pdo->prepare("UPDATE FamilyMember SET Name = ?, DateOfBirth = ?, MembershipID = ? WHERE FamilyMemberID = ?");
@@ -143,8 +164,10 @@ class FamilyMemberModel extends BaseModel
         $age = $age->y;
 
         //Haal de contributies op per leeftijd
+        //!!! financialYear Dynamisch maken !!!
         $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
-        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
+        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+        WHERE FinancialYear.Year = 2023");
         $result = $this->pdo->query($query);
         $membershipsByAge = $result->fetchAll();
         $membershipID = null;
@@ -157,7 +180,7 @@ class FamilyMemberModel extends BaseModel
             }
         }
         if (!$membership) {
-            return "<p class='badMessage'>Er is geen lidmaatschap bekend voor de leeftijd van $age jaar.</p>";
+            return null;
         } else {
             return $membershipID;
         }

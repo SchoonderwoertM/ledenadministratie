@@ -1,7 +1,6 @@
 <?php require_once 'include\authenticate.php' ?>
 <h1>Contributie overzicht</h1>
 
-<h2>Boekjaren</h2>
 <table>
     <thead>
         <th>Boekjaar</th>
@@ -24,7 +23,7 @@
                         </form>
                         <form action="index.php" method="post">
                             <input type="hidden" name="financialYearID" value="<?php echo $financialYear->financialYearID ?>">
-                            <input type="hidden" name="deleteFinancialYear">
+                            <input type="hidden" name="deleteFinancialYearMessage">
                             <input type="submit" value="Verwijderen" name="Contribution">
                         </form>
                     </div>
@@ -55,6 +54,7 @@
     </form>
 
     <?php if ($contributions) { ?>
+        
         <table>
             <thead>
                 <th>Soort lid</th>
@@ -65,7 +65,7 @@
             <tbody>
                 <?php foreach ($contributions as $contribution) { ?>
                     <tr>
-                        <td><?php echo $contribution->description; ?></td>
+                        <td><?php echo $contribution->membershipType; ?></td>
                         <td><?php echo $contribution->age; ?></td>
                         <td><?php echo $contribution->discount; ?></td>
                         <td>
@@ -91,6 +91,6 @@
 
     <form action="index.php" method="post">
         <input type="hidden" name="addContribution">
-        <input type="submit" value="Contriubtie toevoegen" name="Contribution">
+        <input type="submit" value="Lidmaatschap toevoegen" name="Contribution">
     </form>
 </div>

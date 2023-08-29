@@ -1,5 +1,6 @@
 <?php require_once 'include\authenticate.php' ?>
 <h1>Familie toevoegen</h1>
+<p>De familie wordt toegevoegd door hieronder het eerste familielid te registreren.</p></br>
 
 <form action="index.php" method="post">
     <div>
@@ -15,8 +16,10 @@
         <input id="dateOfBirth" type="date" name="dateOfBirth" required>
     </div>
     <div>
-        <label for="address">Adres</label>
-        <input id="address" type="text" name="address" required>
+        <label for="street">Straat</label>
+        <input id="street" type="text" name="street" required>
+        <label for="housenumber">Huisnummer</label>
+        <input id="housenumber" type="text" name="housenumber" required>
     </div>
     <div>
         <label for="postalCode">Postcode</label>

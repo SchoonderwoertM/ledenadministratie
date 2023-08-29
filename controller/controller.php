@@ -36,6 +36,9 @@ class Controller
             } else if (isset($_POST['editFamily'])) {
                 $family = $this->familyModel->getFamily();
                 include('view\family\editFamily.php');
+            } else if (isset($_POST['deleteFamilyMessage'])) {
+                $familyID = $_POST['familyID'];
+                include 'view\family\deleteFamily.php';
             }
             //CRUD operaties
             else if (isset($_POST['createFamily'])) {
@@ -84,11 +87,7 @@ class Controller
         //Check of actie valt onder de categorie Contributions
         else if (isset($_POST['Contribution'])) {
             if (isset($_POST['manageContributions'])) {
-                if (empty($_SESSION['financialYears'])) {
-                    $financialYears = $this->contributionModel->getFinancialYears();
-                } else {
-                    $financialYears = $_SESSION['financialYears'];
-                }
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['addContribution'])) {
@@ -96,33 +95,21 @@ class Controller
             } else if (isset($_POST['editContribution'])) {
                 $contribution = $this->contributionModel->getContribution();
                 include('view\contribution\editContribution.php');
-            }
+            } 
             //CRUD operaties contributies
             else if (isset($_POST['createContribution'])) {
                 echo $this->contributionModel->createContribution();
-                if (empty($_SESSION['financialYears'])) {
-                    $financialYears = $this->contributionModel->getFinancialYears();
-                } else {
-                    $financialYears = $_SESSION['financialYears'];
-                }
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteContribution'])) {
                 echo $this->contributionModel->deleteContribution();
-                if (empty($_SESSION['financialYears'])) {
-                    $financialYears = $this->contributionModel->getFinancialYears();
-                } else {
-                    $financialYears = $_SESSION['financialYears'];
-                }
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateContribution'])) {
                 echo $this->contributionModel->updateContribution();
-                if (empty($_SESSION['financialYears'])) {
-                    $financialYears = $this->contributionModel->getFinancialYears();
-                } else {
-                    $financialYears = $_SESSION['financialYears'];
-                }
+                $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\manageContributions.php');
             }
@@ -134,32 +121,24 @@ class Controller
                 $financialYear = $this->contributionModel->getFinancialYear();
                 include('view\contribution\editFinancialYear.php');
             }
+            else if (isset($_POST['deleteFinancialYearMessage'])) {
+                $financialYearID = $_POST['financialYearID'];
+                include('view\contribution\deleteFinancialYear.php');
+            }
             //CRUD operaties boekjaren
             else if (isset($_POST['createFinancialYear'])) {
                 echo $this->contributionModel->createFinancialYear();
-                if (empty($_SESSION['contributions'])) {
-                    $contributions = $this->contributionModel->getContributions();
-                } else {
-                    $contributions = $_SESSION['contributions'];
-                }
+                $contributions = $this->contributionModel->getContributions();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteFinancialYear'])) {
                 echo $this->contributionModel->deleteFinancialYear();
-                if (empty($_SESSION['contributions'])) {
-                    $contributions = $this->contributionModel->getContributions();
-                } else {
-                    $contributions = $_SESSION['contributions'];
-                }
+                $contributions = $this->contributionModel->getContributions();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateFinancialYear'])) {
                 echo $this->contributionModel->updateFinancialYear();
-                if (empty($_SESSION['contributions'])) {
-                    $contributions = $this->contributionModel->getContributions();
-                } else {
-                    $contributions = $_SESSION['contributions'];
-                }
+                $contributions = $this->contributionModel->getContributions();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 include('view\contribution\manageContributions.php');
             }

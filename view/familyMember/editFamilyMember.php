@@ -1,5 +1,5 @@
 <?php require_once 'include\authenticate.php' ?>
-<h1>Familielid wijzigen</h1>
+<h1>Familielid <?php echo $familyMember->name ?> wijzigen</h1>
 
 <form action="index.php" method="post">
     <div>

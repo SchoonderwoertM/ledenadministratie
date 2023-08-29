@@ -14,8 +14,8 @@
             <tr>
                 <td><?php echo $familyMember->name; ?></td>
                 <td><?php echo $familyMember->dateOfBirth; ?></td>
-                <td><?php echo $familyMember->membership; ?></td>
-                <td><?php echo $familyMember->discount == 0 ? $familyMember->cost : $familyMember->cost * $familyMember->discount / 100; ?></td>
+                <td><?php echo $familyMember->membershipType; ?></td>
+                <td><?php echo $familyMember->contributionWithDiscount; ?></td>
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">

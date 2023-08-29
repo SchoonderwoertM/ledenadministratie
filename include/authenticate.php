@@ -37,6 +37,7 @@ if (!isset($_SESSION['loggedin'])) {
             //Check of het gehashte wachtwoord overeen komt met het ingevoerde wachtwoord.
             if (password_verify(str_replace("'", "", $password), $pw)) {
                 $_SESSION['loggedin'] = true;
+                $_SESSION['username'] = $username;
                 return true;
             } else {
                 include_once 'view/login.php';

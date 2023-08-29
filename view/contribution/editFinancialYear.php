@@ -3,8 +3,8 @@
 
 <form action="index.php" method="post">
     <div>
-        <label for="contribution">Contributie</label>
-        <input id="contribution" type="text" min="0" max="1000" name="cost" placeholder="€" value="<?php echo $financialYear->cost ?>" autofocus="on" required>
+        <label for="contribution">Contributie (€)</label>
+        <input id="contribution" type="text" min="0" max="1000" name="cost" value="<?php echo $financialYear->cost ?>" autofocus="on" required>
     </div>
     <div>
         <input type="hidden" name="financialYearID" value="<?php echo $financialYear->financialYearID ?>">

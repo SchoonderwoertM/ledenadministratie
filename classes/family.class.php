@@ -2,20 +2,22 @@
 class Family {
     public $familyID; 
     public $name;
-    public $address; 
+    public $street; 
+    public $housenumber;
     public $postalCode;
     public $city; 
     public $numberOfFamilyMembers; 
     public $totalContribution; 
     
-    public function __construct($familyID, $name, $address, $postalCode, $city, $numberOfFamilyMembers, $totalContribution) {
+    public function __construct($familyID, $name, $street, $housenumber, $postalCode, $city, $numberOfFamilyMembers, $yearContribution, $totalDiscount) {
         $this->familyID = $familyID;
         $this->name = $name;
-        $this->address = $address;
+        $this->street = $street;
+        $this->housenumber = $housenumber;
         $this->postalCode = $postalCode;
         $this->city = $city;
         $this->numberOfFamilyMembers = $numberOfFamilyMembers;
-        $this->totalContribution = $totalContribution;
+        $this->totalContribution = ($yearContribution - ($yearContribution * ($totalDiscount / $numberOfFamilyMembers)) / 100) * $numberOfFamilyMembers;
     }
 }
 

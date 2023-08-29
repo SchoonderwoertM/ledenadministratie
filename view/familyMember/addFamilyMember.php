@@ -1,5 +1,6 @@
 <?php require_once 'include\authenticate.php' ?>
 <h1>Familielid toevoegen</h1>
+<p>Het soort lidmaatschap wordt automatisch bepaald aan de hand van de leeftijd.</p><br>
 
 <form action="index.php" method="post">
     <div>
@@ -18,6 +19,7 @@
     </div>
 </form>
 <form id="goBack" action="index.php" method="post">
+    <input type="hidden" name="familyID" value="<?php echo $familyID ?>">
     <input type="hidden" name="FamilyMember">
     <input type="hidden" name="manageFamilyMembers">
 </form>

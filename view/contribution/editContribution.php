@@ -1,10 +1,10 @@
 <?php require_once 'include\authenticate.php' ?>
-<h1>Contributie aanpassen</h1>
+<h1>Lidmaatschap <?php echo $contribution->membershipType; ?> aanpassen</h1>
 
 <form action="index.php" method="post">
     <div>
         <label for="membership">Soort lid</label>
-        <input id="membership" type="text" name="description" value="<?php echo $contribution->description; ?>" autofocus="on" required>
+        <input id="membership" type="text" name="description" value="<?php echo $contribution->membershipType; ?>" autofocus="on" required>
     </div>
     <div>
         <label for="age">Leeftijd tot</label>
