@@ -4,7 +4,7 @@
 <form action="index.php" method="post">
     <div>
         <label for="name">Naam</label>
-        <input id="name" type="text" name="name" value="<?php echo $familyMember->name ?>" autofocus="on" required>
+        <input id="name" type="text" maxlength="50" name="name" value="<?php echo $familyMember->name ?>" autofocus="on" required>
     </div>
     <div>
         <label for="dateOfBirth">Geboortedatum</label>

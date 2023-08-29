@@ -4,15 +4,15 @@
 <form action="index.php" method="post">
     <div>
         <label for="membership">Soort lid</label>
-        <input id="membership" type="text" name="description" value="<?php echo $contribution->membershipType; ?>" autofocus="on" required>
+        <input id="membership" type="text" maxlength="50" name="description" value="<?php echo $contribution->membershipType; ?>" autofocus="on" required>
     </div>
     <div>
         <label for="age">Leeftijd tot</label>
-        <input id="age" type="text" min="0" max="150" name="age" value="<?php echo $contribution->age; ?>" required>
+        <input id="age" type="text" min="0" max="100" name="age" value="<?php echo $contribution->age; ?>" required>
     </div>
     <div>
         <label for="discount">Korting (%)</label>
-        <input id="discount" type="text" min="0" max="999" name="discount" value="<?php echo $contribution->discount; ?>" required>
+        <input id="discount" type="text" min="0" max="100" name="discount" value="<?php echo $contribution->discount; ?>" required>
     </div>
     <div>
         <input type="hidden" name="membershipID" value="<?php echo $contribution->membershipID; ?>">

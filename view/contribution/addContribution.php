@@ -4,15 +4,15 @@
 <form action="index.php" method="post">
     <div>
         <label for="year">Boekjaar</label>
-        <input id="year" type="number" name="financialYear" autofocus="on" required>
+        <input id="year" type="number" maxlength="4" name="financialYear" autofocus="on" required>
     </div>
     <div>
         <label for="membership">Soort lid</label>
-        <input id="membership" type="text" name="description" required>
+        <input id="membership" type="text" maxlength="50" name="description" required>
     </div>
     <div>
         <label for="age">Leeftijd tot</label>
-        <input id="age" type="number" name="age" min="0" max="120" required>
+        <input id="age" type="number" name="age" min="0" max="100" required>
     </div>
     <div>
         <label for="discount">Korting (%)</label>

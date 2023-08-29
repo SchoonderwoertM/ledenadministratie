@@ -101,16 +101,19 @@ class Controller
                 echo $this->contributionModel->createContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
+                // $example = $_POST['year'];
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteContribution'])) {
                 echo $this->contributionModel->deleteContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
+                // $example = $_POST['year'];
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateContribution'])) {
                 echo $this->contributionModel->updateContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
+                // $example = $_POST['year'];
                 include('view\contribution\manageContributions.php');
             }
 

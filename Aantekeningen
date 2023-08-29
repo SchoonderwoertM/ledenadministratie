@@ -1,2 +1,3 @@
-- Aantekeningen in code oppakken.
+- Boekjaar in select behouden na bevestigen. Zie manageContribtutions view en controller $example
 - Login scherm correct weergeven.
+- lengte db velden aanpassen aan de hand van het ontwerp.

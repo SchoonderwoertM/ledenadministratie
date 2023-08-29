@@ -4,23 +4,23 @@
 <form action="index.php" method="post">
     <div>
         <label for="familyName">Familienaam</label>
-        <input id="familyName" type="text" name="name" value="<?php echo $family->name ?>" autofocus="on" required>
+        <input id="familyName" type="text" maxlength="100" name="name" value="<?php echo $family->name ?>" autofocus="on" required>
     </div>
     <div>
         <label for="street">Straat</label>
-        <input id="street" type="text" name="street" value="<?php echo $family->street ?>" required>
+        <input id="street" type="text" maxlength="100" name="street" value="<?php echo $family->street ?>" required>
     </div>
     <div>
         <label for="housenumber">Huisnummer</label>
-        <input id="housenumber" type="text" name="housenumber" value="<?php echo $family->housenumber ?>" required>
+        <input id="housenumber" type="text" maxlength="5" name="housenumber" value="<?php echo $family->housenumber ?>" required>
     </div>
     <div>
         <label for="postalCode">Postcode</label>
-        <input id="postalCode" type="text" name="postalCode" value="<?php echo $family->postalCode ?>" required>
+        <input id="postalCode" type="text" maxlength="7" name="postalCode" value="<?php echo $family->postalCode ?>" required>
     </div>
     <div>
         <label for="city">Plaats</label>
-        <input id="city" type="text" name="city" value="<?php echo $family->city ?>" required>
+        <input id="city" type="text" maxlength="100" name="city" value="<?php echo $family->city ?>" required>
     </div>
     <input type="hidden" name="familyID" value="<?php echo $family->familyID ?>">
     <input type="hidden" name="updateFamily">

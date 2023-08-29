@@ -42,8 +42,10 @@
     <form method="post" action="index.php">
         <label for="financialYears" class="inline">Selecteer een boekjaar</label>
         <select id="financialYears" name="financialYear">
+            <option value=''>-</option>
             <?php
             foreach ($financialYears as $financialYear) {
+                // echo '<option value="' . $financialYear->year . '"' . if(isset($_POST['year']) && $_POST['year'] == $financialYear->year) echo "selected='selected'" '>' . '</option>';
                 echo '<option value="' . $financialYear->year . '">' . ucfirst($financialYear->year) . '</option>';
             }
             ?>
@@ -54,7 +56,7 @@
     </form>
 
     <?php if ($contributions) { ?>
-        
+
         <table>
             <thead>
                 <th>Soort lid</th>

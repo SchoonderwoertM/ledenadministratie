@@ -5,11 +5,11 @@
 <form action="index.php" method="post">
     <div>
         <label for="firstName">Voornaam</label>
-        <input id="firstName" type="text" name="firstName" autofocus="on" required>
+        <input id="firstName" type="text" maxlength="50" name="firstName" autofocus="on" required>
     </div>
     <div>
         <label for="lastName">Achternaam</label>
-        <input id="lastName" type="text" name="lastName" required>
+        <input id="lastName" type="text" maxlength="100" name="lastName" required>
     </div>
     <div>
         <label for="dateOfBirth">Geboortedatum</label>
@@ -17,17 +17,17 @@
     </div>
     <div>
         <label for="street">Straat</label>
-        <input id="street" type="text" name="street" required>
+        <input id="street" type="text" maxlength="100" name="street" required>
         <label for="housenumber">Huisnummer</label>
-        <input id="housenumber" type="text" name="housenumber" required>
+        <input id="housenumber" type="text" maxlength="5" name="housenumber" required>
     </div>
     <div>
         <label for="postalCode">Postcode</label>
-        <input id="postalCode" type="text" name="postalCode" required>
+        <input id="postalCode" type="text" maxlength="7" name="postalCode" required>
     </div>
     <div>
         <label for="city">Plaats</label>
-        <input id="city" type="text" name="city" required>
+        <input id="city" type="text" maxlength="100" name="city" required>
     </div>
     <div>
         <input type="hidden" name="createFamily">
