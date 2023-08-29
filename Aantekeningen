@@ -1,6 +1,2 @@
 - Aantekeningen in code oppakken.
-- Testen CRUD operaties.
-    - Bij aanmaken of wijzigen membership, membership id in familymember aanpassen
-
-- Queries die dubbel zijn in methode plaatsen.
-- Dubbele methodes aanpakken
+- Login scherm correct weergeven.

@@ -19,7 +19,9 @@ class FamilyMemberModel extends BaseModel
 
     public function getFamilyMembers()
     {
-        //!!! Jaar dynamisch maken !!!
+        //Haal het huidige jaar op.
+        $currentYear = date('Y');
+
         //Haal de familieleden op van de geselecteerde familie.
         if (!empty($_POST['familyID'])) {
             $familyID = $this->sanitizeString($_POST['familyID']);
@@ -30,7 +32,7 @@ class FamilyMemberModel extends BaseModel
             INNER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
             INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
             WHERE FamilyMember.FamilyID = ?
-            AND FinancialYear.Year = 2023");
+            AND FinancialYear.Year = $currentYear");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -71,8 +73,7 @@ class FamilyMemberModel extends BaseModel
             $familyID = $this->sanitizeString($_POST['familyID']);
             $membershipID = $this->getMembership($dateOfBirth);
 
-            if(!$membershipID)
-            {
+            if (!$membershipID) {
                 return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd.</p>";
             }
 
@@ -136,7 +137,7 @@ class FamilyMemberModel extends BaseModel
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $membershipID = $this->getMembership($dateOfBirth);
 
-            If(!$membershipID){
+            if (!$membershipID) {
                 return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd.</p>";
             }
 
@@ -151,38 +152,5 @@ class FamilyMemberModel extends BaseModel
             return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
         }
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
-    }
-
-    //!!! Verplaatsen naar ContributionModel !!!
-    //Staat nu dubbel in FamilyModel
-    private function getMembership($date)
-    {
-        //Bereken de leeftijd van het familielid door het verschil op te halen tussen de datum van vandaag en de geboortedatum
-        $dateOfBirth = new DateTime($date);
-        $currectDate = new DateTime(date('y.m.d'));
-        $age = $currectDate->diff($dateOfBirth);
-        $age = $age->y;
-
-        //Haal de contributies op per leeftijd
-        //!!! financialYear Dynamisch maken !!!
-        $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
-        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-        WHERE FinancialYear.Year = 2023");
-        $result = $this->pdo->query($query);
-        $membershipsByAge = $result->fetchAll();
-        $membershipID = null;
-
-        //Check welke soort lid bij de leeftijd hoort.
-        foreach ($membershipsByAge as $membership) {
-            if ($age < $membership['Age']) {
-                $membershipID = $membership['MembershipID'];
-                break;
-            }
-        }
-        if (!$membership) {
-            return null;
-        } else {
-            return $membershipID;
-        }
     }
 }
