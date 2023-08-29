@@ -19,7 +19,6 @@ class FamilyModel extends BaseModel
 
     public function getFamilies()
     {
-        //!!! Contributie per gezin berekenen !!!
         //Haal het huidige jaar op.
         $currentYear = date('Y');
 
@@ -28,7 +27,7 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        if($row){
+        if ($row) {
             $yearContribution = $row['Cost'];
         }
 
@@ -93,14 +92,8 @@ class FamilyModel extends BaseModel
             if (empty($membershipID)) {
                 return "<p class='badMessage'>Er dient eerst een passend lidmaatschap te worden aangemaakt.<p>";
             } else {
-                //Ga na of er al een familie op het adres bekend is.
-                $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Street = ? AND Housenumber = ? AND PostalCode = ? ");
-                $stmt->bindParam(1, $street, PDO::PARAM_STR, 128);
-                $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
-                $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 10);
-                $stmt->execute([$street, $housenumber, $postalCode]);
-                //Als er al een familie bekend is, toon een foutmelding.
-                if ($stmt->rowCount() > 0) {
+                //Nagaan of er al een familie op het adres bekend is.
+                if ($this->AddressAlreadyExists($housenumber, $postalCode)) {
                     return "<p class='badMessage'>Er is al een familie bekend op dit adres.<p>";
                 } else {
                     //Is er geen familie bekend sla dan het ingevoegde adres op in de database.
@@ -139,11 +132,7 @@ class FamilyModel extends BaseModel
         $familyID = $this->sanitizeString($_POST['familyID']);
 
         //Haal het AddressID van de familie op.
-        $stmt = $this->pdo->prepare("SELECT AddressID FROM Family WHERE FamilyID = ?");
-        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
-        $stmt->execute([$familyID]);
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $addressID = $row['AddressID'];
+        $addressID = $this->GetAddressID($familyID);
 
         //Verwijder alle familieleden die bekend zijn onder het betreffende FamilyID.
         $stmt = $this->pdo->prepare("DELETE FROM FamilyMember WHERE FamilyID = ?");
@@ -181,13 +170,8 @@ class FamilyModel extends BaseModel
             $city = $this->sanitizeString($_POST['city']);
 
             //Nagaan of er al een familie op het adres bekend is.
-            $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Street = ? AND Housenumber = ? AND PostalCode = ?");
-            $stmt->bindParam(1, $street, PDO::PARAM_STR, 128);
-            $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
-            $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 10);
-            $stmt->execute([$street, $housenumber, $postalCode]);
-            if ($stmt->rowCount() > 0) {
-                return "<p class='badMessage'>Er is al een familie bekend op dit adres.</p>";
+            if ($this->AddressAlreadyExists($housenumber, $postalCode)) {
+                return "<p class='badMessage'>Er is al een familie bekend op dit adres.<p>";
             } else {
                 //Sla de ingevoerde waarden betreft de familie op in de database.
                 $stmt = $this->pdo->prepare("UPDATE Family SET Name = ? WHERE FamilyID = ?");
@@ -196,12 +180,7 @@ class FamilyModel extends BaseModel
                 $stmt->execute([$name, $familyID]);
 
                 //Haal het AddressID op van de te update family.
-                $stmt = $this->pdo->prepare("SELECT AddressID FROM Family
-            WHERE FamilyID = ?");
-                $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
-                $stmt->execute([$familyID]);
-                $addressID = $stmt->fetch();
-                $addressID = reset($addressID);
+                $addressID = $addressID = $this->GetAddressID($familyID);
 
                 //Sla de ingevoerde waarden betreft het adres op in de database.
                 $stmt = $this->pdo->prepare("UPDATE Address SET Street = ?, Housenumber = ?, PostalCode = ?, City = ? WHERE AddressID = ?");
@@ -218,34 +197,27 @@ class FamilyModel extends BaseModel
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
-    //!!! Verplaatsen naar ContributionModel !!!
-    //Staat nu dubbel in FammilyMemberModel
-    private function getMembership($date)
+    //Nagaan of er al een familie op het adres bekend is.
+    private function AddressAlreadyExists($housenumber, $postalCode)
     {
-        //Bereken de leeftijd van het familielid door het verschil op te halen tussen de datum van vandaag en de geboortedatum
-        $dateOfBirth = new DateTime($date);
-        $currectDate = new DateTime(date('y.m.d'));
-        $age = $currectDate->diff($dateOfBirth);
-        $age = $age->y;
-
-        //Haal de contributies op per leeftijd
-        $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
-        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
-        $result = $this->pdo->query($query);
-        $membershipsByAge = $result->fetchAll();
-        $membershipID = null;
-
-        //Check welke soort lid bij de leeftijd hoort.
-        foreach ($membershipsByAge as $membership) {
-            if ($age < $membership['Age']) {
-                $membershipID = $membership['MembershipID'];
-                break;
-            }
+        //Nagaan of er al een familie op het adres bekend is.
+        $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Housenumber = ? AND PostalCode = ?");
+        $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
+        $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 10);
+        $stmt->execute([$housenumber, $postalCode]);
+        if ($stmt->rowCount() > 0) {
+            return true;
         }
-        if (empty($membership)) {
-            return null;
-        } else {
-            return $membershipID;
-        }
+        return false;
+    }
+
+    //Haal het AddressID van de familie op.
+    private function GetAddressID($familyID)
+    {
+        $stmt = $this->pdo->prepare("SELECT AddressID FROM Family WHERE FamilyID = ?");
+        $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
+        $stmt->execute([$familyID]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['AddressID'];
     }
 }
