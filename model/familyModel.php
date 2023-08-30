@@ -98,23 +98,23 @@ class FamilyModel extends BaseModel
                 } else {
                     //Is er geen familie bekend sla dan het ingevoegde adres op in de database.
                     $stmt = $this->pdo->prepare("INSERT INTO Address (AddressID, Street, Housenumber, PostalCode, City) VALUES (null, ?, ?, ?, ?)");
-                    $stmt->bindParam(1, $street, PDO::PARAM_STR, 128);
+                    $stmt->bindParam(1, $street, PDO::PARAM_STR, 100);
                     $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
-                    $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 10);
-                    $stmt->bindParam(4, $city, PDO::PARAM_STR, 128);
+                    $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 7);
+                    $stmt->bindParam(4, $city, PDO::PARAM_STR, 100);
                     $stmt->execute([$street, $housenumber, $postalCode, $city]);
                     $addressID = $this->pdo->lastInsertId();
 
                     //Sla de familie gegevens op in de database.
                     $stmt = $this->pdo->prepare("INSERT INTO Family (FamilyID, Name, AddressID) VALUES (null, ?, ?)");
-                    $stmt->bindParam(1, $lastName, PDO::PARAM_STR, 128);
+                    $stmt->bindParam(1, $lastName, PDO::PARAM_STR, 100);
                     $stmt->bindParam(2, $addressID, PDO::PARAM_INT);
                     $stmt->execute([$lastName, $addressID]);
                     $familyID = $this->pdo->lastInsertId();
 
                     //Sla het familielid op in de database.
                     $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
-                    $stmt->bindParam(1, $firstName, PDO::PARAM_STR, 128);
+                    $stmt->bindParam(1, $firstName, PDO::PARAM_STR, 50);
                     $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
                     $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
                     $stmt->bindParam(4, $familyID, PDO::PARAM_INT);
@@ -175,7 +175,7 @@ class FamilyModel extends BaseModel
             } else {
                 //Sla de ingevoerde waarden betreft de familie op in de database.
                 $stmt = $this->pdo->prepare("UPDATE Family SET Name = ? WHERE FamilyID = ?");
-                $stmt->bindParam(1, $name, PDO::PARAM_STR, 128);
+                $stmt->bindParam(1, $name, PDO::PARAM_STR, 100);
                 $stmt->bindParam(2, $familyID, PDO::PARAM_INT);
                 $stmt->execute([$name, $familyID]);
 
@@ -184,10 +184,10 @@ class FamilyModel extends BaseModel
 
                 //Sla de ingevoerde waarden betreft het adres op in de database.
                 $stmt = $this->pdo->prepare("UPDATE Address SET Street = ?, Housenumber = ?, PostalCode = ?, City = ? WHERE AddressID = ?");
-                $stmt->bindParam(1, $street, PDO::PARAM_STR, 128);
+                $stmt->bindParam(1, $street, PDO::PARAM_STR, 100);
                 $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
-                $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 6);
-                $stmt->bindParam(4, $city, PDO::PARAM_STR, 128);
+                $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 7);
+                $stmt->bindParam(4, $city, PDO::PARAM_STR, 100);
                 $stmt->bindParam(5, $addressID, PDO::PARAM_INT);
                 $stmt->execute([$street, $housenumber, $postalCode, $city, $addressID]);
 
@@ -203,7 +203,7 @@ class FamilyModel extends BaseModel
         //Nagaan of er al een familie op het adres bekend is.
         $stmt = $this->pdo->prepare("SELECT AddressID FROM Address WHERE Housenumber = ? AND PostalCode = ?");
         $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
-        $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 10);
+        $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 7);
         $stmt->execute([$housenumber, $postalCode]);
         if ($stmt->rowCount() > 0) {
             return true;

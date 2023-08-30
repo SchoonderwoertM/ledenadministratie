@@ -75,7 +75,7 @@ class ContributionModel extends BaseModel
                 //Sla het Membership op in de database.
                 $stmt = $this->pdo->prepare("INSERT INTO Membership (MembershipID, Description) 
             VALUES (null, ?)");
-                $stmt->bindParam(1, $membership, PDO::PARAM_STR, 128);
+                $stmt->bindParam(1, $membership, PDO::PARAM_STR, 100);
                 $stmt->execute([$membership]);
                 $membershipID = $stmt->fetch();
                 //Haal het MembershipID op van het zojuist toegevoegde record.
@@ -161,7 +161,7 @@ class ContributionModel extends BaseModel
 
                 //Sla de ingevoerde waarden op in de database.
                 $stmt = $this->pdo->prepare("UPDATE Membership SET Description = ? WHERE MembershipID = ?");
-                $stmt->bindParam(1, $description, PDO::PARAM_STR, 128);
+                $stmt->bindParam(1, $description, PDO::PARAM_STR, 100);
                 $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
                 $stmt->execute([$description, $membershipID]);
 

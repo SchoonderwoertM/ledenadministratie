@@ -79,7 +79,7 @@ class FamilyMemberModel extends BaseModel
 
             //Sla het familid op in de database.
             $stmt = $this->pdo->prepare("INSERT INTO FamilyMember (FamilyMemberID, Name, DateOfBirth, MembershipID, FamilyID) VALUES (null, ?, ?, ?, ?)");
-            $stmt->bindParam(1, $name, PDO::PARAM_STR, 128);
+            $stmt->bindParam(1, $name, PDO::PARAM_STR, 50);
             $stmt->bindParam(2, $dateOfBirth, PDO::PARAM_STR, 10);
             $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
             $stmt->bindParam(4, $familyID, PDO::PARAM_INT);

@@ -8,6 +8,8 @@ try {
     die();
 }
 
+//Beëindig de sessie automatisch na 1 dag geen activiteit.
+ini_set('session.gc_maxlifetime', 60 * 60 * 24);
 session_start();
 
 if (!isset($_SESSION['loggedin'])) {
@@ -23,7 +25,7 @@ if (!isset($_SESSION['loggedin'])) {
 
             //Check of de gebruikersnaam bekend is in de database.
             $stmt = $pdo->prepare("SELECT * FROM User WHERE Username = ?");
-            $stmt->bindParam(1, $username, PDO::PARAM_STR, 128);
+            $stmt->bindParam(1, $username, PDO::PARAM_STR, 100);
             $stmt->execute([$username]);
             //Als de gebruiker bekend is, zet dan het wachtwoord in een variabele.
             if ($stmt->rowCount() > 0) {
@@ -32,27 +34,31 @@ if (!isset($_SESSION['loggedin'])) {
             } else {
                 include_once 'view/login.php';
                 echo "<p class='badMessage'>Gebruikersnaam en/of wachtwoord onjuist.</p>";
+                die();
             }
 
-            //Check of het gehashte wachtwoord overeen komt met het ingevoerde wachtwoord.
+            //Check of het gehashte wachtwoord in de database overeen komt met het ingevoerde wachtwoord.
             if (password_verify(str_replace("'", "", $password), $pw)) {
+                //Zet sessie waarden.
                 $_SESSION['loggedin'] = true;
                 $_SESSION['username'] = $username;
                 return true;
             } else {
                 include_once 'view/login.php';
                 echo "<p class='badMessage'>Gebruikersnaam en/of wachtwoord onjuist.</p>";
+                die();
             }
         } else {
             include_once 'view/login.php';
             echo "<p class='badMessage'>U dient een gebruikersnaam en wachtwoord in te vullen.</p>";
+            die();
         }
     } else {
         include_once 'view\login.php';
+        die();
     }
 }
 
-//Ontdoe een string van ongewenste slashes en html.
 function sanitizeString($str)
 {
     $str = stripslashes($str);

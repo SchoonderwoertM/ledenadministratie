@@ -45,10 +45,19 @@
             <option value=''>-</option>
             <?php
             foreach ($financialYears as $financialYear) {
-                // echo '<option value="' . $financialYear->year . '"' . if(isset($_POST['year']) && $_POST['year'] == $financialYear->year) echo "selected='selected'" '>' . '</option>';
-                echo '<option value="' . $financialYear->year . '">' . ucfirst($financialYear->year) . '</option>';
+                echo '<option value="' . $financialYear->year . '"';
+                if (isset($_POST['year']) && $_POST['year'] == $financialYear->year) {
+                    echo ' selected="selected"';
+                }
+                echo '>' . $financialYear->year . '</option>';
             }
             ?>
+
+            <!-- <?php
+                    foreach ($financialYears as $financialYear) {
+                        echo '<option value="' . $financialYear->year . '">' . ucfirst($financialYear->year) . '</option>';
+                    }
+                    ?> -->
             <input type="hidden" name="year" value="<?php echo $financialYear->year ?>">
             <input type="hidden" name="manageContributions">
             <input type="submit" name="Contribution" value="Bevestigen">

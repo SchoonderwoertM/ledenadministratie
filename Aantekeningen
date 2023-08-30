@@ -1,3 +1,6 @@
-- Boekjaar in select behouden na bevestigen. Zie manageContribtutions view en controller $example
-- Login scherm correct weergeven.
-- lengte db velden aanpassen aan de hand van het ontwerp.
+- Boekjaar in select behouden na bevestigen. Zie manageContribtutions view en controller $example.
+- Dropdown ook in familieoverzicht toevoegen.
+- Commentaar uitbreiden
+
+- login verbeteren??? Of meer met sessies en cookies doen.
+
