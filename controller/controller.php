@@ -76,7 +76,12 @@ class Controller
             } else if (isset($_POST['deleteFamilyMember'])) {
                 echo $this->familyMemberModel->deleteFamilyMember();
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
-                include('view\familyMember\manageFamilyMembers.php');
+                if ($familyMembers) {
+                    include('view\familyMember\manageFamilyMembers.php');
+                } else {
+                    $families = $this->familyModel->getFamilies();
+                    include 'view\family\manageFamilies.php';
+                }
             } else if (isset($_POST['updateFamilyMember'])) {
                 echo $this->familyMemberModel->updateFamilyMember();
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
@@ -101,19 +106,16 @@ class Controller
                 echo $this->contributionModel->createContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
-                // $example = $_POST['year'];
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteContribution'])) {
                 echo $this->contributionModel->deleteContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
-                // $example = $_POST['year'];
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateContribution'])) {
                 echo $this->contributionModel->updateContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
-                // $example = $_POST['year'];
                 include('view\contribution\manageContributions.php');
             }
 

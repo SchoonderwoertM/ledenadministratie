@@ -136,22 +136,22 @@ class ContributionModel extends BaseModel
                 //Check of het lidmaatschap aan een lid is gekoppeld.
                 if ($this->MembershipAssociated($membershipID)) {
                     return "<p class='badMessage'>Het is niet mogelijk de leeftijd van het lidmaatschap aan te passen. Er zijn nog leden aan gekoppeld.<p>";
+                } else {
+                    //Sla de ingevoerde waarden op in de database.
+                    $stmt = $this->pdo->prepare("UPDATE Contribution SET Age = ?, Discount = ? WHERE ContributionID = ?");
+                    $stmt->bindParam(1, $age, PDO::PARAM_INT);
+                    $stmt->bindParam(2, $discount, PDO::PARAM_INT);
+                    $stmt->bindParam(3, $contributionID, PDO::PARAM_INT);
+                    $stmt->execute([$age, $discount, $contributionID]);
+
+                    //Sla de ingevoerde waarden op in de database.
+                    $stmt = $this->pdo->prepare("UPDATE Membership SET Description = ? WHERE MembershipID = ?");
+                    $stmt->bindParam(1, $description, PDO::PARAM_STR, 100);
+                    $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
+                    $stmt->execute([$description, $membershipID]);
+
+                    return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
                 }
-            } else {
-                //Sla de ingevoerde waarden op in de database.
-                $stmt = $this->pdo->prepare("UPDATE Contribution SET Age = ?, Discount = ? WHERE ContributionID = ?");
-                $stmt->bindParam(1, $age, PDO::PARAM_INT);
-                $stmt->bindParam(2, $discount, PDO::PARAM_INT);
-                $stmt->bindParam(3, $contributionID, PDO::PARAM_INT);
-                $stmt->execute([$age, $discount, $contributionID]);
-
-                //Sla de ingevoerde waarden op in de database.
-                $stmt = $this->pdo->prepare("UPDATE Membership SET Description = ? WHERE MembershipID = ?");
-                $stmt->bindParam(1, $description, PDO::PARAM_STR, 100);
-                $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
-                $stmt->execute([$description, $membershipID]);
-
-                return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
             }
         }
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";

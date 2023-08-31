@@ -12,7 +12,7 @@
     </div>
     <div>
         <label for="housenumber">Huisnummer</label>
-        <input id="housenumber" type="text" maxlength="5" name="housenumber" value="<?php echo $family->housenumber ?>" required>
+        <input id="housenumber" type="number" maxlength="5" name="housenumber" value="<?php echo $family->housenumber ?>" required>
     </div>
     <div>
         <label for="postalCode">Postcode</label>

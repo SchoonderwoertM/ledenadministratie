@@ -19,7 +19,7 @@
         <label for="street">Straat</label>
         <input id="street" type="text" maxlength="100" name="street" required>
         <label for="housenumber">Huisnummer</label>
-        <input id="housenumber" type="text" maxlength="5" name="housenumber" required>
+        <input id="housenumber" type="number" maxlength="5" name="housenumber" required>
     </div>
     <div>
         <label for="postalCode">Postcode</label>
