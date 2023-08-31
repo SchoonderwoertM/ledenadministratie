@@ -29,6 +29,8 @@ class Controller
         //Check of actie valt onder de categorie Family.
         if (isset($_POST['Family'])) {
             if (isset($_POST['manageFamilies'])) {
+                //Controleer of gebruiker toegang heeft tot de pagina.
+                $this->baseModel->CheckUserRole(3);
                 $families = $this->familyModel->getFamilies();
                 include('view\family\manageFamilies.php');
             } else if (isset($_POST['addFamily'])) {
@@ -92,6 +94,8 @@ class Controller
         //Check of actie valt onder de categorie Contribution
         else if (isset($_POST['Contribution'])) {
             if (isset($_POST['manageContributions'])) {
+                //Controleer of gebruiker toegang heeft tot de pagina.
+                $this->baseModel->CheckUserRole(2);
                 $financialYears = $this->contributionModel->getFinancialYears();
                 $contributions = $this->contributionModel->getContributions();
                 include('view\contribution\manageContributions.php');

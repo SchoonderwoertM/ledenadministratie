@@ -6,31 +6,25 @@ class ContributionModel extends BaseModel
 {
     public function getContributions()
     {
-        //Als er een boekjaar is geselecteerd, haal dan de bijbehorende contributies op.
-        if (isset($_POST['financialYear'])) {
-            $financialYear = $this->sanitizeString($_POST['financialYear']);
-
-            $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
+        //Haal alle lidmaatschappen op.
+        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
             FROM Contribution
             INNER JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
-            INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-            WHERE FinancialYear.Year = ?");
-            $stmt->bindParam(1, $financialYear, PDO::PARAM_INT);
-            $stmt->execute([$financialYear]);
-            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
+        $result = $this->pdo->query($query);
+        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
 
-            $contributions = [];
-            foreach ($rows as $row) {
-                $contribution = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
-                $contributions[] = $contribution;
-            }
-            return $contributions;
+        $contributions = [];
+        foreach ($rows as $row) {
+            $contribution = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
+            $contributions[] = $contribution;
         }
+        return $contributions;
     }
 
     public function getContribution()
     {
-        //Haal de details van een contributie op aan de hand van het contributieID.
+        //Haal de details van een lidmaatschap op aan de hand van het contributieID.
         $contributionID = $this->sanitizeString($_POST['contributionID']);
 
         $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
@@ -50,14 +44,14 @@ class ContributionModel extends BaseModel
         if (
             isset($_POST['description']) &&
             isset($_POST['age']) &&
-            isset($_POST['discount']) &&
-            isset($_POST['financialYear'])
+            isset($_POST['discount'])
         ) {
             //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
             $membership = $this->sanitizeString($_POST['description']);
             $age = $this->sanitizeString($_POST['age']);
             $discount = $this->sanitizeString($_POST['discount']);
-            $financialYear = $this->sanitizeString($_POST['financialYear']);
+            //Haal huidig jaar op.
+            $financialYear = date('Y');
 
             //Check of het boekjaar bestaat.
             $financialYearID = $this->GetFinancialYearID($financialYear);
@@ -210,7 +204,7 @@ class ContributionModel extends BaseModel
             if ($financialYearID) {
                 return "<p class='badMessage'>Het boekjaar kon niet worden aangemaakt. Het boekjaar bestaat al.</p>";
             }
-            //Als het boekjaar nog niet bestaat, voeg deze dan toe.
+            //Als het boekjaar nog niet bestaat, maak deze dan toe.
             else {
                 $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
             VALUES (null, ?, ?)");
@@ -311,7 +305,7 @@ class ContributionModel extends BaseModel
         $stmt = $this->pdo->prepare("SELECT FamilyMemberID FROM FamilyMember WHERE MembershipID = ?");
         $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
         $stmt->execute([$membershipID]);
-        
+
         if ($stmt->rowCount() > 0) {
             return true;
         }

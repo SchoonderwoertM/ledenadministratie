@@ -39,60 +39,38 @@
 
 <div class="marginTop">
     <h2>Soorten lidmaatschap</h2>
-    <form method="post" action="index.php">
-        <label for="financialYear" class="inline">Selecteer een boekjaar</label>
-        <select id="financialYear" name="financialYear">
-            <option value=''>-</option>
-            <?php
-            foreach ($financialYears as $financialYear) {
-                echo '<option value="' . $financialYear->year . '"';
-                //Zet gekozen waarde op selected
-                if (isset($_POST['financialYear']) && $_POST['financialYear'] == $financialYear->year) {
-                    echo ' selected="selected"';
-                }
-                echo '>' . $financialYear->year . '</option>';
-            }
-            ?>
-            <input type="hidden" name="manageContributions">
-            <input type="submit" name="Contribution" value="Bevestigen">
-        </select>
-    </form>
-
-    <?php if ($contributions) { ?>
-
-        <table>
-            <thead>
-                <th>Soort lid</th>
-                <th>Leeftijd tot</th>
-                <th>Korting</th>
-                <th></th>
-            </thead>
-            <tbody>
-                <?php foreach ($contributions as $contribution) { ?>
-                    <tr>
-                        <td><?php echo $contribution->membershipType; ?></td>
-                        <td><?php echo $contribution->age; ?></td>
-                        <td><?php echo $contribution->discount; ?></td>
-                        <td>
-                            <div class="button-container">
-                                <form action="index.php" method="post">
-                                    <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
-                                    <input type="hidden" name="editContribution">
-                                    <input type="submit" value="Bewerken" name="Contribution">
-                                </form>
-                                <form action="index.php" method="post">
-                                    <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
-                                    <input type="hidden" name="membershipID" value="<?php echo $contribution->membershipID ?>">
-                                    <input type="hidden" name="deleteContribution">
-                                    <input type="submit" value="Verwijderen" name="Contribution">
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                <?php } ?>
-            </tbody>
-        </table>
-    <?php } ?>
+    <table>
+        <thead>
+            <th>Soort lid</th>
+            <th>Leeftijd tot</th>
+            <th>Korting</th>
+            <th></th>
+        </thead>
+        <tbody>
+            <?php foreach ($contributions as $contribution) { ?>
+                <tr>
+                    <td><?php echo $contribution->membershipType; ?></td>
+                    <td><?php echo $contribution->age; ?></td>
+                    <td><?php echo $contribution->discount; ?></td>
+                    <td>
+                        <div class="button-container">
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
+                                <input type="hidden" name="editContribution">
+                                <input type="submit" value="Bewerken" name="Contribution">
+                            </form>
+                            <form action="index.php" method="post">
+                                <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
+                                <input type="hidden" name="membershipID" value="<?php echo $contribution->membershipID ?>">
+                                <input type="hidden" name="deleteContribution">
+                                <input type="submit" value="Verwijderen" name="Contribution">
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
 
     <form action="index.php" method="post">
         <input type="hidden" name="addContribution">

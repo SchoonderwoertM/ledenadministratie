@@ -24,13 +24,14 @@ if (!isset($_SESSION['loggedin'])) {
             $password = sanitizeString($_POST['password']);
 
             //Check of de gebruikersnaam bekend is in de database.
-            $stmt = $pdo->prepare("SELECT * FROM User WHERE Username = ?");
+            $stmt = $pdo->prepare("SELECT * FROM User LEFT JOIN Role ON User.RoleID = Role.RoleID WHERE Username = ?");
             $stmt->bindParam(1, $username, PDO::PARAM_STR, 100);
             $stmt->execute([$username]);
             //Als de gebruiker bekend is, zet dan het wachtwoord in een variabele.
             if ($stmt->rowCount() > 0) {
                 $row = $stmt->fetch();
                 $pw = $row['Password'];
+                $roleId = $row['RoleID'];
             } else {
                 include_once 'view/login.php';
                 echo "<p class='badMessage'>Gebruikersnaam en/of wachtwoord onjuist.</p>";
@@ -42,6 +43,7 @@ if (!isset($_SESSION['loggedin'])) {
                 //Zet sessie waarden.
                 $_SESSION['loggedin'] = true;
                 $_SESSION['username'] = $username;
+                $_SESSION['roleID'] = $roleId;
                 return true;
             } else {
                 include_once 'view/login.php';

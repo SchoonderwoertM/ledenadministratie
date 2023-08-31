@@ -16,6 +16,14 @@ class BaseModel
         }
     }
 
+    //Check of de gebruiker rechten heeft om de pagina te bekijken
+    public function CheckUserRole($roleID){
+        if(isset($_SESSION['roleID']) && $_SESSION['roleID'] == $roleID){
+            echo "<p class='badMessage'>U heeft onvoldoende rechten voor deze pagina.</p>";
+            die();
+        }
+    }
+
     //Ontdoe een string van ongewenste slashes en html
     public function sanitizeString($str)
     {

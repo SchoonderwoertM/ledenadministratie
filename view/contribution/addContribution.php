@@ -3,10 +3,6 @@
 
 <form action="index.php" method="post">
     <div>
-        <label for="year">Boekjaar</label>
-        <input id="year" type="number" maxlength="4" name="financialYear" autofocus="on" required>
-    </div>
-    <div>
         <label for="membership">Soort lid</label>
         <input id="membership" type="text" maxlength="50" name="description" required>
     </div>
