@@ -3,20 +3,6 @@ include_once 'classes\familyMember.class.php';
 
 class FamilyMemberModel extends BaseModel
 {
-    private $pdo;
-
-    public function __construct()
-    {
-        //Maak connectie met de database.
-        include 'include\databaseLogin.php';
-        try {
-            $this->pdo = new PDO($attr, $user, $pass, $opts);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
-            die();
-        }
-    }
-
     public function getFamilyMembers()
     {
         //Haal het huidige jaar op.

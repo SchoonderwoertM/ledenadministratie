@@ -4,7 +4,7 @@
 <table>
     <thead>
         <th>Boekjaar</th>
-        <th>Contributie</th>
+        <th>Contributie (€)</th>
         <th></th>
     </thead>
     <tbody>

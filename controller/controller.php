@@ -95,7 +95,7 @@ class Controller
             } else if (isset($_POST['editContribution'])) {
                 $contribution = $this->contributionModel->getContribution();
                 include('view\contribution\editContribution.php');
-            } 
+            }
             //CRUD operaties contributies
             else if (isset($_POST['createContribution'])) {
                 echo $this->contributionModel->createContribution();
@@ -123,8 +123,7 @@ class Controller
             } else if (isset($_POST['editFinancialYear'])) {
                 $financialYear = $this->contributionModel->getFinancialYear();
                 include('view\contribution\editFinancialYear.php');
-            }
-            else if (isset($_POST['deleteFinancialYearMessage'])) {
+            } else if (isset($_POST['deleteFinancialYearMessage'])) {
                 $financialYearID = $_POST['financialYearID'];
                 include('view\contribution\deleteFinancialYear.php');
             }

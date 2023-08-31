@@ -4,20 +4,6 @@ include_once 'classes\financialYear.class.php';
 
 class ContributionModel extends BaseModel
 {
-    private $pdo;
-
-    public function __construct()
-    {
-        //Maak connectie met de database.
-        require 'include\databaseLogin.php';
-        try {
-            $this->pdo = new PDO($attr, $user, $pass, $opts);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
-            die();
-        }
-    }
-
     public function getContributions()
     {
         //Als er een boekjaar is geselecteerd, haal dan de bijbehorende contributies op.
@@ -216,7 +202,7 @@ class ContributionModel extends BaseModel
                 $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
             VALUES (null, ?, ?)");
                 $stmt->bindParam(1, $year, PDO::PARAM_INT);
-                $stmt->bindParam(1, $cost, PDO::PARAM_INT);
+                $stmt->bindParam(2, $cost, PDO::PARAM_INT);
                 $stmt->execute([$year, $cost]);
                 return "<p class='goodMessage'>Boekjaar succesvol toegevoegd.</p>";
             }

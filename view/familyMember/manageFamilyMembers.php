@@ -6,7 +6,7 @@
         <th>Naam</th>
         <th>Geboortedatum</th>
         <th>Soort lid</th>
-        <th>Contributie</th>
+        <th>Contributie (€)</th>
         <th></th>
     </thead>
     <tbody>

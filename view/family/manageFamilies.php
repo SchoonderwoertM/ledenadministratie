@@ -1,12 +1,12 @@
 <?php require_once 'include\authenticate.php' ?>
-<h1>Familie overzicht</h1>
+<h1>Overzicht families</h1>
 
     <table>
         <thead>
             <th>Familie</th>
             <th>Adres</th>
             <th>Aantal leden</th>
-            <th>Contributie</th>
+            <th>Contributie (€)</th>
             <th></th>
         </thead>
         <tbody>

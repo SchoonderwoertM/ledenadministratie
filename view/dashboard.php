@@ -8,7 +8,7 @@
         <th>Familie</th>
         <th>Woonplaats</th>
         <th>Aantal leden</th>
-        <th>Contributie</th>
+        <th>Contributie (€)</th>
     </thead>
     <tbody>
         <?php foreach ($families as $family) { ?>

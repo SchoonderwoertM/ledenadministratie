@@ -2,6 +2,20 @@
 
 class BaseModel
 {
+    public $pdo;
+
+    public function __construct()
+    {
+        //Maak connectie met de database.
+        require 'include\databaseLogin.php';
+        try {
+            $this->pdo = new PDO($attr, $user, $pass, $opts);
+        } catch (PDOException $e) {
+            throw new PDOException($e->getMessage(), (int)$e->getCode());
+            die();
+        }
+    }
+
     //Ontdoet een string van ongewenste slashes en html
     public function sanitizeString($str)
     {

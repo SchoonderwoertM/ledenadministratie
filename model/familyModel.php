@@ -3,20 +3,6 @@ include_once 'classes\family.class.php';
 
 class FamilyModel extends BaseModel
 {
-    private $pdo;
-
-    public function __construct()
-    {
-        //Maak connectie met de database.
-        include 'include\databaseLogin.php';
-        try {
-            $this->pdo = new PDO($attr, $user, $pass, $opts);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
-            die();
-        }
-    }
-
     public function getFamilies()
     {
         //Haal het huidige jaar op.
@@ -166,7 +152,7 @@ class FamilyModel extends BaseModel
             $street = $this->sanitizeString($_POST['street']);
             $housenumber = $this->sanitizeString($_POST['housenumber']);
             $postalCode = $this->sanitizeString($_POST['postalCode']);
-            $postalCode = str_replace(' ', '', $postalCode);
+            $postalCode = str_replace(' ', '', $postalCode); //Verwijder spaties
             $city = $this->sanitizeString($_POST['city']);
 
             //Nagaan of er al een familie op het adres bekend is.
