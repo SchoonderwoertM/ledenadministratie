@@ -40,25 +40,18 @@
 <div class="marginTop">
     <h2>Soorten lidmaatschap</h2>
     <form method="post" action="index.php">
-        <label for="financialYears" class="inline">Selecteer een boekjaar</label>
-        <select id="financialYears" name="financialYear">
+        <label for="financialYear" class="inline">Selecteer een boekjaar</label>
+        <select id="financialYear" name="financialYear">
             <option value=''>-</option>
             <?php
             foreach ($financialYears as $financialYear) {
                 echo '<option value="' . $financialYear->year . '"';
-                if (isset($_POST['year']) && $_POST['year'] == $financialYear->year) {
+                if (isset($_POST['financialYear']) && $_POST['financialYear'] == $financialYear->year) {
                     echo ' selected="selected"';
                 }
                 echo '>' . $financialYear->year . '</option>';
             }
             ?>
-
-            <!-- <?php
-                    foreach ($financialYears as $financialYear) {
-                        echo '<option value="' . $financialYear->year . '">' . ucfirst($financialYear->year) . '</option>';
-                    }
-                    ?> -->
-            <input type="hidden" name="year" value="<?php echo $financialYear->year ?>">
             <input type="hidden" name="manageContributions">
             <input type="submit" name="Contribution" value="Bevestigen">
         </select>

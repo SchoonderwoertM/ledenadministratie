@@ -30,8 +30,7 @@ class FamilyModel extends BaseModel
         if ($row) {
             $yearContribution = $row['Cost'];
         }
-
-        //Haal details van de families op.
+         //Haal details van de families op.
         $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Street, Address.Housenumber, Address.PostalCode, Address.City, 
         COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalDiscount FROM Family
         INNER JOIN Address ON Family.AddressID = Address.AddressID
@@ -51,6 +50,7 @@ class FamilyModel extends BaseModel
         }
         return $families;
     }
+
 
     public function getFamily()
     {
