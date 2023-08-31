@@ -22,6 +22,7 @@ class FamilyMemberModel extends BaseModel
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $familyMembers = [];
             foreach ($rows as $row) {
                 $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], $row['Description'], $row['Cost'], $row['Discount']);
@@ -42,6 +43,7 @@ class FamilyMemberModel extends BaseModel
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        
         return new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], null, null, null);
     }
 

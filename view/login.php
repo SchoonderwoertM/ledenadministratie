@@ -5,11 +5,11 @@
     <form action="index.php" method="post">
         <div>
             <label for="username">Gebruikersnaam</label>
-            <input id="username" type="text" name="username" required>
+            <input id="username" type="text" maxlength="100" name="username" required>
         </div>
         <div>
             <label for="password">Wachtwoord</label>
-            <input id="password" type="password" name="password" required>
+            <input id="password" type="password" maxlength="128" name="password" required>
         </div>
         <div>
             <input type="submit" value="Login" name="authenticateUser">

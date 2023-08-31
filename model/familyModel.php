@@ -13,10 +13,12 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
         if ($row) {
             $yearContribution = $row['Cost'];
         }
-         //Haal details van de families op.
+
+        //Haal details van de families op.
         $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Street, Address.Housenumber, Address.PostalCode, Address.City, 
         COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalDiscount FROM Family
         INNER JOIN Address ON Family.AddressID = Address.AddressID
@@ -29,11 +31,13 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         $families = [];
         foreach ($rows as $row) {
             $family = new Family($row['FamilyID'], $row['Name'], $row['Street'], $row['Housenumber'], $row['PostalCode'], $row['City'], $row['NumberOfFamilyMembers'], $yearContribution, $row['TotalDiscount']);
             $families[] = $family;
         }
+
         return $families;
     }
 
@@ -42,6 +46,7 @@ class FamilyModel extends BaseModel
     {
         //Haal de details van een familie op aan de hand van het FamilyID.
         $familyID = $this->sanitizeString($_POST['familyID']);
+
         $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Street, Address.Housenumber, Address.PostalCode, Address.City 
         FROM Family
         INNER JOIN Address ON Family.AddressID = Address.AddressID
@@ -49,6 +54,7 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return new Family($row['FamilyID'], $row['Name'], $row['Street'], $row['Housenumber'], $row['PostalCode'], $row['City'], null, null, null);
     }
 
@@ -75,6 +81,7 @@ class FamilyModel extends BaseModel
             $city = $this->sanitizeString($_POST['city']);
             $membershipID = $this->getMembership($dateOfBirth);
 
+            //Check of er een passend membership beschikbaar is.
             if (empty($membershipID)) {
                 return "<p class='badMessage'>Er dient eerst een passend lidmaatschap te worden aangemaakt.<p>";
             } else {
@@ -140,6 +147,7 @@ class FamilyModel extends BaseModel
 
     public function updateFamily()
     {
+        //Controleer of de invoervelden een waarde hebben.
         if (
             isset($_POST['name']) &&
             isset($_POST['street']) &&
@@ -147,6 +155,7 @@ class FamilyModel extends BaseModel
             isset($_POST['postalCode']) &&
             isset($_POST['city'])
         ) {
+            //Ontdoe de ingevoerde waarden van ongeweste slashes en html.
             $familyID = $this->sanitizeString($_POST['familyID']);
             $name = $this->sanitizeString($_POST['name']);
             $street = $this->sanitizeString($_POST['street']);
@@ -183,7 +192,6 @@ class FamilyModel extends BaseModel
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
-    //Nagaan of er al een familie op het adres bekend is.
     private function AddressAlreadyExists($housenumber, $postalCode)
     {
         //Nagaan of er al een familie op het adres bekend is.
@@ -191,19 +199,21 @@ class FamilyModel extends BaseModel
         $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
         $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 7);
         $stmt->execute([$housenumber, $postalCode]);
+
         if ($stmt->rowCount() > 0) {
             return true;
         }
         return false;
     }
 
-    //Haal het AddressID van de familie op.
     private function GetAddressID($familyID)
     {
+        //Haal het AddressID van de familie op.
         $stmt = $this->pdo->prepare("SELECT AddressID FROM Family WHERE FamilyID = ?");
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return $row['AddressID'];
     }
 }

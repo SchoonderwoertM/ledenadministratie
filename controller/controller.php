@@ -40,7 +40,7 @@ class Controller
                 $familyID = $_POST['familyID'];
                 include 'view\family\deleteFamily.php';
             }
-            //CRUD operaties
+            //CRUD operaties van acties die vallen onder de categorie Family
             else if (isset($_POST['createFamily'])) {
                 echo $this->familyModel->createFamily();
                 $families = $this->familyModel->getFamilies();
@@ -56,7 +56,7 @@ class Controller
             }
         }
 
-        //Check of actie valt onder de categorieFamilyMembers
+        //Check of actie valt onder de categorie FamilyMembers
         else if (isset($_POST['FamilyMember'])) {
             if (isset($_POST['manageFamilyMembers'])) {
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
@@ -68,7 +68,7 @@ class Controller
                 $familyMember = $this->familyMemberModel->getFamilyMember();
                 include('view\familyMember\editFamilyMember.php');
             }
-            //CRUDD operaties
+            //CRUDD operaties van acties die vallen onder de categorie FamilyMembers
             else if (isset($_POST['createFamilyMember'])) {
                 echo $this->familyMemberModel->createFamilyMember();
                 $familyMembers = $this->familyMemberModel->getFamilyMembers();
@@ -89,7 +89,7 @@ class Controller
             }
         }
 
-        //Check of actie valt onder de categorie Contributions
+        //Check of actie valt onder de categorie Contribution
         else if (isset($_POST['Contribution'])) {
             if (isset($_POST['manageContributions'])) {
                 $financialYears = $this->contributionModel->getFinancialYears();
@@ -101,7 +101,7 @@ class Controller
                 $contribution = $this->contributionModel->getContribution();
                 include('view\contribution\editContribution.php');
             }
-            //CRUD operaties contributies
+            //CRUD operaties van acties die vallen onder de categorie Contribution
             else if (isset($_POST['createContribution'])) {
                 echo $this->contributionModel->createContribution();
                 $financialYears = $this->contributionModel->getFinancialYears();

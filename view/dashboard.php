@@ -1,6 +1,6 @@
 <?php require_once 'include\authenticate.php' ?>
 
-<p>Goedendag <?php echo $_SESSION['username']; ?>! </p>
+<p class="goodMessage">Goedendag <?php echo $_SESSION['username']; ?>! </p>
 <h1>Dashboard huidig jaar</h1>
 
 <table class="dashboardTable">

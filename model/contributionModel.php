@@ -9,6 +9,7 @@ class ContributionModel extends BaseModel
         //Als er een boekjaar is geselecteerd, haal dan de bijbehorende contributies op.
         if (isset($_POST['financialYear'])) {
             $financialYear = $this->sanitizeString($_POST['financialYear']);
+
             $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
             FROM Contribution
             INNER JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
@@ -17,6 +18,7 @@ class ContributionModel extends BaseModel
             $stmt->bindParam(1, $financialYear, PDO::PARAM_INT);
             $stmt->execute([$financialYear]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             $contributions = [];
             foreach ($rows as $row) {
                 $contribution = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
@@ -30,6 +32,7 @@ class ContributionModel extends BaseModel
     {
         //Haal de details van een contributie op aan de hand van het contributieID.
         $contributionID = $this->sanitizeString($_POST['contributionID']);
+
         $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
         FROM Contribution
         INNER JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
@@ -37,6 +40,7 @@ class ContributionModel extends BaseModel
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
     }
 
@@ -64,7 +68,7 @@ class ContributionModel extends BaseModel
                 $stmt->bindParam(1, $membership, PDO::PARAM_STR, 100);
                 $stmt->execute([$membership]);
                 $membershipID = $stmt->fetch();
-                //Haal het MembershipID op van het zojuist toegevoegde record.
+                //Onthou het MembershipID van het zojuist toegevoegde record.
                 $membershipID = $this->pdo->lastInsertId();
 
                 //Sla de contributie op in de database.
@@ -114,11 +118,13 @@ class ContributionModel extends BaseModel
 
     public function updateContribution()
     {
+        //Controleer of de invoervelden een waarde hebben.
         if (
             isset($_POST['description']) &&
             isset($_POST['age']) &&
             isset($_POST['discount'])
         ) {
+            //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
             $contributionID = $this->sanitizeString($_POST['contributionID']);
             $age = intval($this->sanitizeString($_POST['age']));
             $discount = $this->sanitizeString($_POST['discount']);
@@ -126,6 +132,7 @@ class ContributionModel extends BaseModel
             $description = $this->sanitizeString($_POST['description']);
 
             //Check of de leeftijd is aangepast.
+            //Haal de leeftijd op die aan het lidmaatschap is gekoppeld
             $stmt = $this->pdo->prepare("SELECT Age FROM Contribution WHERE ContributionID = ?");
             $stmt->execute([$contributionID]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -163,11 +170,13 @@ class ContributionModel extends BaseModel
         $query = ("SELECT * FROM FinancialYear ORDER BY Year DESC");
         $result = $this->pdo->query($query);
         $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+
         $financialYears = [];
         foreach ($rows as $row) {
             $financialYear = new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Cost']);
             $financialYears[] = $financialYear;
         }
+
         return $financialYears;
     }
 
@@ -175,20 +184,24 @@ class ContributionModel extends BaseModel
     {
         //Haal de details van het geselecteerd boekjaar op.
         $financialYearID = $this->sanitizeString($_POST['financialYearID']);
+
         $stmt = $this->pdo->prepare("SELECT * FROM FinancialYear
         WHERE FinancialYear.FinancialYearID = ?");
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
         $stmt->execute([$financialYearID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
         return new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Cost']);
     }
 
     public function createFinancialYear()
     {
+        //Controleer of de invoervelden een waarde hebben.
         if (
             isset($_POST['year']) &&
             isset($_POST['cost'])
         ) {
+            //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
             $year = $this->sanitizeString($_POST['year']);
             $cost = $this->sanitizeString($_POST['cost']);
 
@@ -219,6 +232,7 @@ class ContributionModel extends BaseModel
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
         $stmt->execute([$financialYearID]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
         foreach ($rows as $row) {
             $membershipID = $row['MembershipID'];
             //Check of het lidmaatschap aan een lid is gekoppeld.
@@ -255,9 +269,11 @@ class ContributionModel extends BaseModel
 
     public function updateFinancialYear()
     {
+        //Controleer of de invoervelden een waarde hebben.
         if (
             isset($_POST['cost'])
         ) {
+            //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
             $financialYearID = $this->sanitizeString($_POST['financialYearID']);
             $cost = $this->sanitizeString($_POST['cost']);
 
@@ -269,6 +285,7 @@ class ContributionModel extends BaseModel
             $stmt->execute([$cost, $financialYearID]);
             return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
         }
+
         return "<p class='bad'>Er is een fout opgetreden. Probeer het nog eens.<p>";
     }
 
@@ -277,6 +294,7 @@ class ContributionModel extends BaseModel
     {
         $stmt = $this->pdo->prepare("SELECT FinancialYearID FROM FinancialYear WHERE Year = ?");
         $stmt->execute([$year]);
+
         //Als het boekjaar bestaat, zet het FinancialYearID dan in een variabele.
         if ($stmt->rowCount() > 0) {
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -293,6 +311,7 @@ class ContributionModel extends BaseModel
         $stmt = $this->pdo->prepare("SELECT FamilyMemberID FROM FamilyMember WHERE MembershipID = ?");
         $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
         $stmt->execute([$membershipID]);
+        
         if ($stmt->rowCount() > 0) {
             return true;
         }

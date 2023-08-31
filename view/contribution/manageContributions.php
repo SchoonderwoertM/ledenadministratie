@@ -46,6 +46,7 @@
             <?php
             foreach ($financialYears as $financialYear) {
                 echo '<option value="' . $financialYear->year . '"';
+                //Zet gekozen waarde op selected
                 if (isset($_POST['financialYear']) && $_POST['financialYear'] == $financialYear->year) {
                     echo ' selected="selected"';
                 }

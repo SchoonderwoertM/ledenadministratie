@@ -6,7 +6,7 @@ class BaseModel
 
     public function __construct()
     {
-        //Maak connectie met de database.
+        //Zet connectie met de database op.
         require 'include\databaseLogin.php';
         try {
             $this->pdo = new PDO($attr, $user, $pass, $opts);
@@ -16,7 +16,7 @@ class BaseModel
         }
     }
 
-    //Ontdoet een string van ongewenste slashes en html
+    //Ontdoe een string van ongewenste slashes en html
     public function sanitizeString($str)
     {
         $str = stripslashes($str);
@@ -25,10 +25,13 @@ class BaseModel
         return $str;
     }
     
-    //Logt gebruiker uit, leegt alle sessie variabelen en beëindigd de sessie.
+    //Log gebruiker uit door alle sessie variabelen te legen en beëindig de sessie.
     public function logout(){
+        //Gooi sessie variabelen leeg
         $_SESSION = array();
+        //Verwijder alle cookies die zijn gekoppeld aan de sessie door de vervaltijd in het verleden te zetten.
         setcookie(session_name(), '', time() - 2592000, '/');
+        //Beëindig de huidige sessie.
         session_destroy();
         header('Location:index.php');
     }
@@ -36,14 +39,7 @@ class BaseModel
     //Bepaal het membership aan de hand van de leeftijd.
     public function getMembership($date)
     {
-        include 'include\databaseLogin.php';
-        try {
-            $pdo = new PDO($attr, $user, $pass, $opts);
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
-            die();
-        }
-        //Bereken de leeftijd van het familielid door het verschil op te halen tussen de datum van vandaag en de geboortedatum
+        //Bereken de leeftijd van het familielid door het verschil te berekenen tussen de datum van vandaag en de geboortedatum
         $dateOfBirth = new DateTime($date);
         $currectDate = new DateTime(date('y.m.d'));
         $age = $currectDate->diff($dateOfBirth);
@@ -52,7 +48,7 @@ class BaseModel
         //Haal de contributies op per leeftijd
         $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
         INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
-        $result = $pdo->query($query);
+        $result = $this->pdo->query($query);
         $membershipsByAge = $result->fetchAll();
         $membershipID = null;
 
