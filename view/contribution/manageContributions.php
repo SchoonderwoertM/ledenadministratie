@@ -13,7 +13,7 @@
         foreach ($financialYears as $financialYear) { ?>
             <tr>
                 <td><?php echo $financialYear->year; ?></td>
-                <td><?php echo $financialYear->cost; ?></td>
+                <td><?php echo $financialYear->contribution; ?></td>
                 <td>
                     <div class="button-container">
                         <form action="index.php" method="post">
@@ -47,22 +47,22 @@
             <th></th>
         </thead>
         <tbody>
-            <?php foreach ($contributions as $contribution) { ?>
+            <?php foreach ($memberships as $membership) { ?>
                 <tr>
-                    <td><?php echo $contribution->membershipType; ?></td>
-                    <td><?php echo $contribution->age; ?></td>
-                    <td><?php echo $contribution->discount; ?></td>
+                    <td><?php echo $membership->membershipType; ?></td>
+                    <td><?php echo $membership->age; ?></td>
+                    <td><?php echo $membership->discount; ?></td>
                     <td>
                         <div class="button-container">
                             <form action="index.php" method="post">
-                                <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
-                                <input type="hidden" name="editContribution">
+                                <input type="hidden" name="contributionID" value="<?php echo $membership->contributionID ?>">
+                                <input type="hidden" name="editMembership">
                                 <input type="submit" value="Bewerken" name="Contribution">
                             </form>
                             <form action="index.php" method="post">
-                                <input type="hidden" name="contributionID" value="<?php echo $contribution->contributionID ?>">
-                                <input type="hidden" name="membershipID" value="<?php echo $contribution->membershipID ?>">
-                                <input type="hidden" name="deleteContribution">
+                                <input type="hidden" name="contributionID" value="<?php echo $membership->contributionID ?>">
+                                <input type="hidden" name="membershipID" value="<?php echo $membership->membershipID ?>">
+                                <input type="hidden" name="deleteMembership">
                                 <input type="submit" value="Verwijderen" name="Contribution">
                             </form>
                         </div>
@@ -74,7 +74,7 @@
 
     <div class="button-container">
         <form action="index.php" method="post">
-            <input type="hidden" name="addContribution">
+            <input type="hidden" name="addMembership">
             <input type="submit" value="Lidmaatschap toevoegen" name="Contribution">
         </form>
         <form action="index.php" method="post">

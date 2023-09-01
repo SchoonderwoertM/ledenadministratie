@@ -9,13 +9,13 @@ class FamilyModel extends BaseModel
         $currentYear = date('Y');
 
         //Haal de contributie van het huidge jaar op.
-        $stmt = $this->pdo->prepare("SELECT Cost FROM FinancialYear WHERE Year = ? ");
+        $stmt = $this->pdo->prepare("SELECT Contribution FROM FinancialYear WHERE Year = ? ");
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
-            $yearContribution = $row['Cost'];
+            $contribution = $row['Contribution'];
         }
 
         //Haal details van de families op.
@@ -34,7 +34,7 @@ class FamilyModel extends BaseModel
 
         $families = [];
         foreach ($rows as $row) {
-            $family = new Family($row['FamilyID'], $row['Name'], $row['Street'], $row['Housenumber'], $row['PostalCode'], $row['City'], $row['NumberOfFamilyMembers'], $yearContribution, $row['TotalDiscount']);
+            $family = new Family($row['FamilyID'], $row['Name'], $row['Street'], $row['Housenumber'], $row['PostalCode'], $row['City'], $row['NumberOfFamilyMembers'], $contribution, $row['TotalDiscount']);
             $families[] = $family;
         }
 
@@ -79,7 +79,7 @@ class FamilyModel extends BaseModel
             $postalCode = $this->sanitizeString($_POST['postalCode']);
             $postalCode = str_replace(' ', '', $postalCode);
             $city = $this->sanitizeString($_POST['city']);
-            $membershipID = $this->getMembership($dateOfBirth);
+            $membershipID = $this->getMembershipByDateOfBirth($dateOfBirth);
 
             //Check of er een passend membership beschikbaar is.
             if (empty($membershipID)) {

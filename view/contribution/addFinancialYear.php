@@ -8,7 +8,7 @@
     </div>
     <div>
         <label for="contribution">Contributie (€)</label>
-        <input id="contribution" type="number" name="cost" min="0" max="1000" step="1" required>
+        <input id="contribution" type="number" name="contribution" min="0" max="1000" step="1" required>
     </div>
     <div>
         <input type="hidden" name="createFinancialYear">

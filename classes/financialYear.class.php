@@ -2,11 +2,11 @@
 class FinancialYear {
     public $financialYearID; 
     public $year;
-    public $cost; 
+    public $contribution; 
     
-    public function __construct($financialYearID, $year, $cost) {
+    public function __construct($financialYearID, $year, $contribution) {
         $this->financialYearID = $financialYearID;
         $this->year = $year;
-        $this->cost = $cost;
+        $this->contribution = $contribution;
     }
 }

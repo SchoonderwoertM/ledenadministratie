@@ -47,7 +47,7 @@ class BaseModel
     }
 
     //Bepaal het membership aan de hand van de leeftijd.
-    public function getMembership($date)
+    public function getMembershipByDateOfBirth($date)
     {
         //Bereken de leeftijd van het familielid door het verschil te berekenen tussen de datum van vandaag en de geboortedatum
         $dateOfBirth = new DateTime($date);
@@ -88,10 +88,10 @@ class BaseModel
         //Haal het huidige jaar op
         $currentYear = date('Y');
 
-        $stmt = $this->pdo->prepare("SELECT Cost FROM FinancialYear WHERE FinancialYear.Year = ?");
+        $stmt = $this->pdo->prepare("SELECT Contribution FROM FinancialYear WHERE FinancialYear.Year = ?");
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['Cost'];
+        return $row['Contribution'];
     }
 }

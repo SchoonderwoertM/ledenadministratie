@@ -8,7 +8,7 @@ class FamilyMember
     public $familyID;
     public $contributionWithDiscount;
 
-    public function __construct($familyMemberID, $name, $dateOfBirth, $familyID, $membership, $cost, $discount)
+    public function __construct($familyMemberID, $name, $dateOfBirth, $familyID, $membership, $contribution, $discount)
     {
         $this->familyMemberID = $familyMemberID;
         $this->name = $name;
@@ -22,9 +22,9 @@ class FamilyMember
         }
 
         if ($discount != 0) {
-            $this->contributionWithDiscount = $cost - (($cost * $discount) / 100);
+            $this->contributionWithDiscount = $contribution - (($contribution * $discount) / 100);
         } else {
-            $this->contributionWithDiscount = $cost;
+            $this->contributionWithDiscount = $contribution;
         }   
     }
 }

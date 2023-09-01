@@ -13,7 +13,7 @@ class FamilyMemberModel extends BaseModel
             $familyID = $this->sanitizeString($_POST['familyID']);
 
             $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, 
-            FinancialYear.Cost, Contribution.Discount FROM FamilyMember
+            FinancialYear.Contribution, Contribution.Discount FROM FamilyMember
             LEFT OUTER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
             LEFT OUTER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
             LEFT OUTER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
@@ -24,11 +24,11 @@ class FamilyMemberModel extends BaseModel
 
             $familyMembers = [];
             foreach ($rows as $row) {
-                if(empty($row['Cost'])){
+                if(empty($row['Contribution'])){
                     $contributon = $this->getContributionCurrentYear();
-                    $row['Cost'] = $contributon;
+                    $row['Contribution'] = $contributon;
                 }
-                $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], $row['Description'], $row['Cost'], $row['Discount']);
+                $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], $row['Description'], $row['Contribution'], $row['Discount']);
                 $familyMembers[] = $familyMember;
             }
             return $familyMembers;
@@ -62,7 +62,7 @@ class FamilyMemberModel extends BaseModel
             $name = $this->sanitizeString($_POST['name']);
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
             $familyID = $this->sanitizeString($_POST['familyID']);
-            $membershipID = $this->getMembership($dateOfBirth);
+            $membershipID = $this->getMembershipByDateOfBirth($dateOfBirth);
 
             if (!$membershipID) {
                 return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd.</p>";
@@ -126,7 +126,7 @@ class FamilyMemberModel extends BaseModel
             $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
             $name = $this->sanitizeString($_POST['name']);
             $dateOfBirth = $this->sanitizeString($_POST['dateOfBirth']);
-            $membershipID = $this->getMembership($dateOfBirth);
+            $membershipID = $this->getMembershipByDateOfBirth($dateOfBirth);
 
             if (!$membershipID) {
                 return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd.</p>";

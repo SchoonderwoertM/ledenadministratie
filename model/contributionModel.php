@@ -4,7 +4,7 @@ include_once 'classes\financialYear.class.php';
 
 class ContributionModel extends BaseModel
 {
-    public function getContributions()
+    public function getMemberships()
     {
         //Haal alle lidmaatschappen op.
         $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
@@ -14,15 +14,15 @@ class ContributionModel extends BaseModel
         $result = $this->pdo->query($query);
         $rows = $result->fetchAll(PDO::FETCH_ASSOC);
 
-        $contributions = [];
+        $memberships = [];
         foreach ($rows as $row) {
-            $contribution = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
-            $contributions[] = $contribution;
+            $membership = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
+            $memberships[] = $membership;
         }
-        return $contributions;
+        return $memberships;
     }
 
-    public function getContribution()
+    public function getMembership()
     {
         //Haal de details van een lidmaatschap op aan de hand van het contributieID.
         $contributionID = $this->sanitizeString($_POST['contributionID']);
@@ -47,14 +47,14 @@ class ContributionModel extends BaseModel
 
         //Pas het lidmaatschap van de leden aan als deze afwijkt van het huidige lidmaatschap
         foreach ($rows as $row) {
-            $membershipID = $this->getMembership($row['DateOfBirth']);
+            $membershipID = $this->getMembershipByDateOfBirth($row['DateOfBirth']);
             if ($row['MembershipID'] !== $membershipID)
                 $this->UpdateMembershipID($row['FamilyMemberID'], $membershipID);
         }
         return '<p class="goodMessage">De lidmaatschappen zijn succesvol geüpdate.</p>';
     }
 
-    public function createContribution()
+    public function createMembership()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -98,7 +98,7 @@ class ContributionModel extends BaseModel
         return "<p class='badMessage'>Er is iets fout gegaan. Probeer het nog eens.</p>";
     }
 
-    public function deleteContribution()
+    public function deleteMembership()
     {
         $contributionID = $this->sanitizeString($_POST['contributionID']);
         $membershipID = $this->sanitizeString($_POST['membershipID']);
@@ -126,7 +126,7 @@ class ContributionModel extends BaseModel
         return "<p class='goodMessage'>Lidmaatschap succesvol verwijderd.</p>";
     }
 
-    public function updateContribution()
+    public function updateMembership()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -168,7 +168,7 @@ class ContributionModel extends BaseModel
 
         $financialYears = [];
         foreach ($rows as $row) {
-            $financialYear = new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Cost']);
+            $financialYear = new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Contribution']);
             $financialYears[] = $financialYear;
         }
 
@@ -186,7 +186,7 @@ class ContributionModel extends BaseModel
         $stmt->execute([$financialYearID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Cost']);
+        return new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Contribution']);
     }
 
     public function createFinancialYear()
@@ -194,11 +194,11 @@ class ContributionModel extends BaseModel
         //Controleer of de invoervelden een waarde hebben.
         if (
             isset($_POST['year']) &&
-            isset($_POST['cost'])
+            isset($_POST['contribution'])
         ) {
             //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
             $year = $this->sanitizeString($_POST['year']);
-            $cost = $this->sanitizeString($_POST['cost']);
+            $contribution = $this->sanitizeString($_POST['contribution']);
 
             //Check of het boekjaar bestaat.
             $financialYearID = $this->GetFinancialYearID($year);
@@ -207,11 +207,11 @@ class ContributionModel extends BaseModel
             }
             //Als het boekjaar nog niet bestaat, maak deze dan toe.
             else {
-                $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Cost) 
+                $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Contribution) 
             VALUES (null, ?, ?)");
                 $stmt->bindParam(1, $year, PDO::PARAM_INT);
-                $stmt->bindParam(2, $cost, PDO::PARAM_INT);
-                $stmt->execute([$year, $cost]);
+                $stmt->bindParam(2, $contribution, PDO::PARAM_INT);
+                $stmt->execute([$year, $contribution]);
                 return "<p class='goodMessage'>Boekjaar succesvol toegevoegd.</p>";
             }
         }
@@ -266,18 +266,18 @@ class ContributionModel extends BaseModel
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
-            isset($_POST['cost'])
+            isset($_POST['contribution'])
         ) {
             //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
             $financialYearID = $this->sanitizeString($_POST['financialYearID']);
-            $cost = $this->sanitizeString($_POST['cost']);
+            $contribution = $this->sanitizeString($_POST['contribution']);
 
             //Sla de ingevoerde waarde op in de database.
-            $stmt = $this->pdo->prepare("UPDATE FinancialYear SET Cost = ? 
+            $stmt = $this->pdo->prepare("UPDATE FinancialYear SET Contribution = ? 
             WHERE FinancialYearID = ?");
-            $stmt->bindParam(1, $cost, PDO::PARAM_INT);
+            $stmt->bindParam(1, $contribution, PDO::PARAM_INT);
             $stmt->bindParam(2, $financialYearID, PDO::PARAM_INT);
-            $stmt->execute([$cost, $financialYearID]);
+            $stmt->execute([$contribution, $financialYearID]);
             return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
         }
 

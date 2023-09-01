@@ -10,7 +10,7 @@ class Family
     public $numberOfFamilyMembers;
     public $totalContribution;
 
-    public function __construct($familyID, $name, $street, $housenumber, $postalCode, $city, $numberOfFamilyMembers, $yearContribution, $totalDiscount)
+    public function __construct($familyID, $name, $street, $housenumber, $postalCode, $city, $numberOfFamilyMembers, $contribution, $totalDiscount)
     {
         $this->familyID = $familyID;
         $this->name = $name;
@@ -20,8 +20,8 @@ class Family
         $this->city = $city;
         $this->numberOfFamilyMembers = $numberOfFamilyMembers;
         if ($totalDiscount != 0) {
-            $this->totalContribution = ($yearContribution - ($yearContribution * ($totalDiscount / $numberOfFamilyMembers)) / 100) * $numberOfFamilyMembers;
+            $this->totalContribution = ($contribution - ($contribution * ($totalDiscount / $numberOfFamilyMembers)) / 100) * $numberOfFamilyMembers;
         }
-        else $this->totalContribution = $yearContribution * $numberOfFamilyMembers;
+        else $this->totalContribution = $contribution * $numberOfFamilyMembers;
     }
 }

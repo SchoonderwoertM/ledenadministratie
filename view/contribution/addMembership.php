@@ -15,7 +15,7 @@
         <input id="discount" type="number" name="discount" min="0" max="100" required>
     </div>
     <div>
-        <input type="hidden" name="createContribution">
+        <input type="hidden" name="createMembership">
         <input type="submit" value="Opslaan" name="Contribution">
         <input type="submit" value="Annuleren" form="goBack">
     </div>
