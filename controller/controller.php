@@ -105,6 +105,12 @@ class Controller
                 $contribution = $this->contributionModel->getContribution();
                 include('view\contribution\editContribution.php');
             }
+            else if(isset($_POST['recalculateMemberships'])){
+                echo $this->contributionModel->recalculateMemberships();
+                $financialYears = $this->contributionModel->getFinancialYears();
+                $contributions = $this->contributionModel->getContributions();
+                include('view\contribution\manageContributions.php');
+            }
             //CRUD operaties van acties die vallen onder de categorie Contribution
             else if (isset($_POST['createContribution'])) {
                 echo $this->contributionModel->createContribution();

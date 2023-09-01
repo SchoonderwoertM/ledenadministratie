@@ -14,7 +14,13 @@ class FamilyMember
         $this->name = $name;
         $this->dateOfBirth = $dateOfBirth;
         $this->familyID = $familyID;
-        $this->membershipType = $membership;
+        if(!is_null($membership)){
+            $this->membershipType = $membership;
+        }
+        else{
+            $this->membershipType = "-";
+        }
+
         if ($discount != 0) {
             $this->contributionWithDiscount = $cost - (($cost * $discount) / 100);
         } else {

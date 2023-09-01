@@ -72,8 +72,14 @@
         </tbody>
     </table>
 
-    <form action="index.php" method="post">
-        <input type="hidden" name="addContribution">
-        <input type="submit" value="Lidmaatschap toevoegen" name="Contribution">
-    </form>
+    <div class="button-container">
+        <form action="index.php" method="post">
+            <input type="hidden" name="addContribution">
+            <input type="submit" value="Lidmaatschap toevoegen" name="Contribution">
+        </form>
+        <form action="index.php" method="post">
+            <input type="hidden" name="determineContribution">
+            <input type="submit" value="Ververs lidmaatschappen" name="Contribution">
+        </form>
+    </div>
 </div>
