@@ -3,7 +3,7 @@ include_once 'classes\family.class.php';
 
 class FamilyModel extends BaseModel
 {
-    public function getFamilies()
+    public function GetFamilies()
     {
         //Haal het huidige jaar op.
         $currentYear = date('Y');
@@ -42,7 +42,7 @@ class FamilyModel extends BaseModel
     }
 
 
-    public function getFamily()
+    public function GetFamily()
     {
         //Haal de details van een familie op aan de hand van het FamilyID.
         $familyID = $this->sanitizeString($_POST['familyID']);
@@ -58,7 +58,7 @@ class FamilyModel extends BaseModel
         return new Family($row['FamilyID'], $row['Name'], $row['Street'], $row['Housenumber'], $row['PostalCode'], $row['City'], null, null, null);
     }
 
-    public function createFamily()
+    public function CreateFamily()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -120,7 +120,7 @@ class FamilyModel extends BaseModel
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
-    public function deleteFamily()
+    public function DeleteFamily()
     {
         $familyID = $this->sanitizeString($_POST['familyID']);
 
@@ -145,7 +145,7 @@ class FamilyModel extends BaseModel
         return "<p class='goodMessage'>Familie verwijderd.</p>";
     }
 
-    public function updateFamily()
+    public function UpdateFamily()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -174,7 +174,7 @@ class FamilyModel extends BaseModel
                 $stmt->bindParam(2, $familyID, PDO::PARAM_INT);
                 $stmt->execute([$name, $familyID]);
 
-                //Haal het AddressID op van de te update family.
+                //Haal het AddressID op van de family.
                 $addressID = $addressID = $this->GetAddressID($familyID);
 
                 //Sla de ingevoerde waarden betreft het adres op in de database.

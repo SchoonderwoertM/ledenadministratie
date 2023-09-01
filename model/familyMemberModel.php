@@ -3,7 +3,7 @@ include_once 'classes\familyMember.class.php';
 
 class FamilyMemberModel extends BaseModel
 {
-    public function getFamilyMembers()
+    public function GetFamilyMembers()
     {
         //Haal het huidige jaar op.
         $currentYear = date('Y');
@@ -36,7 +36,7 @@ class FamilyMemberModel extends BaseModel
         return "<p class='badMessage'>Kan de familie niet vinden.</p>";
     }
 
-    public function getFamilyMember()
+    public function GetFamilyMember()
     {
         //Haal het familielid op aan de hand van het FamilyMemberID.
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
@@ -50,7 +50,7 @@ class FamilyMemberModel extends BaseModel
         return new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], null, null, null);
     }
 
-    public function createFamilyMember()
+    public function CreateFamilyMember()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -81,7 +81,7 @@ class FamilyMemberModel extends BaseModel
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
-    public function deleteFamilyMember()
+    public function DeleteFamilyMember()
     {
         $familyMemberID = $this->sanitizeString($_POST['familyMemberID']);
         $familyID = $this->sanitizeString($_POST['familyID']);
@@ -102,7 +102,8 @@ class FamilyMemberModel extends BaseModel
         $stmt = $this->pdo->prepare("SELECT FamilyMemberID FROM FamilyMember WHERE FamilyMember.FamilyID = ?");
         $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
         $stmt->execute([$familyID]);
-        //Als er geen familiedelen meer zijn, verwijder dan de familie uit de database.
+
+        //Als er geen familiedelen meer zijn, verwijder dan de familie en het adres uit de database.
         if ($stmt->rowCount() == 0) {
             $stmt = $this->pdo->prepare("DELETE FROM Family WHERE Family.FamilyID = ?");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
@@ -117,7 +118,7 @@ class FamilyMemberModel extends BaseModel
         return "<p class='badMessage'>Familielid verwijderd.</p>";
     }
 
-    public function updateFamilyMember()
+    public function UpdateFamilyMember()
     {
         if (
             isset($_POST['name']) &&

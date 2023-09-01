@@ -31,12 +31,12 @@ class Controller
             if (isset($_POST['manageFamilies'])) {
                 //Controleer of gebruiker toegang heeft tot de pagina.
                 $this->baseModel->CheckUserRole(3);
-                $families = $this->familyModel->getFamilies();
+                $families = $this->familyModel->GetFamilies();
                 include('view\family\manageFamilies.php');
             } else if (isset($_POST['addFamily'])) {
                 include('view\family\addFamily.php');
             } else if (isset($_POST['editFamily'])) {
-                $family = $this->familyModel->getFamily();
+                $family = $this->familyModel->GetFamily();
                 include('view\family\editFamily.php');
             } else if (isset($_POST['deleteFamilyMessage'])) {
                 $familyID = $_POST['familyID'];
@@ -44,16 +44,16 @@ class Controller
             }
             //CRUD operaties van acties die vallen onder de categorie Family
             else if (isset($_POST['createFamily'])) {
-                echo $this->familyModel->createFamily();
-                $families = $this->familyModel->getFamilies();
+                echo $this->familyModel->CreateFamily();
+                $families = $this->familyModel->GetFamilies();
                 include 'view\family\manageFamilies.php';
             } else if (isset($_POST['deleteFamily'])) {
-                echo $this->familyModel->deleteFamily();
-                $families = $this->familyModel->getFamilies();
+                echo $this->familyModel->DeleteFamily();
+                $families = $this->familyModel->GetFamilies();
                 include 'view\family\manageFamilies.php';
             } else if (isset($_POST['updateFamily'])) {
-                echo $this->familyModel->updateFamily();
-                $families = $this->familyModel->getFamilies();
+                echo $this->familyModel->UpdateFamily();
+                $families = $this->familyModel->GetFamilies();
                 include 'view\family\manageFamilies.php';
             }
         }
@@ -61,32 +61,32 @@ class Controller
         //Check of actie valt onder de categorie FamilyMembers
         else if (isset($_POST['FamilyMember'])) {
             if (isset($_POST['manageFamilyMembers'])) {
-                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                $familyMembers = $this->familyMemberModel->GetFamilyMembers();
                 include('view\familyMember\manageFamilyMembers.php');
             } else if (isset($_POST['addFamilyMember'])) {
                 $familyID = $_POST['familyID'];
                 include('view\familyMember\addFamilyMember.php');
             } else if (isset($_POST['editFamilyMember'])) {
-                $familyMember = $this->familyMemberModel->getFamilyMember();
+                $familyMember = $this->familyMemberModel->GetFamilyMember();
                 include('view\familyMember\editFamilyMember.php');
             }
             //CRUDD operaties van acties die vallen onder de categorie FamilyMembers
             else if (isset($_POST['createFamilyMember'])) {
-                echo $this->familyMemberModel->createFamilyMember();
-                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                echo $this->familyMemberModel->CreateFamilyMember();
+                $familyMembers = $this->familyMemberModel->GetFamilyMembers();
                 include('view\familyMember\manageFamilyMembers.php');
             } else if (isset($_POST['deleteFamilyMember'])) {
-                echo $this->familyMemberModel->deleteFamilyMember();
-                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                echo $this->familyMemberModel->DeleteFamilyMember();
+                $familyMembers = $this->familyMemberModel->GetFamilyMembers();
                 if ($familyMembers) {
                     include('view\familyMember\manageFamilyMembers.php');
                 } else {
-                    $families = $this->familyModel->getFamilies();
+                    $families = $this->familyModel->GetFamilies();
                     include 'view\family\manageFamilies.php';
                 }
             } else if (isset($_POST['updateFamilyMember'])) {
-                echo $this->familyMemberModel->updateFamilyMember();
-                $familyMembers = $this->familyMemberModel->getFamilyMembers();
+                echo $this->familyMemberModel->UpdateFamilyMember();
+                $familyMembers = $this->familyMemberModel->GetFamilyMembers();
                 include('view\familyMember\manageFamilyMembers.php');
             }
         }
@@ -96,36 +96,36 @@ class Controller
             if (isset($_POST['manageContributions'])) {
                 //Controleer of gebruiker toegang heeft tot de pagina.
                 $this->baseModel->CheckUserRole(2);
-                $financialYears = $this->contributionModel->getFinancialYears();
-                $memberships = $this->contributionModel->getMemberships();
+                $financialYears = $this->contributionModel->GetFinancialYears();
+                $memberships = $this->contributionModel->GetMemberships();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['addMembership'])) {
                 include('view\contribution\addMembership.php');
             } else if (isset($_POST['editMembership'])) {
-                $membership = $this->contributionModel->getMembership();
+                $membership = $this->contributionModel->GetMembership();
                 include('view\contribution\editMembership.php');
             }
             else if(isset($_POST['recalculateMemberships'])){
-                echo $this->contributionModel->recalculateMemberships();
-                $financialYears = $this->contributionModel->getFinancialYears();
-                $memberships = $this->contributionModel->getMemberships();
+                echo $this->contributionModel->RecalculateMemberships();
+                $financialYears = $this->contributionModel->GetFinancialYears();
+                $memberships = $this->contributionModel->GetMemberships();
                 include('view\contribution\manageContributions.php');
             }
             //CRUD operaties van acties die vallen onder de categorie Contribution
             else if (isset($_POST['createMembership'])) {
-                echo $this->contributionModel->createMembership();
-                $financialYears = $this->contributionModel->getFinancialYears();
-                $memberships = $this->contributionModel->getMemberships();
+                echo $this->contributionModel->CreateMembership();
+                $financialYears = $this->contributionModel->GetFinancialYears();
+                $memberships = $this->contributionModel->GetMemberships();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteMembership'])) {
-                echo $this->contributionModel->deleteMembership();
-                $financialYears = $this->contributionModel->getFinancialYears();
-                $memberships = $this->contributionModel->getMemberships();
+                echo $this->contributionModel->DeleteMembership();
+                $financialYears = $this->contributionModel->GetFinancialYears();
+                $memberships = $this->contributionModel->GetMemberships();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateMembership'])) {
-                echo $this->contributionModel->updateMembership();
-                $financialYears = $this->contributionModel->getFinancialYears();
-                $memberships = $this->contributionModel->getMemberships();
+                echo $this->contributionModel->UpdateMembership();
+                $financialYears = $this->contributionModel->GetFinancialYears();
+                $memberships = $this->contributionModel->GetMemberships();
                 include('view\contribution\manageContributions.php');
             }
 
@@ -133,7 +133,7 @@ class Controller
             else if (isset($_POST['addFinancialYear'])) {
                 include('view\contribution\addFinancialYear.php');
             } else if (isset($_POST['editFinancialYear'])) {
-                $financialYear = $this->contributionModel->getFinancialYear();
+                $financialYear = $this->contributionModel->GetFinancialYear();
                 include('view\contribution\editFinancialYear.php');
             } else if (isset($_POST['deleteFinancialYearMessage'])) {
                 $financialYearID = $_POST['financialYearID'];
@@ -141,19 +141,19 @@ class Controller
             }
             //CRUD operaties boekjaren
             else if (isset($_POST['createFinancialYear'])) {
-                echo $this->contributionModel->createFinancialYear();
-                $memberships = $this->contributionModel->getMemberships();
-                $financialYears = $this->contributionModel->getFinancialYears();
+                echo $this->contributionModel->CreateFinancialYear();
+                $memberships = $this->contributionModel->GetMemberships();
+                $financialYears = $this->contributionModel->GetFinancialYears();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['deleteFinancialYear'])) {
-                echo $this->contributionModel->deleteFinancialYear();
-                $memberships = $this->contributionModel->getMemberships();
-                $financialYears = $this->contributionModel->getFinancialYears();
+                echo $this->contributionModel->DeleteFinancialYear();
+                $memberships = $this->contributionModel->GetMemberships();
+                $financialYears = $this->contributionModel->GetFinancialYears();
                 include('view\contribution\manageContributions.php');
             } else if (isset($_POST['updateFinancialYear'])) {
-                echo $this->contributionModel->updateFinancialYear();
-                $memberships = $this->contributionModel->getMemberships();
-                $financialYears = $this->contributionModel->getFinancialYears();
+                echo $this->contributionModel->UpdateFinancialYear();
+                $memberships = $this->contributionModel->GetMemberships();
+                $financialYears = $this->contributionModel->GetFinancialYears();
                 include('view\contribution\manageContributions.php');
             }
         } else {

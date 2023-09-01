@@ -78,7 +78,7 @@
             <input type="submit" value="Lidmaatschap toevoegen" name="Contribution">
         </form>
         <form action="index.php" method="post">
-            <input type="hidden" name="determineContribution">
+            <input type="hidden" name="recalculateMemberships">
             <input type="submit" value="Ververs lidmaatschappen" name="Contribution">
         </form>
     </div>

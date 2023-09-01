@@ -26,7 +26,7 @@ class BaseModel
     }
 
     //Ontdoe een string van ongewenste slashes en html
-    public function sanitizeString($str)
+    public function SanitizeString($str)
     {
         $str = stripslashes($str);
         $str = strip_tags($str);
@@ -35,7 +35,7 @@ class BaseModel
     }
 
     //Log gebruiker uit door alle sessie variabelen te legen en beëindig de sessie.
-    public function logout()
+    public function Logout()
     {
         //Gooi sessie variabelen leeg
         $_SESSION = array();
@@ -47,7 +47,7 @@ class BaseModel
     }
 
     //Bepaal het membership aan de hand van de leeftijd.
-    public function getMembershipByDateOfBirth($date)
+    public function GetMembershipByDateOfBirth($date)
     {
         //Bereken de leeftijd van het familielid door het verschil te berekenen tussen de datum van vandaag en de geboortedatum
         $dateOfBirth = new DateTime($date);
@@ -83,7 +83,7 @@ class BaseModel
     }
 
     //Haal de contributies van het huidige jaar op
-    public function getContributionCurrentYear()
+    public function GetContributionCurrentYear()
     {
         //Haal het huidige jaar op
         $currentYear = date('Y');

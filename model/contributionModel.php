@@ -4,7 +4,7 @@ include_once 'classes\financialYear.class.php';
 
 class ContributionModel extends BaseModel
 {
-    public function getMemberships()
+    public function GetMemberships()
     {
         //Haal alle lidmaatschappen op.
         $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
@@ -22,7 +22,7 @@ class ContributionModel extends BaseModel
         return $memberships;
     }
 
-    public function getMembership()
+    public function GetMembership()
     {
         //Haal de details van een lidmaatschap op aan de hand van het contributieID.
         $contributionID = $this->sanitizeString($_POST['contributionID']);
@@ -38,23 +38,7 @@ class ContributionModel extends BaseModel
         return new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
     }
 
-    public function recalculateMemberships()
-    {
-        //Haal alle leden op
-        $query = ("SELECT FamilyMemberID, MembershipID, DateOfBirth FROM FamilyMember");
-        $result = $this->pdo->query($query);
-        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
-
-        //Pas het lidmaatschap van de leden aan als deze afwijkt van het huidige lidmaatschap
-        foreach ($rows as $row) {
-            $membershipID = $this->getMembershipByDateOfBirth($row['DateOfBirth']);
-            if ($row['MembershipID'] !== $membershipID)
-                $this->UpdateMembershipID($row['FamilyMemberID'], $membershipID);
-        }
-        return '<p class="goodMessage">De lidmaatschappen zijn succesvol geüpdate.</p>';
-    }
-
-    public function createMembership()
+    public function CreateMembership()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -98,7 +82,7 @@ class ContributionModel extends BaseModel
         return "<p class='badMessage'>Er is iets fout gegaan. Probeer het nog eens.</p>";
     }
 
-    public function deleteMembership()
+    public function DeleteMembership()
     {
         $contributionID = $this->sanitizeString($_POST['contributionID']);
         $membershipID = $this->sanitizeString($_POST['membershipID']);
@@ -126,7 +110,7 @@ class ContributionModel extends BaseModel
         return "<p class='goodMessage'>Lidmaatschap succesvol verwijderd.</p>";
     }
 
-    public function updateMembership()
+    public function UpdateMembership()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -159,7 +143,7 @@ class ContributionModel extends BaseModel
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
-    public function getFinancialYears()
+    public function GetFinancialYears()
     {
         //Haal alle boekjaren op.
         $query = ("SELECT * FROM FinancialYear ORDER BY Year DESC");
@@ -175,7 +159,7 @@ class ContributionModel extends BaseModel
         return $financialYears;
     }
 
-    public function getFinancialYear()
+    public function GetFinancialYear()
     {
         //Haal de details van het geselecteerd boekjaar op.
         $financialYearID = $this->sanitizeString($_POST['financialYearID']);
@@ -189,7 +173,7 @@ class ContributionModel extends BaseModel
         return new FinancialYear($row['FinancialYearID'], $row['Year'], $row['Contribution']);
     }
 
-    public function createFinancialYear()
+    public function CreateFinancialYear()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -205,7 +189,7 @@ class ContributionModel extends BaseModel
             if ($financialYearID) {
                 return "<p class='badMessage'>Het boekjaar kon niet worden aangemaakt. Het boekjaar bestaat al.</p>";
             }
-            //Als het boekjaar nog niet bestaat, maak deze dan toe.
+            //Als het boekjaar nog niet bestaat, maak deze dan aan.
             else {
                 $stmt = $this->pdo->prepare("INSERT INTO FinancialYear (FinancialYearID, Year, Contribution) 
             VALUES (null, ?, ?)");
@@ -218,7 +202,7 @@ class ContributionModel extends BaseModel
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }
 
-    public function deleteFinancialYear()
+    public function DeleteFinancialYear()
     {
         $financialYearID = $this->sanitizeString($_POST['financialYearID']);
 
@@ -246,15 +230,7 @@ class ContributionModel extends BaseModel
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
         $stmt->execute([$financialYearID]);
 
-        //Verwijder alle memberships van het betreffende boekjaar.
-        foreach ($rows as $row) {
-            $membershipID = $row['MembershipID'];
-            $stmt = $this->pdo->prepare("DELETE FROM Membership WHERE MembershipID = ?");
-            $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
-            $stmt->execute([$membershipID]);
-        }
-
-        //Koppel de verwijdere membershipID's los van de familieleden.
+        //Koppel het verwijdere membership los van de familieleden.
         $stmt = $this->pdo->prepare("UPDATE FamilyMember SET MembershipID = NULL WHERE MembershipID = ?");
         $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
         $stmt->execute([$membershipID]);
@@ -262,7 +238,7 @@ class ContributionModel extends BaseModel
         return "<p class='goodMessage'>Boekjaar en lidmaatschappen van het betreffende jaar succesvol verwijderd.</p>";
     }
 
-    public function updateFinancialYear()
+    public function UpdateFinancialYear()
     {
         //Controleer of de invoervelden een waarde hebben.
         if (
@@ -319,5 +295,21 @@ class ContributionModel extends BaseModel
         $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$membershipID, $familyMemberID]);
+    }
+
+    public function RecalculateMemberships()
+    {
+        //Haal alle leden op
+        $query = ("SELECT FamilyMemberID, MembershipID, DateOfBirth FROM FamilyMember");
+        $result = $this->pdo->query($query);
+        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+
+        //Pas het lidmaatschap van de leden aan als deze afwijkt van het huidige lidmaatschap
+        foreach ($rows as $row) {
+            $membershipID = $this->getMembershipByDateOfBirth($row['DateOfBirth']);
+            if ($row['MembershipID'] !== $membershipID)
+                $this->UpdateMembershipID($row['FamilyMemberID'], $membershipID);
+        }
+        return '<p class="goodMessage">De lidmaatschappen zijn succesvol geüpdate.</p>';
     }
 }
