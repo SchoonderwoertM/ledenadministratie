@@ -14,17 +14,20 @@ class FamilyMemberModel extends BaseModel
 
             $stmt = $this->pdo->prepare("SELECT FamilyMember.FamilyMemberID, FamilyMember.FamilyID, FamilyMember.Name, FamilyMember.DateOfBirth, Membership.Description, 
             FinancialYear.Cost, Contribution.Discount FROM FamilyMember
-            INNER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
-            INNER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
-            INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-            WHERE FamilyMember.FamilyID = ?
-            AND FinancialYear.Year = $currentYear");
+            LEFT OUTER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
+            LEFT OUTER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
+            LEFT OUTER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+            WHERE FamilyMember.FamilyID = ? AND FinancialYear.Year = $currentYear OR Membership.MembershipID IS NULL");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $familyMembers = [];
             foreach ($rows as $row) {
+                if(empty($row['Cost'])){
+                    $contributon = $this->getContributionCurrentYear();
+                    $row['Cost'] = $contributon;
+                }
                 $familyMember = new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], $row['Description'], $row['Cost'], $row['Discount']);
                 $familyMembers[] = $familyMember;
             }

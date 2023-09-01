@@ -17,8 +17,9 @@ class BaseModel
     }
 
     //Check of de gebruiker rechten heeft om de pagina te bekijken
-    public function CheckUserRole($roleID){
-        if(isset($_SESSION['roleID']) && $_SESSION['roleID'] == $roleID){
+    public function CheckUserRole($roleID)
+    {
+        if (isset($_SESSION['roleID']) && $_SESSION['roleID'] == $roleID) {
             echo "<p class='badMessage'>U heeft onvoldoende rechten voor deze pagina.</p>";
             die();
         }
@@ -32,9 +33,10 @@ class BaseModel
         $str = htmlentities($str);
         return $str;
     }
-    
+
     //Log gebruiker uit door alle sessie variabelen te legen en beëindig de sessie.
-    public function logout(){
+    public function logout()
+    {
         //Gooi sessie variabelen leeg
         $_SESSION = array();
         //Verwijder alle cookies die zijn gekoppeld aan de sessie door de vervaltijd in het verleden te zetten.
@@ -53,12 +55,17 @@ class BaseModel
         $age = $currectDate->diff($dateOfBirth);
         $age = $age->y;
 
-        //Haal de contributies op per leeftijd
-        $query = ("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
-        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
-        $result = $this->pdo->query($query);
-        $membershipsByAge = $result->fetchAll();
+        //Haal huidig jaar op
+        $currentYear = date('Y');
         $membershipID = null;
+
+        //Haal de contributies op per leeftijd van het huidige jaar
+        $stmt = $this->pdo->prepare("SELECT Contribution.MembershipID, Contribution.Age FROM Contribution
+        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+        WHERE FinancialYear.Year = ?");
+        $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
+        $stmt->execute([$currentYear]);
+        $membershipsByAge = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         //Check welke soort lid bij de leeftijd hoort.
         foreach ($membershipsByAge as $membership) {
@@ -67,10 +74,24 @@ class BaseModel
                 break;
             }
         }
+        //Als er geen passend lidmaatschap kan worden gevonden return dan null
         if (empty($membership)) {
             return null;
         } else {
             return $membershipID;
         }
+    }
+
+    //Haal de contributies van het huidige jaar op
+    public function getContributionCurrentYear()
+    {
+        //Haal het huidige jaar op
+        $currentYear = date('Y');
+
+        $stmt = $this->pdo->prepare("SELECT Cost FROM FinancialYear WHERE FinancialYear.Year = ?");
+        $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
+        $stmt->execute([$currentYear]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row['Cost'];
     }
 }

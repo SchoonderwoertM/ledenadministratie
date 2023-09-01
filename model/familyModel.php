@@ -23,10 +23,10 @@ class FamilyModel extends BaseModel
         COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalDiscount FROM Family
         INNER JOIN Address ON Family.AddressID = Address.AddressID
         INNER JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
-        LEFT JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
-        INNER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
-        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-        WHERE FinancialYear.Year = ?
+        LEFT OUTER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
+        LEFT OUTER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
+        LEFT OUTER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+        WHERE FinancialYear.Year = ? OR Membership.MembershipID IS NULL
         GROUP BY Family.FamilyID");
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
