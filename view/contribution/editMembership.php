@@ -1,5 +1,6 @@
 <?php require_once 'include\authenticate.php' ?>
-<h1>Lidmaatschap <?php echo $membership->membershipType; ?> aanpassen</h1>
+<h1>Lidmaatschap aanpassen</h1>
+<p><strong>Boekjaar <?php echo $membership->financialYear ?></strong></p><br>
 
 <form action="index.php" method="post">
     <div>

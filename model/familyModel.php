@@ -17,16 +17,19 @@ class FamilyModel extends BaseModel
         if ($row) {
             $contribution = $row['Contribution'];
         }
+        else{
+            $contribution = null;
+        }
 
         //Haal details van de families op.
         $stmt = $this->pdo->prepare("SELECT Family.FamilyID, Family.Name, Address.Street, Address.Housenumber, Address.PostalCode, Address.City, 
         COUNT(FamilyMember.FamilyID) AS NumberOfFamilyMembers, SUM(Contribution.Discount) TotalDiscount FROM Family
         INNER JOIN Address ON Family.AddressID = Address.AddressID
         INNER JOIN FamilyMember ON Family.FamilyID = FamilyMember.FamilyID
-        LEFT OUTER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
+        INNER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
         LEFT OUTER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
         LEFT OUTER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-        WHERE FinancialYear.Year = ? OR Membership.MembershipID IS NULL
+        WHERE FinancialYear.Year = ? OR Contribution.ContributionID IS NULL
         GROUP BY Family.FamilyID");
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
@@ -164,30 +167,25 @@ class FamilyModel extends BaseModel
             $postalCode = str_replace(' ', '', $postalCode); //Verwijder spaties
             $city = $this->sanitizeString($_POST['city']);
 
-            //Nagaan of er al een familie op het adres bekend is.
-            if ($this->AddressAlreadyExists($housenumber, $postalCode)) {
-                return "<p class='badMessage'>Er is al een familie bekend op dit adres.<p>";
-            } else {
-                //Sla de ingevoerde waarden betreft de familie op in de database.
-                $stmt = $this->pdo->prepare("UPDATE Family SET Name = ? WHERE FamilyID = ?");
-                $stmt->bindParam(1, $name, PDO::PARAM_STR, 100);
-                $stmt->bindParam(2, $familyID, PDO::PARAM_INT);
-                $stmt->execute([$name, $familyID]);
+            //Sla de ingevoerde waarden betreft de familie op in de database.
+            $stmt = $this->pdo->prepare("UPDATE Family SET Name = ? WHERE FamilyID = ?");
+            $stmt->bindParam(1, $name, PDO::PARAM_STR, 100);
+            $stmt->bindParam(2, $familyID, PDO::PARAM_INT);
+            $stmt->execute([$name, $familyID]);
 
-                //Haal het AddressID op van de family.
-                $addressID = $addressID = $this->GetAddressID($familyID);
+            //Haal het AddressID op van de family.
+            $addressID = $addressID = $this->GetAddressID($familyID);
 
-                //Sla de ingevoerde waarden betreft het adres op in de database.
-                $stmt = $this->pdo->prepare("UPDATE Address SET Street = ?, Housenumber = ?, PostalCode = ?, City = ? WHERE AddressID = ?");
-                $stmt->bindParam(1, $street, PDO::PARAM_STR, 100);
-                $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
-                $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 7);
-                $stmt->bindParam(4, $city, PDO::PARAM_STR, 100);
-                $stmt->bindParam(5, $addressID, PDO::PARAM_INT);
-                $stmt->execute([$street, $housenumber, $postalCode, $city, $addressID]);
+            //Sla de ingevoerde waarden betreft het adres op in de database.
+            $stmt = $this->pdo->prepare("UPDATE Address SET Street = ?, Housenumber = ?, PostalCode = ?, City = ? WHERE AddressID = ?");
+            $stmt->bindParam(1, $street, PDO::PARAM_STR, 100);
+            $stmt->bindParam(2, $housenumber, PDO::PARAM_INT);
+            $stmt->bindParam(3, $postalCode, PDO::PARAM_STR, 7);
+            $stmt->bindParam(4, $city, PDO::PARAM_STR, 100);
+            $stmt->bindParam(5, $addressID, PDO::PARAM_INT);
+            $stmt->execute([$street, $housenumber, $postalCode, $city, $addressID]);
 
-                return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
-            }
+            return "<p class='goodMessage'>Wijziging succesvol opgeslagen.</p>";
         }
         return "<p class='badMessage'>Er is een fout opgetreden. Probeer het nog eens.</p>";
     }

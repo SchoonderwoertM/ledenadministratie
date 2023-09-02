@@ -6,20 +6,27 @@ class ContributionModel extends BaseModel
 {
     public function GetMemberships()
     {
-        //Haal alle lidmaatschappen op.
-        $query = ("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
+        //Haal het geselecteerde boekjaar op
+        if (isset($_POST['financialYear'])) {
+            $financialYear = $_POST['financialYear'];
+
+            //Haal alle lidmaatschappen op.
+            $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
             FROM Contribution
             INNER JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
-            INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID");
-        $result = $this->pdo->query($query);
-        $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+            INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
+            WHERE FinancialYear.Year = ?");
+            $stmt->bindParam(1, $financialYear, PDO::PARAM_INT);
+            $stmt->execute([$financialYear]);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $memberships = [];
-        foreach ($rows as $row) {
-            $membership = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
-            $memberships[] = $membership;
+            $memberships = [];
+            foreach ($rows as $row) {
+                $membership = new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description'], $financialYear);
+                $memberships[] = $membership;
+            }
+            return $memberships;
         }
-        return $memberships;
     }
 
     public function GetMembership()
@@ -27,87 +34,15 @@ class ContributionModel extends BaseModel
         //Haal de details van een lidmaatschap op aan de hand van het contributieID.
         $contributionID = $this->sanitizeString($_POST['contributionID']);
 
-        $stmt = $this->pdo->prepare("SELECT Contribution.ContributionID, Contribution.Age, Contribution.Discount, Membership.MembershipID, Membership.Description 
-        FROM Contribution
+        $stmt = $this->pdo->prepare("SELECT * FROM Contribution
         INNER JOIN Membership ON Contribution.MembershipID = Membership.MembershipID
+        INNER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
         WHERE Contribution.ContributionID = ?");
         $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
         $stmt->execute([$contributionID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        return new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description']);
-    }
-
-    public function CreateMembership()
-    {
-        //Controleer of de invoervelden een waarde hebben.
-        if (
-            isset($_POST['description']) &&
-            isset($_POST['age']) &&
-            isset($_POST['discount'])
-        ) {
-            //Ontdoe de ingevoerde waarde van ongeweste slashes en html.
-            $membership = $this->sanitizeString($_POST['description']);
-            $age = $this->sanitizeString($_POST['age']);
-            $discount = $this->sanitizeString($_POST['discount']);
-            //Haal huidig jaar op.
-            $financialYear = date('Y');
-
-            //Check of het boekjaar bestaat.
-            $financialYearID = $this->GetFinancialYearID($financialYear);
-            if ($financialYearID) {
-                //Sla het Membership op in de database.
-                $stmt = $this->pdo->prepare("INSERT INTO Membership (MembershipID, Description) 
-            VALUES (null, ?)");
-                $stmt->bindParam(1, $membership, PDO::PARAM_STR, 100);
-                $stmt->execute([$membership]);
-                $membershipID = $stmt->fetch();
-                //Onthou het MembershipID van het zojuist toegevoegde record.
-                $membershipID = $this->pdo->lastInsertId();
-
-                //Sla de contributie op in de database.
-                $stmt = $this->pdo->prepare("INSERT INTO Contribution (ContributionID, Age, Discount, MembershipID, FinancialYearID) 
-            VALUES (null, ?, ?, ?, ?)");
-                $stmt->bindParam(1, $age, PDO::PARAM_INT);
-                $stmt->bindParam(2, $discount, PDO::PARAM_INT);
-                $stmt->bindParam(3, $membershipID, PDO::PARAM_INT);
-                $stmt->bindParam(4, $financialYearID, PDO::PARAM_INT);
-                $stmt->execute([$age, $discount, $membershipID, $financialYearID]);
-
-                return "<p class='goodMessage'>Lidmaatschap succesvol aangemaakt.</p>";
-            } else {
-                return "<p class='badMessage'>U dient eerst het boekjaar aan te maken.</p>";
-            }
-        }
-        return "<p class='badMessage'>Er is iets fout gegaan. Probeer het nog eens.</p>";
-    }
-
-    public function DeleteMembership()
-    {
-        $contributionID = $this->sanitizeString($_POST['contributionID']);
-        $membershipID = $this->sanitizeString($_POST['membershipID']);
-
-        //Check of het lidmaatschap aan een lid is gekoppeld.
-        if ($this->MembershipAssociated($membershipID)) {
-            return "<p class='badMessage'>Het is niet mogelijk het lidmaatschap te verwijderen. Er zijn nog leden aan gekoppeld.</p>";
-        }
-
-        //Verwijder het record uit de Contribution tabel.
-        $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE ContributionID = ?");
-        $stmt->bindParam(1, $contributionID, PDO::PARAM_INT);
-        $stmt->execute([$contributionID]);
-
-        //Verwijder het record uit de Membership tabel.
-        $stmt = $this->pdo->prepare("DELETE FROM Membership WHERE MembershipID = ?");
-        $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
-        $stmt->execute([$membershipID]);
-
-        //Koppel het verwijderde membership los van de familieleden.
-        $stmt = $this->pdo->prepare("UPDATE FamilyMember SET MembershipID = NULL WHERE MembershipID = ?");
-        $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
-        $stmt->execute([$membershipID]);
-
-        return "<p class='goodMessage'>Lidmaatschap succesvol verwijderd.</p>";
+        return new Contribution($row['ContributionID'], $row['Age'], $row['Discount'], $row['MembershipID'], $row['Description'], $row['Year']);
     }
 
     public function UpdateMembership()
@@ -196,6 +131,22 @@ class ContributionModel extends BaseModel
                 $stmt->bindParam(1, $year, PDO::PARAM_INT);
                 $stmt->bindParam(2, $contribution, PDO::PARAM_INT);
                 $stmt->execute([$year, $contribution]);
+                $financialYearID = $this->pdo->lastInsertId();
+
+                //Haal alle lidmaatschappen op
+                $query = ("SELECT * FROM Membership");
+                $result = $this->pdo->query($query);
+                $rows = $result->fetchAll(PDO::FETCH_ASSOC);
+
+                //Maak voor alle lidmaatschappen een record aan in de Contribution tabel met als korting en leeftijd 0.
+                foreach ($rows as $row) {
+                    $membershipID = $row['MembershipID'];
+                    $stmt = $this->pdo->prepare("INSERT INTO Contribution (ContributionID, Age, Discount, FinancialYearID, MembershipID) 
+                    VALUES (null, 0, 0, ?, ?)");
+                        $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
+                        $stmt->bindParam(2, $membershipID, PDO::PARAM_INT);
+                        $stmt->execute([$financialYearID, $membershipID]);
+                }
                 return "<p class='goodMessage'>Boekjaar succesvol toegevoegd.</p>";
             }
         }
@@ -206,20 +157,6 @@ class ContributionModel extends BaseModel
     {
         $financialYearID = $this->sanitizeString($_POST['financialYearID']);
 
-        //Haal alle membershipID's op die zijn gekoppeld aan het betreffende boekjaar.
-        $stmt = $this->pdo->prepare("SELECT MembershipID FROM Contribution WHERE FinancialYearID = ?");
-        $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
-        $stmt->execute([$financialYearID]);
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($rows as $row) {
-            $membershipID = $row['MembershipID'];
-            //Check of het lidmaatschap aan een lid is gekoppeld.
-            if ($this->MembershipAssociated($membershipID)) {
-                return "<p class='badMessage'>Het is niet mogelijk het boekjaar te verwijderen. Er zijn nog leden aan gekoppeld.</p>";
-            }
-        }
-
         //Verwijder alle contributies van het betreffende boekjaar.
         $stmt = $this->pdo->prepare("DELETE FROM Contribution WHERE FinancialYearID = ?");
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
@@ -229,11 +166,6 @@ class ContributionModel extends BaseModel
         $stmt = $this->pdo->prepare("DELETE FROM FinancialYear WHERE FinancialYearID = ?");
         $stmt->bindParam(1, $financialYearID, PDO::PARAM_INT);
         $stmt->execute([$financialYearID]);
-
-        //Koppel het verwijdere membership los van de familieleden.
-        $stmt = $this->pdo->prepare("UPDATE FamilyMember SET MembershipID = NULL WHERE MembershipID = ?");
-        $stmt->bindParam(1, $membershipID, PDO::PARAM_INT);
-        $stmt->execute([$membershipID]);
 
         return "<p class='goodMessage'>Boekjaar en lidmaatschappen van het betreffende jaar succesvol verwijderd.</p>";
     }

@@ -17,14 +17,14 @@ class FamilyMemberModel extends BaseModel
             LEFT OUTER JOIN Membership ON FamilyMember.MembershipID = Membership.MembershipID
             LEFT OUTER JOIN Contribution ON Membership.MembershipID = Contribution.MembershipID
             LEFT OUTER JOIN FinancialYear ON Contribution.FinancialYearID = FinancialYear.FinancialYearID
-            WHERE FamilyMember.FamilyID = ? AND FinancialYear.Year = $currentYear OR Membership.MembershipID IS NULL");
+            WHERE FamilyMember.FamilyID = ? AND FinancialYear.Year = $currentYear OR Contribution.ContributionID IS NULL");
             $stmt->bindParam(1, $familyID, PDO::PARAM_INT);
             $stmt->execute([$familyID]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             $familyMembers = [];
             foreach ($rows as $row) {
-                if(empty($row['Contribution'])){
+                if (empty($row['Contribution'])) {
                     $contributon = $this->getContributionCurrentYear();
                     $row['Contribution'] = $contributon;
                 }
@@ -46,7 +46,7 @@ class FamilyMemberModel extends BaseModel
         $stmt->bindParam(1, $familyMemberID, PDO::PARAM_INT);
         $stmt->execute([$familyMemberID]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        
+
         return new FamilyMember($row['FamilyMemberID'], $row['Name'], $row['DateOfBirth'], $row['FamilyID'], null, null, null);
     }
 
@@ -65,7 +65,7 @@ class FamilyMemberModel extends BaseModel
             $membershipID = $this->getMembershipByDateOfBirth($dateOfBirth);
 
             if (!$membershipID) {
-                return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd.</p>";
+                return "<p class='badMessage'>Er is geen lidmaatschap bekend voor deze leeftijd. U dient deze eerst aan te maken.</p>";
             }
 
             //Sla het familid op in de database.

@@ -99,30 +99,17 @@ class Controller
                 $financialYears = $this->contributionModel->GetFinancialYears();
                 $memberships = $this->contributionModel->GetMemberships();
                 include('view\contribution\manageContributions.php');
-            } else if (isset($_POST['addMembership'])) {
-                include('view\contribution\addMembership.php');
             } else if (isset($_POST['editMembership'])) {
                 $membership = $this->contributionModel->GetMembership();
                 include('view\contribution\editMembership.php');
-            }
-            else if(isset($_POST['recalculateMemberships'])){
+            } else if (isset($_POST['recalculateMemberships'])) {
                 echo $this->contributionModel->RecalculateMemberships();
                 $financialYears = $this->contributionModel->GetFinancialYears();
                 $memberships = $this->contributionModel->GetMemberships();
                 include('view\contribution\manageContributions.php');
             }
             //CRUD operaties van acties die vallen onder de categorie Contribution
-            else if (isset($_POST['createMembership'])) {
-                echo $this->contributionModel->CreateMembership();
-                $financialYears = $this->contributionModel->GetFinancialYears();
-                $memberships = $this->contributionModel->GetMemberships();
-                include('view\contribution\manageContributions.php');
-            } else if (isset($_POST['deleteMembership'])) {
-                echo $this->contributionModel->DeleteMembership();
-                $financialYears = $this->contributionModel->GetFinancialYears();
-                $memberships = $this->contributionModel->GetMemberships();
-                include('view\contribution\manageContributions.php');
-            } else if (isset($_POST['updateMembership'])) {
+            else if (isset($_POST['updateMembership'])) {
                 echo $this->contributionModel->UpdateMembership();
                 $financialYears = $this->contributionModel->GetFinancialYears();
                 $memberships = $this->contributionModel->GetMemberships();

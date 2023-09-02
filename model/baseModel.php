@@ -92,6 +92,10 @@ class BaseModel
         $stmt->bindParam(1, $currentYear, PDO::PARAM_INT);
         $stmt->execute([$currentYear]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $row['Contribution'];
+        if (!empty($row['Contribution'])) {
+            $row['Contribution'];
+        } else {
+            return 0;
+        }
     }
 }
