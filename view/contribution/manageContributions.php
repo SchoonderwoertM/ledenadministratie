@@ -39,6 +39,7 @@
 
 <div class="marginTop">
     <h2>Soorten lidmaatschap</h2>
+    <p>Let op! Na het aanpassen van de lidmaatschappen dient u op de knop 'Ververs lidmaatschappen' te klikken om de lidmaatschappen van de bestaande leden bij te werken.</p><br>
     <table>
         <thead>
             <th>Soort lid</th>

@@ -289,6 +289,7 @@ class ContributionModel extends BaseModel
         return false;
     }
 
+    //Update het membershipID van een lid.
     public function UpdateMembershipID($familyMemberID, $membershipID)
     {
         $stmt = $this->pdo->prepare("UPDATE FamilyMember SET MembershipID = ? WHERE FamilyMemberID = ?");
@@ -297,6 +298,7 @@ class ContributionModel extends BaseModel
         $stmt->execute([$membershipID, $familyMemberID]);
     }
 
+    //Hercalculeer het membership van alle leden.
     public function RecalculateMemberships()
     {
         //Haal alle leden op
